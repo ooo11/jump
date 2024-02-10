@@ -1,11 +1,156 @@
 // This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
 // https://nextjs.org/learn/dashboard-app/fetching-data
+
+const cities = [
+  { id: "85474787-5d3e-4868-a53d-4a7d0d1c213e", name: "Beaufort" },
+  { id: "07ac2f7a-1bdb-42fa-9fc3-16ab54af569c", name: "Beluran" },
+  { id: "857348ba-e9fb-42d1-851d-f72755b98852", name: "Beverly" },
+  { id: "d8771ec4-b4d2-4f23-ba88-c1414d62be84", name: "Bongawan" },
+  { id: "705afe58-9f89-4849-8f8a-9e0f36c600d5", name: "Inanam" },
+  { id: "2b77c8d7-49e8-48b9-bf19-13d176db66b8", name: "Keningau" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a21", name: "Kota Belud" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a22", name: "Kota Kinabalu" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a23", name: "Kota Kinabatangan" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a24", name: "Kota Marudu" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a25", name: "Kuala Penyu" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a26", name: "Kudat" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a27", name: "Kunak" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a28", name: "Lahad Datu" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a29", name: "Likas" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a30", name: "Membakut" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3331", name: "Menumbok" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a33", name: "Nabawan" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a34", name: "Pamol" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a36", name: "Papar" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a37", name: "Penampang" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a38", name: "Putatan" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a39", name: "Ranau" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a11", name: "Sandakan" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a12", name: "Semporna" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a13", name: "Sipitang" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a14", name: "Tambunan" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a16", name: "Tamparuli" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a15", name: "Tanjung Aru" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a17", name: "Tawau" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a19", name: "Tenghilan" },
+  { id: "6fa442bc-cd95-4f28-91de-0fb6796a3a50", name: "Tenom" },
+  { id: "2b8956eb-c213-4a5a-97bd-ad2d5e846ec9", name: "Tuaran" },
+
+];
+const categories = [
+  { id: "1ef2e254-6ece-4e8c-8861-38edff01410a", name: "Photographer" },
+  { id: "2ef2e254-6ece-4e8c-8861-38edff01410b", name: "Entertainment" },
+  { id: "3ef2e254-6ece-4e8c-8861-38edff01410c", name: "Decor" },
+  { id: "4ef2e254-6ece-4e8c-8861-38edff01410d", name: "Makeup" },
+  { id: "5ef2e254-6ece-4e8c-8861-38edff01410e", name: "Venue" },
+  { id: "6ef2e254-6ece-4e8c-8861-38edff01410f", name: "Soundsystem & Lighting" },
+  { id: "41d59243-d209-4b01-b7f6-7bfc6c7205cd", name: "Attire" },
+  { id: "0549a373-839e-4454-a70f-2431cda7e336", name: "Accessories" },
+];
+
 const users = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
     name: 'User',
     email: 'user@nextmail.com',
     password: '123456',
+    city_id: cities[21].id,
+  },
+  {
+    id: 'a297d2fd-63a0-4cb4-bda6-1404e2c8c09c',
+    name: 'Jue',
+    email: 'jue@nextmail.com',
+    password: '123456',
+    city_id: cities[19].id,
+  },
+];
+
+const vendors = [
+  {
+    id: 'ce3f184e-9301-4bf6-892a-6ed623e6ede2',
+    name: 'Chop Chop Wedding Photography',
+    user_id: users[0].id,
+    category_id: categories[0].id,
+  },
+  {
+    id: 'c0e13b73-8511-4871-b631-e4e51fbc0136',
+    name: 'Vue Studio',
+    user_id: users[1].id,
+    category_id: categories[1].id,
+  }
+
+];
+
+const packages = [
+  {
+    id: 'c825b19d-de42-441e-ba45-6dcca2aa445f',
+    name: 'Starter Pack',
+    detail: 'This is a starter pack that cover most of the needs.',
+    vendor_id: vendors[0].id,
+    image_url: '/customers/instreet.jpg',
+    price: 1299,
+    features: [
+      'Data number 1',
+      'Time to write this 1',
+      'Its raining no 1',
+      'This is the data 1',
+    ],
+  },
+  {
+    id: 'd1d8975b-93c6-4ac3-94d0-38860961db9d',
+    name: 'Gold Pack',
+    detail: 'This is an upgrade which include all the needs.',
+    vendor_id: vendors[0].id,
+    image_url: '/customers/tokyostreet.jpg',
+    price: 689,
+    features: [
+      'sdvffsdfsdfsf no 2',
+      'Writing this or not for no 2',
+      'No its not raining 2',
+      'Stop doing start going no 2',
+    ],
+  },
+  {
+    id: '7e3eb8ae-e563-4b55-b9d4-81d3235c43c1',
+    name: 'Cheap Pack',
+    detail: 'This is basic plan that cover most of the needs.',
+    vendor_id: vendors[1].id,
+    image_url: '/customers/donkey.jpg',
+    price: 689,
+    features: [
+      'sdvffsdfsdfsf no 3',
+      'Writing this or not for no 3',
+      'No its not raining 3',
+      'Stop doing start going no 3',
+    ],
+  },
+  {
+    id: 'fe857d75-6d1a-4a87-b7d7-f5df0bb2ada1',
+    name: 'Bit expesive but not too expensive',
+    detail: 'This  is the best package you can get',
+    vendor_id: vendors[1].id,
+    image_url: '/customers/yasai.jpg',
+    price: 689,
+    features: [
+      'sdvffsdfsdfsf no 4',
+      'Writing this or not for no 4',
+      'No its not raining 4',
+      'Stop doing start going no 4',
+    ],
+  },
+  {
+    id: '3de78727-9a2b-4d7b-a259-07c55c2d96cf',
+    name: 'Diamond Pack',
+    detail: 'Everyone loves their rocks. ',
+    vendor_id: vendors[0].id,
+    image_url: '/customers/yasai.jpg',
+    price: 689,
+    features: [
+      'sdvffsdfsdfsf no 5',
+      'Writing this or not for no 5',
+      'No its not raining 5',
+      'Stop doing start going no 5',
+    ],
   },
 ];
 
@@ -180,9 +325,175 @@ const revenue = [
   { month: 'Dec', revenue: 4800 },
 ];
 
+
+const posts = [
+  {
+    id: '4bfdeaae-c468-11ee-94bd-325096b39f47',
+    name: 'This Is My Post',
+    detail: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
+    image_url: '/posts/post1.jpg',
+    vendor_id: vendors[0].id
+  },
+  {
+    id: '4bfdedd8-c468-11ee-9839-325096b39f47',
+    name: 'This is the Second',
+    detail: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    image_url: '/posts/post2.jpg',
+    vendor_id: vendors[0].id
+  },
+  {
+    id: '4bfdee8c-c468-11ee-97db-325096b39f47',
+    name: 'Third Post of The Year',
+    detail: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    image_url: '/posts/post3.jpg',
+    vendor_id: vendors[0].id,
+  },
+  {
+    id: '4bfdef2c-c468-11ee-9180-325096b39f47',
+    name: 'Lorem ipsum',
+    detail: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    image_url: '/posts/bird.jpg',
+    vendor_id: vendors[0].id,
+  },
+  {
+    id: '4bfdefb8-c468-11ee-ab07-325096b39f47',
+    name: 'Excepteur sint',
+    detail: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    image_url: '/posts/post1.jpg',
+    vendor_id: vendors[1].id,
+  },
+  {
+    id: '4bfdf03a-c468-11ee-8d72-325096b39f47',
+    name: 'Eleifend',
+    detail: 'Eleifend donec pretium vulputate sapien nec sagittis aliquam malesuada. Tellus rutrum tellus pellentesque eu tincidunt tortor. ',
+    image_url: '/posts/post2.jpg',
+    vendor_id: vendors[1].id,
+  },
+  {
+    id: '4bfdf0c6-c468-11ee-8fe3-325096b39f47',
+    name: 'Aliquam',
+    detail: 'Viverra mauris in aliquam sem fringilla ut morbi. Enim eu turpis egestas pretium aenean pharetra magna ac placerat. Eleifend donec pretium vulputate sapien nec sagittis.',
+    image_url: '/posts/post3.jpg',
+    vendor_id: vendors[1].id,
+  },
+];
+
+const tags = [
+  {
+    id: '482a2fda-c46a-11ee-b69e-325096b39f47',
+    name: 'beach'
+  },
+  {
+    id: '482a3296-c46a-11ee-a091-325096b39f47',
+    name: 'sea'
+  },
+  {
+    id: '482a3318-c46a-11ee-bc23-325096b39f47',
+    name: 'mountain'
+  },
+  {
+    id: '482a341c-c46a-11ee-87f0-325096b39f47',
+    name: 'bird'
+  },
+  {
+    id: '482a34d0-c46a-11ee-9c9c-325096b39f47',
+    name: 'duck'
+  }
+];
+
+const postsTags = [
+  {
+    id: '1a44856e-c46c-11ee-8a1f-325096b39f47',
+    post_id: posts[0].id,
+    tag_id: tags[0].id
+  },
+  {
+    id: '79690182-c471-11ee-99f9-325096b39f47',
+    post_id: posts[0].id,
+    tag_id: tags[1].id
+  },
+  {
+    id: '7969061e-c471-11ee-bebe-325096b39f47',
+    post_id: posts[0].id,
+    tag_id: tags[3].id
+  },
+  {
+    id: '1a448956-c46c-11ee-9651-325096b39f47',
+    post_id: posts[1].id,
+    tag_id: tags[2].id
+  },
+  {
+    id: '796906d2-c471-11ee-a81c-325096b39f47',
+    post_id: posts[2].id,
+    tag_id: tags[0].id
+  },
+  {
+    id: '7969074a-c471-11ee-bd69-325096b39f47',
+    post_id: posts[2].id,
+    tag_id: tags[1].id
+  },
+  {
+    id: '796909c0-c471-11ee-8da9-325096b39f47',
+    post_id: posts[2].id,
+    tag_id: tags[3].id
+  },
+  {
+    id: '1a448b36-c46c-11ee-bb8b-325096b39f47',
+    post_id: posts[3].id,
+    tag_id: tags[3].id
+  },
+  {
+    id: '796907c2-c471-11ee-9579-325096b39f47',
+    post_id: posts[3].id,
+    tag_id: tags[4].id
+  },
+  {
+    id: '79690966-c471-11ee-991a-325096b39f47',
+    post_id: posts[4].id,
+    tag_id: tags[0].id
+  },
+  {
+    id: '796908f8-c471-11ee-83e5-325096b39f47',
+    post_id: posts[4].id,
+    tag_id: tags[1].id
+  },
+  {
+    id: '79690894-c471-11ee-b3f4-325096b39f47',
+    post_id: posts[4].id,
+    tag_id: tags[3].id
+  },
+  {
+    id: '1a448c94-c46c-11ee-8339-325096b39f47',
+    post_id: posts[5].id,
+    tag_id: tags[2].id
+  },
+  {
+    id: '1a448f5a-c46c-11ee-8b18-325096b39f47',
+    post_id: posts[6].id,
+    tag_id: tags[3].id
+  },
+  {
+    id: '79690830-c471-11ee-b95f-325096b39f47',
+    post_id: posts[6].id,
+    tag_id: tags[3].id
+  },
+]
+
+
+
+
+
+
 module.exports = {
+  cities,
+  categories,
   users,
+  vendors,
+  packages,
   customers,
   invoices,
   revenue,
+  posts,
+  tags,
+  postsTags
 };

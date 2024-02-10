@@ -2,15 +2,17 @@ import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import { Metadata } from 'next';
 
+import '../app/ui/packages/Calendar/calendar.css';
+
 export const metadata: Metadata = {
   title: {
-    template: '%s | Acme Dashboard',
-    default: 'Acme Dashboard',
+    template: '%s | Jump Works',
+    default: 'Jump Works',
   },
-  description: 'The official Next.js Learn Dashboard built with App Router.',
-  metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
+  description: 'The official Jump Dashboard.',
+  metadataBase: new URL('https://jumpsay.com'),
 };
- 
+
 export default function RootLayout({
   children,
 }: {

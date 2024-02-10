@@ -8,6 +8,15 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
+  Vendor,
+  Package,
+  PackageForm,
+  City,
+  Category,
+  Posts,
+  Tags,
+  PostTags
+
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -247,5 +256,243 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
+  }
+}
+
+export async function getAllVendors() {
+  noStore();
+
+  try {
+    const data = await sql<Vendor>`
+      SELECT
+        id,
+        name
+      FROM vendors
+      ORDER BY name ASC
+    `;
+
+    const vendors = data.rows;
+    return vendors;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all vendors.');
+  }
+}
+
+export async function getAllPackages() {
+  noStore();
+
+  try {
+    const data = await sql<Package>`
+      SELECT
+        packages.id,
+        packages.name,
+        packages.detail,
+        packages.vendor_id,
+        packages.image_url,
+        packages.price,
+        packages.features
+      FROM packages
+      ORDER BY name ASC
+    `;
+
+    const packages = data.rows;
+    return packages;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all packages.');
+  }
+}
+
+export async function fetchPackageByVendorId(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<PackageForm>`
+      SELECT
+        packages.id,
+        packages.name,
+        packages.detail,
+        packages.vendor_id,
+        packages.image_url,
+        packages.price,
+        packages.features
+      FROM packages
+      WHERE packages.vendor_id = ${id};
+    `;
+
+    const pack = data.rows.map((pack) => ({
+      ...pack,
+      // Convert amount from cents to dollars
+      price: pack.price / 100,
+    }));
+    // console.log(pack);
+    return pack;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch package.');
+  }
+}
+
+export async function fetchPackageById(id: string) {
+
+  noStore();
+
+  // id: string;
+  // name: string;
+  // detail: string;
+  // vendor_id: string;
+  // image_url: string;
+  // price: number;
+  // features: string;
+
+  try {
+    const data = await sql<PackageForm>`
+      SELECT
+        packages.id,
+        packages.name,
+        packages.detail,
+        packages.vendor_id,
+        packages.image_url,
+        packages.price,
+        packages.features
+      FROM packages
+      WHERE packages.id = ${id};
+    `;
+
+    const pack = data.rows.map((pack) => ({
+      ...pack,
+      // Convert amount from cents to dollars
+      price: pack.price / 100,
+    }));
+    // console.log(pack);
+    return pack[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch package.');
+  }
+}
+
+
+
+export async function fetchVendorById(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<Vendor>`
+      SELECT
+        *
+      FROM vendors
+      WHERE vendors.id = ${id};
+    `;
+
+    const vendor = data.rows[0];
+    return vendor;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch vendor.');
+  }
+}
+
+export async function fetchVendorByUserId(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<Vendor>`
+      SELECT
+        *
+      FROM vendors
+      WHERE vendors.user_id = ${id};
+    `;
+
+    const vendor = data.rows[0];
+    return vendor;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch vendor.');
+  }
+}
+
+export async function getUserbyId(id: string) {
+  noStore();
+
+  try {
+    const user = await sql`SELECT * FROM users WHERE id=${id}`;
+    return user.rows[0] as User;
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw new Error('Failed to fetch user.');
+  }
+}
+
+export async function getCitybyId(id: string) {
+  noStore();
+
+  try {
+    const city = await sql`SELECT * FROM cities WHERE id=${id}`;
+    return city.rows[0] as City;
+  } catch (error) {
+    console.error('Failed to fetch city:', error);
+    throw new Error('Failed to fetch city.');
+  }
+}
+
+export async function getCategorybyId(id: string) {
+  noStore();
+
+  try {
+    const category = await sql`SELECT * FROM categories WHERE id=${id}`;
+    return category.rows[0] as Category;
+  } catch (error) {
+    console.error('Failed to fetch category:', error);
+    throw new Error('Failed to fetch category.');
+  }
+}
+
+export async function fetchPostByVendorId(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<Posts>`
+      SELECT
+       *
+      FROM posts
+      WHERE posts.vendor_id = ${id};
+    `;
+
+    const posts = data.rows;
+    return posts;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch package.');
+  }
+}
+
+export async function fetchPostById(id: string) {
+
+  noStore();
+
+
+  try {
+    const data = await sql<Posts>`
+      SELECT
+        *
+      FROM posts
+      WHERE posts.id = ${id};
+    `;
+
+    const post = data.rows[0];
+    return post;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch package.');
   }
 }

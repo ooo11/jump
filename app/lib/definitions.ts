@@ -2,12 +2,41 @@
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
 // However, these types are generated automatically if you're using an ORM such as Prisma.
+
+export type City = {
+  id: string;
+  name: string;
+}
+
+export type Category = {
+  id: string;
+  name: string;
+}
+
 export type User = {
   id: string;
   name: string;
   email: string;
   password: string;
+  city_id: string;
 };
+
+export type Vendor = {
+  id: string;
+  name: string;
+  user_id: string;
+  category_id: string;
+}
+
+export type Package = {
+  id: string;
+  name: string;
+  detail: string;
+  vendor_id: string;
+  image_url: string;
+  price: number;
+  features: string[];
+}
 
 export type Customer = {
   id: string;
@@ -85,4 +114,51 @@ export type InvoiceForm = {
   customer_id: string;
   amount: number;
   status: 'pending' | 'paid';
+};
+
+
+export type PackageForm = {
+  id: string;
+  name: string;
+  detail: string;
+  vendor_id: string;
+  image_url: string;
+  price: number;
+  features: string[];
+};
+
+export type Posts = {
+  [x: string]: any;
+  id: string;
+  name: string;
+  detail: string;
+  image_url: string;
+  vendor_id: string;
+};
+
+export type Tags = {
+  id: string;
+  name: string;
+};
+
+export type PostTags = {
+  id: string;
+  post_id: string;
+  tag_id: string;
+};
+
+export type PostForm = {
+  id: string;
+  name: string;
+  detail: string;
+  image_url: string;
+  vendor_id: string;
+};
+
+export type Day = {
+  id: string;
+  name: string;
+  dayOfWeek: number; // @see getDay() documentation, 0 for Sunday, 1 for Monday, ...
+  openTime: string;
+  closeTime: string;
 };
