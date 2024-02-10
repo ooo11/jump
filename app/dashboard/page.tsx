@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Packages from '../ui/packages/packageCard';
 import { CreatePackages } from '../ui/packages/buttons';
+import { vendorId } from '../lib/config';
 
 
 export const metadata: Metadata = {
@@ -17,7 +18,8 @@ export const metadata: Metadata = {
 
 
 export default async function Page() {
-  const id = "c0e13b73-8511-4871-b631-e4e51fbc0136";
+  const id = vendorId;
+
   const [vendor, pack] = await Promise.all([
     fetchVendorById(id),
     fetchPackageByVendorId(id)
