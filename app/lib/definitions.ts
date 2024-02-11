@@ -24,8 +24,22 @@ export type User = {
 export type Vendor = {
   id: string;
   name: string;
+  about: string;
   user_id: string;
   category_id: string;
+}
+
+export type VendorProfilePic = {
+  id: string;
+  image_url: string;
+  vendor_id: string;
+}
+
+export type VendorLink = {
+  id: string;
+  name: string;
+  url: string;
+  vendor_id: string;
 }
 
 export type Package = {

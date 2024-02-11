@@ -15,7 +15,9 @@ import {
   Category,
   Posts,
   Tags,
-  PostTags
+  PostTags,
+  VendorProfilePic,
+  VendorLink
 
 } from './definitions';
 import { formatCurrency } from './utils';
@@ -265,8 +267,7 @@ export async function getAllVendors() {
   try {
     const data = await sql<Vendor>`
       SELECT
-        id,
-        name
+        *
       FROM vendors
       ORDER BY name ASC
     `;
@@ -394,6 +395,48 @@ export async function fetchVendorById(id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch vendor.');
+  }
+}
+
+export async function fetchVendorProfilePicById(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<VendorProfilePic>`
+      SELECT
+        *
+      FROM vendorprofilepic
+      WHERE vendorprofilepic.vendor_id = ${id};
+    `;
+
+    const profilepic = data.rows[0];
+    return profilepic;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch profilepic.');
+  }
+};
+
+export async function fetchLinkByVendorId(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<VendorLink>`
+      SELECT
+       *
+      FROM vendorlinks
+      WHERE vendorlinks.vendor_id = ${id};
+    `;
+
+    const links = data.rows;
+    return links;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch vendor social link.');
   }
 }
 

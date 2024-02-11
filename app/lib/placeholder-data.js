@@ -67,18 +67,69 @@ const users = [
 
 const vendors = [
   {
-    id: 'ce3f184e-9301-4bf6-892a-6ed623e6ede2',
+    id: '46f6b95b-067b-4553-af41-2a3f572b86c8',
     name: 'Chop Chop Wedding Photography',
+    about: 'Vulputate odio ut enim blandit volutpat maecenas volutpat blandit. Molestie a iaculis at erat pellentesque adipiscing commodo elit at.',
     user_id: users[0].id,
     category_id: categories[0].id,
   },
   {
-    id: 'c0e13b73-8511-4871-b631-e4e51fbc0136',
+    id: '57c76c6a-a085-4bfc-89de-b07850d17a6f',
     name: 'Vue Studio',
+    about: 'Vulputate odio ut enim blandit volutpat maecenas volutpat blandit. Molestie a iaculis at erat pellentesque adipiscing commodo elit at.',
     user_id: users[1].id,
     category_id: categories[1].id,
   }
 
+];
+
+const vendorprofilepic = [
+  {
+    id: '85627e91-2046-4641-9347-bf5fdee51525',
+    image_url: '/customers/evil-rabbit.png',
+    vendor_id: vendors[0].id,
+  },
+  {
+    id: '0dd45029-c3e0-4f1f-9010-863a20d6f9c7',
+    image_url: '/customers/amy-burns.png',
+    vendor_id: vendors[1].id,
+  }
+
+];
+
+
+
+const vendorlinks = [
+  {
+    id: 'db23af09-726b-45e7-bb14-9f32e0f61b96',
+    name: 'Twitter',
+    url: 'https://twitter.com/mizuropeter',
+    vendor_id: vendors[0].id,
+  },
+  {
+    id: '8ca66e41-7162-404d-9856-8de896a3e218',
+    name: 'Youtube',
+    url: 'https://www.youtube.com/@mizurotaa',
+    vendor_id: vendors[0].id,
+  },
+  {
+    id: '4899fa4b-fd30-4aef-9cb8-a9055f0f740d',
+    name: 'Tik Tok',
+    url: 'https://www.tiktok.com/@chelsism',
+    vendor_id: vendors[0].id,
+  },
+  {
+    id: 'ba5e7590-ff23-47f0-9241-24967cdc48c6',
+    name: 'Twitter',
+    url: 'https://twitter.com/mizuropeter',
+    vendor_id: vendors[1].id,
+  },
+  {
+    id: '50a24083-097a-46e8-b597-c9498ae689e7',
+    name: 'Tik Tok',
+    url: 'https://www.tiktok.com/@chelsism',
+    vendor_id: vendors[1].id,
+  }
 ];
 
 const packages = [
@@ -489,6 +540,8 @@ module.exports = {
   categories,
   users,
   vendors,
+  vendorprofilepic,
+  vendorlinks,
   packages,
   customers,
   invoices,

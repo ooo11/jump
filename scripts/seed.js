@@ -10,7 +10,9 @@ const {
   packages,
   tags,
   posts,
-  postsTags
+  postsTags,
+  vendorprofilepic,
+  vendorlinks
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -141,6 +143,7 @@ async function seedVendors(client) {
       CREATE TABLE IF NOT EXISTS vendors (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
+        about TEXT NOT NULL,
         user_id UUID NOT NULL,
         category_id UUID NOT NULL
       );
@@ -152,8 +155,8 @@ async function seedVendors(client) {
     const insertedVendors = await Promise.all(
       vendors.map(
         (vendor) => client.sql`
-        INSERT INTO vendors (id, name, user_id, category_id)
-        VALUES (${vendor.id}, ${vendor.name},${vendor.user_id}, ${vendor.category_id})
+        INSERT INTO vendors (id, name, about, user_id, category_id)
+        VALUES (${vendor.id}, ${vendor.name}, ${vendor.about}, ${vendor.user_id}, ${vendor.category_id})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -169,7 +172,84 @@ async function seedVendors(client) {
     console.error('Error seeding vendors:', error);
     throw error;
   }
-}
+};
+
+async function seedVendorProfilePic(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "vendorprofilepic" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS vendorprofilepic (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        image_url VARCHAR(255) NOT NULL,
+        vendor_id UUID NOT NULL
+      );
+    `;
+
+    console.log(`Created "vendorprofilepic" table`);
+
+    // Insert data into the "vendorprofilepic" table
+    const insertedVendorProfilePic = await Promise.all(
+      vendorprofilepic.map(
+        (profilepic) => client.sql`
+        INSERT INTO vendorprofilepic (id, image_url, vendor_id)
+        VALUES (${profilepic.id}, ${profilepic.image_url},${profilepic.vendor_id})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedVendorProfilePic.length} vendorprofilepic`);
+
+    return {
+      createTable,
+      vendorprofilepic: insertedVendorProfilePic,
+    };
+  } catch (error) {
+    console.error('Error seeding vendorprofilepic:', error);
+    throw error;
+  }
+};
+
+async function seedVendorLinks(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "vendorlinks" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS vendorlinks (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        url VARCHAR(255) NOT NULL,
+        vendor_id UUID NOT NULL
+      );
+    `;
+
+    console.log(`Created "vendorlinks" table`);
+
+    // Insert data into the "vendorlinks" table
+    const insertedVendorlinks = await Promise.all(
+      vendorlinks.map(
+        (vendorlink) => client.sql`
+        INSERT INTO vendorlinks (id, name, url, vendor_id)
+        VALUES (${vendorlink.id},${vendorlink.name}, ${vendorlink.url},${vendorlink.vendor_id})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedVendorlinks.length} vendorlinks`);
+
+    return {
+      createTable,
+      vendorlinks: insertedVendorlinks,
+    };
+  } catch (error) {
+    console.error('Error seeding vendorlinks:', error);
+    throw error;
+  }
+};
 
 
 async function seedPackages(client) {
@@ -458,6 +538,8 @@ async function main() {
   await seedCategories(client);
   await seedUsers(client);
   await seedVendors(client);
+  await seedVendorProfilePic(client);
+  await seedVendorLinks(client);
   await seedPackages(client);
   await seedCustomers(client);
   await seedInvoices(client);
