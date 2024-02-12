@@ -1,4 +1,6 @@
 
+import { vendorId } from '@/app/lib/config';
+import { UpdateVendor } from '@/app/ui/profile/buttons';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -6,23 +8,16 @@ export const metadata: Metadata = {
 };
 
 
-export default async function Page({
-    searchParams,
-}: {
-    searchParams?: {
-        query: string;
-
-    }
-}) {
+export default async function Page() {
 
 
-    const query = searchParams?.query || '';
+    const id = vendorId;
 
     return (
         <div className="w-full">
 
             <div className="mt-5 flex w-full justify-center">
-                <p>This is the Setting Page ⚙️</p>
+                <UpdateVendor id={id} />
             </div>
         </div>
     );

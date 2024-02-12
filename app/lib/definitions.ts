@@ -141,6 +141,28 @@ export type PackageForm = {
   features: string[];
 };
 
+export type VendorForm = {
+  id: string;
+  name: string;
+  about: string;
+  user_id: string;
+  category_id: string;
+}
+
+export type VendorProfilePicForm = {
+  id: string;
+  image_url: string;
+  vendor_id: string;
+}
+
+export type VendorLinkForm = {
+  id: string;
+  name: string;
+  url: string;
+  vendor_id: string;
+}
+
+
 export type Posts = {
   [x: string]: any;
   id: string;

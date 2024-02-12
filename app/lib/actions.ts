@@ -6,7 +6,6 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { fetchVendorByUserId } from './data';
 
 
 
@@ -50,6 +49,15 @@ const PostsFormSchema = z.object({
   image_url: z.string(),
 });
 
+//Schema for vendorForm
+const VendorSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  about: z.string(),
+  user_id: z.string(),
+  category_id: z.string(),
+});
+
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
@@ -61,6 +69,10 @@ const UpdatePackages = PackageFormSchema.omit({ id: true, vendor_id: true });
 //things to omit from the form so that its the same.
 const CreatePosts = PostsFormSchema.omit({ id: true });
 const UpdatePosts = PostsFormSchema.omit({ id: true, vendor_id: true });
+
+//things to omit from the form so that its the same.
+const CreateVendors = VendorSchema.omit({ id: true });
+const UpdateVendors = VendorSchema.omit({ id: true, user_id: true });
 
 export type State = {
   errors?: {
@@ -89,6 +101,16 @@ export type PostState = {
     name?: string[];
     detail?: string[];
     image_url?: string[];
+  };
+  message?: string | null;
+};
+
+export type VendorState = {
+  errors?: {
+    name?: string[];
+    about?: string[];
+    userId?: string[];
+    categoryId?: string[];
   };
   message?: string | null;
 };
@@ -406,4 +428,51 @@ export async function deletePosts(id: string) {
   }
   revalidatePath('/dashboard/portfolio');
   redirect('/dashboard/portfolio');
+}
+
+
+// id: string;
+// name: string;
+// about: string;
+// user_id: string;
+// category_id: string;
+
+
+//update Vendor
+export async function updateVendor(id: string, prevState: VendorState, formData: FormData) {
+  const validatedFields = UpdateVendors.safeParse({
+    name: formData.get('name'),
+    about: formData.get('about'),
+    category_id: formData.get('category_id')
+  });
+
+  console.log('Form Data for update vendor:', validatedFields);
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Packages.',
+    };
+
+  }
+
+  const { name, about, category_id } = validatedFields.data;
+
+
+
+  try {
+    await sql`
+      UPDATE vendors
+      SET name = ${name}, about = ${about}, category_id = ${category_id}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Update Vendors.',
+    };
+  }
+
+  revalidatePath('/dashboard');
+  redirect('/dashboard');
+
 }

@@ -539,3 +539,23 @@ export async function fetchPostById(id: string) {
     throw new Error('Failed to fetch package.');
   }
 }
+
+export async function fetchCategory() {
+  noStore();
+
+  try {
+    const data = await sql<Category>`
+      SELECT
+        id,
+        name
+      FROM categories
+      ORDER BY name ASC
+    `;
+
+    const categories = data.rows;
+    return categories;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all categories.');
+  }
+}
