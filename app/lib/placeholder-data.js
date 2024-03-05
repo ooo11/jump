@@ -98,36 +98,53 @@ const vendorprofilepic = [
 ];
 
 
-
 const vendorlinks = [
   {
-    id: 'db23af09-726b-45e7-bb14-9f32e0f61b96',
+    id: 'ee49f1fd-8fe6-4911-9f1f-5078247836af',
     name: 'Twitter',
     url: 'https://twitter.com/mizuropeter',
     vendor_id: vendors[0].id,
   },
   {
-    id: '8ca66e41-7162-404d-9856-8de896a3e218',
+    id: 'ac8475a5-7034-4adc-aad1-99fcd8668caa',
     name: 'Youtube',
     url: 'https://www.youtube.com/@mizurotaa',
     vendor_id: vendors[0].id,
   },
   {
-    id: '4899fa4b-fd30-4aef-9cb8-a9055f0f740d',
+    id: '65593696-2823-4671-82ca-4f42cc05357d',
     name: 'Tik Tok',
     url: 'https://www.tiktok.com/@chelsism',
     vendor_id: vendors[0].id,
   },
   {
-    id: 'ba5e7590-ff23-47f0-9241-24967cdc48c6',
+    id: '13deefd0-b779-4b38-9b24-53de0383a287',
+    name: 'Facebook',
+    url: 'https://www.facebook.com/mizuropeter',
+    vendor_id: vendors[0].id,
+  },
+  {
+    id: 'e27bb63e-e5d0-43df-b83c-3e966ebdb42f',
+    name: 'Youtube',
+    url: 'https://www.youtube.com/@mizurotaa',
+    vendor_id: vendors[1].id,
+  },
+  {
+    id: 'f673131b-ada4-4695-8141-e5ac16990dee',
+    name: 'Tik Tok',
+    url: 'https://www.tiktok.com/@chelsism',
+    vendor_id: vendors[1].id,
+  },
+  {
+    id: 'fcea529e-68c4-4048-af8c-6208497322a6',
     name: 'Twitter',
     url: 'https://twitter.com/mizuropeter',
     vendor_id: vendors[1].id,
   },
   {
-    id: '50a24083-097a-46e8-b597-c9498ae689e7',
-    name: 'Tik Tok',
-    url: 'https://www.tiktok.com/@chelsism',
+    id: 'a1aad978-830e-4790-a049-904524aa0186',
+    name: 'Facebook',
+    url: 'https://www.facebook.com/@chelsism',
     vendor_id: vendors[1].id,
   }
 ];

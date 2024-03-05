@@ -54,15 +54,6 @@ export default async function Page() {
       <p className="flex w-full justify-center text-gray-400">
         {category.name} • {city.name}
       </p>
-      <div className="mt-5 flex w-full justify-center space-x-20">
-        {links.map((link, index) => (
-          <button key={index} className='overflow-hidden'>
-            <a href={link.url}
-              className='font-bold hover:underline -underline-offset-8'
-            >{link.name}</a>
-          </button>
-        ))}
-      </div>
 
       <div className="mt-5 flex w-full justify-center">
         <p className='md:w-1/4 sm:w-full sm:mx-2'>

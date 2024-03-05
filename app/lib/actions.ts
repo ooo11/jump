@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { AnyPtrRecord } from 'dns';
 
 
 
@@ -56,7 +57,17 @@ const VendorSchema = z.object({
   about: z.string(),
   user_id: z.string(),
   category_id: z.string(),
+  image_url: z.string(),
 });
+
+
+//Schema for vendorLinkForm
+const VendorLinkSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  linkURL: z.string().url().or(z.literal("")),
+});
+
 
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
@@ -73,6 +84,10 @@ const UpdatePosts = PostsFormSchema.omit({ id: true, vendor_id: true });
 //things to omit from the form so that its the same.
 const CreateVendors = VendorSchema.omit({ id: true });
 const UpdateVendors = VendorSchema.omit({ id: true, user_id: true });
+
+//things to omit from the form so that its the same.
+const CreateVendorLinks = VendorLinkSchema.omit({ id: true });
+const UpdateVendorLinks = VendorLinkSchema.omit({ id: true, name: true });
 
 export type State = {
   errors?: {
@@ -111,6 +126,14 @@ export type VendorState = {
     about?: string[];
     userId?: string[];
     categoryId?: string[];
+    image_url?: string[];
+  };
+  message?: string | null;
+};
+
+export type VendorLinkState = {
+  errors?: {
+    linkURL?: string[];
   };
   message?: string | null;
 };
@@ -234,6 +257,7 @@ export async function createPackages(prevState: PackageState, formData: FormData
     features: formData.get('features'),
 
   });
+  console.log(validatedFields);
 
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
@@ -443,7 +467,8 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
   const validatedFields = UpdateVendors.safeParse({
     name: formData.get('name'),
     about: formData.get('about'),
-    category_id: formData.get('category_id')
+    category_id: formData.get('category_id'),
+    image_url: formData.get('image_url'),
   });
 
   console.log('Form Data for update vendor:', validatedFields);
@@ -456,7 +481,7 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
 
   }
 
-  const { name, about, category_id } = validatedFields.data;
+  const { name, about, category_id, image_url } = validatedFields.data;
 
 
 
@@ -466,6 +491,13 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
       SET name = ${name}, about = ${about}, category_id = ${category_id}
       WHERE id = ${id}
     `;
+    await sql`
+    UPDATE vendorprofilepic
+    SET image_url = ${image_url}
+    WHERE vendor_id = ${id}
+    `;
+
+
   } catch (error) {
     return {
       message: 'Database Error: Failed to Update Vendors.',
@@ -476,3 +508,4 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
   redirect('/dashboard');
 
 }
+

@@ -34,25 +34,9 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div className="rounded-md bg-gray-50 p-4 md:p-6 md:max-w-screen-lg sm:min-w-min">
 
                 <div className="p-8">
-                    <div className='grid grid-cols-3 gap-2 mb-4'>
+                    <div className='mb-4'>
                         <Image
                             className="rounded-3xl col-span-2 row-span-2"
-                            src={pack.image_url}
-                            width={700}
-                            height={700}
-                            priority
-                            alt="Picture of the author"
-                        />
-                        <Image
-                            className="rounded-2xl"
-                            src={pack.image_url}
-                            width={700}
-                            height={700}
-                            priority
-                            alt="Picture of the author"
-                        />
-                        <Image
-                            className="rounded-2xl"
                             src={pack.image_url}
                             width={700}
                             height={700}

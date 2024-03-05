@@ -1,5 +1,5 @@
 import Form from '@/app/ui/profile/edit-form';
-import { fetchInvoiceById, fetchCustomers, fetchVendorById, fetchCategory } from '@/app/lib/data';
+import { fetchInvoiceById, fetchCustomers, fetchVendorById, fetchCategory, fetchVendorProfilePicById, fetchLinkByVendorId } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
@@ -10,9 +10,12 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
-  const [vendor, category] = await Promise.all([
+  const [vendor, category, profilePic, socialLink] = await Promise.all([
     fetchVendorById(id),
     fetchCategory(),
+    fetchVendorProfilePicById(id),
+    fetchLinkByVendorId(id)
+
   ]);
   if (!vendor) {
     notFound();
@@ -20,7 +23,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <main>
 
-      <Form vendor={vendor} categories={category} />
+      <Form vendor={vendor} categories={category} profilePic={profilePic} socialLink={socialLink} />
     </main>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 import { updatePackages, updateVendor } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-import { Category, VendorForm } from '@/app/lib/definitions';
+import { Category, VendorForm, VendorLinkForm, VendorProfilePicForm } from '@/app/lib/definitions';
 import {
 
     CurrencyDollarIcon, HashtagIcon,
@@ -9,20 +9,80 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
+import { useState } from 'react';
+import { CldImage } from 'next-cloudinary';
+import { CldUploadButton } from "next-cloudinary";
+import crypto from "crypto";
+import axios from 'axios';
 
 export default function EditVendorForm({
     vendor,
-    categories
+    categories,
+    profilePic,
+    socialLink
 }: {
     vendor: VendorForm;
     categories: Category[];
+    profilePic: VendorProfilePicForm;
+    socialLink: VendorLinkForm[];
 }) {
     const initialState = { message: null, errors: {} };
     const updateVendorWithId = updateVendor.bind(null, vendor.id);
     const [state, dispatch] = useFormState(updateVendorWithId, initialState);
 
+    const [selectedLink, setSelectedLink] = useState();
+
+    const handleLink = (e: any) => {
+        setSelectedLink(e.target.value);
+    };
+
 
     const baseLink = `/dashboard`
+
+    const [uploadURL, setUploadURL] = useState();
+
+    const [publicId, setPublicId] = useState(); // Track the public ID of the uploaded image
+
+
+    const generateSHA1 = (data: any) => {
+        const hash = crypto.createHash("sha1");
+        hash.update(data);
+        return hash.digest("hex");
+    }
+
+    const generateSignature = (publicId: string, apiSecret: string | undefined) => {
+        const timestamp = new Date().getTime();
+        return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+    };
+
+    // Your React component
+    const handleDelete = async (publicId: string) => {
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+        const timestamp = new Date().getTime();
+        const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+        const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+        const signature = generateSHA1(generateSignature(publicId, apiSecret));
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
+
+        try {
+            const response = await axios.post(url, {
+                public_id: publicId,
+                signature: signature,
+                api_key: apiKey,
+                timestamp: timestamp,
+            });
+
+            console.log("Image deleted! Here are the delete callback: ", response);
+
+        } catch (error) {
+            console.error(error);
+        }
+        finally {
+            setUploadURL(undefined);
+            setPublicId(undefined);
+        }
+    };
+
 
 
     return (
@@ -91,7 +151,7 @@ export default function EditVendorForm({
                     </div>
                 </div>
 
-                {/* Customer Name */}
+                {/* List of category*/}
                 <div className="mb-4">
                     <label htmlFor="category" className="mb-2 block text-sm font-medium">
                         Choose category
@@ -117,6 +177,91 @@ export default function EditVendorForm({
                         <HashtagIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
                     </div>
                 </div>
+
+                {/* Vendors Profile Pic */}
+                <div className="mb-4">
+                    <label htmlFor="image_url" className="mb-2 block text-sm font-medium">
+                        Insert your business profile photo.
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            {!uploadURL && (
+                                <div>
+                                    <CldImage
+                                        width="960"
+                                        height="600"
+                                        src={profilePic.image_url}
+                                        sizes="100vw"
+                                        alt="Description of my uploaded image"
+                                    />
+                                </div>
+                            )
+
+                            }
+                            {uploadURL && publicId && (
+                                <div>
+                                    <input type="hidden" name="image_url" value={uploadURL} />
+                                    <CldImage
+                                        width="960"
+                                        height="600"
+                                        src={uploadURL}
+                                        sizes="100vw"
+                                        alt="Description of my uploaded image"
+                                    />
+                                    <button onClick={() => handleDelete(publicId)}>Delete Image</button>
+                                </div>
+                            )}
+
+                            <input
+                                id="image_url"
+                                type="hidden"
+                                name="image_url"
+                                defaultValue={profilePic.image_url}
+
+                            />
+                            {/* once upload -> show image */}
+
+                            <CldUploadButton
+                                options={{ sources: ['local'], maxFiles: 1, clientAllowedFormats: ['jpeg', 'png', 'jpg'], maxImageFileSize: 6900000 }}
+
+                                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}
+                                onSuccess={(result, { widget }) => {
+                                    if (result && result.event === "success") {
+                                        const secureUrl = result.info?.secure_url;
+                                        const publicId = result.info?.public_id;
+                                        console.log("Done! Here is the image info: ", secureUrl);
+                                        setUploadURL(secureUrl);
+                                        setPublicId(publicId);
+                                    }
+
+
+                                    widget.close();
+                                }}
+                            >
+                                <span className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                                >
+                                    Upload
+                                </span>
+                            </CldUploadButton>
+                        </div>
+                    </div>
+
+
+                    <div id="customer-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.name &&
+                            state.errors.name.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+
+
+
+
+
 
             </div>
             <div className="mt-6 flex justify-end gap-4">

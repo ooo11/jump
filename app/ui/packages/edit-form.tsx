@@ -9,6 +9,12 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
+import { useState } from "react";
+import { CldImage } from 'next-cloudinary';
+import { CldUploadButton } from "next-cloudinary";
+import crypto from "crypto";
+import axios from 'axios';
+
 
 export default function EditPackageForm({
     pack
@@ -18,15 +24,51 @@ export default function EditPackageForm({
     const initialState = { message: null, errors: {} };
     const updatePackageWithId = updatePackages.bind(null, pack.id);
     const [state, dispatch] = useFormState(updatePackageWithId, initialState);
-
-    //     id: string; [o]
-    // name: string;  [o]
-    // detail: string; [o]
-    // vendor_id: string; [o]
-    // image_url: string; 
-    // price: number; [o]
-    // features: string;
     const baseLink = `/dashboard/packages/` + pack.id
+
+    const [uploadURL, setUploadURL] = useState();
+
+    const [publicId, setPublicId] = useState(); // Track the public ID of the uploaded image
+
+
+    const generateSHA1 = (data: any) => {
+        const hash = crypto.createHash("sha1");
+        hash.update(data);
+        return hash.digest("hex");
+    }
+
+    const generateSignature = (publicId: string, apiSecret: string | undefined) => {
+        const timestamp = new Date().getTime();
+        return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+    };
+
+    // Your React component
+    const handleDelete = async (publicId: string) => {
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+        const timestamp = new Date().getTime();
+        const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+        const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+        const signature = generateSHA1(generateSignature(publicId, apiSecret));
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
+
+        try {
+            const response = await axios.post(url, {
+                public_id: publicId,
+                signature: signature,
+                api_key: apiKey,
+                timestamp: timestamp,
+            });
+
+            console.log("Image deleted! Here are the delete callback: ", response);
+
+        } catch (error) {
+            console.error(error);
+        }
+        finally {
+            setUploadURL(undefined);
+            setPublicId(undefined);
+        }
+    };
 
 
     return (
@@ -103,15 +145,62 @@ export default function EditPackageForm({
                     </label>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
+                            {!uploadURL && (
+                                <div>
+                                    <CldImage
+                                        width="960"
+                                        height="600"
+                                        src={pack.image_url}
+                                        sizes="100vw"
+                                        alt="Description of my uploaded image"
+                                    />
+                                </div>
+                            )
+
+                            }
+                            {uploadURL && publicId && (
+                                <div>
+                                    <input type="hidden" name="image_url" value={uploadURL} />
+                                    <CldImage
+                                        width="960"
+                                        height="600"
+                                        src={uploadURL}
+                                        sizes="100vw"
+                                        alt="Description of my uploaded image"
+                                    />
+                                    <button onClick={() => handleDelete(publicId)}>Delete Image</button>
+                                </div>
+                            )}
                             <input
                                 id="image_url"
-                                type="text"
+                                type="hidden"
                                 name="image_url"
                                 defaultValue={pack.image_url}
-                                placeholder="link to image"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                aria-describedby="detail-error"
                             />
+                            {/* once upload -> show image */}
+
+                            <CldUploadButton
+                                options={{ sources: ['local'], maxFiles: 1, clientAllowedFormats: ['jpeg', 'png', 'jpg'], maxImageFileSize: 6900000 }}
+
+                                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}
+                                onSuccess={(result, { widget }) => {
+                                    if (result && result.event === "success") {
+                                        const secureUrl = result.info?.secure_url;
+                                        const publicId = result.info?.public_id;
+                                        console.log("Done! Here is the image info: ", secureUrl);
+                                        setUploadURL(secureUrl);
+                                        setPublicId(publicId);
+                                    }
+
+
+                                    widget.close();
+                                }}
+                            >
+                                <span className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                                >
+                                    Upload
+                                </span>
+                            </CldUploadButton>
                         </div>
                     </div>
 
