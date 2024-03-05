@@ -9,7 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CldImage } from 'next-cloudinary';
 import { CldUploadButton } from "next-cloudinary";
 import crypto from "crypto";
@@ -42,7 +42,17 @@ export default function EditVendorForm({
     const [uploadURL, setUploadURL] = useState();
 
     const [publicId, setPublicId] = useState(); // Track the public ID of the uploaded image
+    const handleUpload = useCallback(async (results: any) => {
+        if (results && results.event === "success") {
 
+            const secureUrl = results.info?.secure_url;
+            const publicId = results.info?.public_id;
+            console.log("Done! Here is the image info: ", secureUrl);
+            setUploadURL(secureUrl);
+            setPublicId(publicId);
+        }
+
+    }, []);
 
     const generateSHA1 = (data: any) => {
         const hash = crypto.createHash("sha1");
@@ -225,18 +235,20 @@ export default function EditVendorForm({
                                 options={{ sources: ['local'], maxFiles: 1, clientAllowedFormats: ['jpeg', 'png', 'jpg'], maxImageFileSize: 6900000 }}
 
                                 uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}
-                                onSuccess={(result, { widget }) => {
-                                    if (result && result.event === "success") {
-                                        const secureUrl = result.info?.secure_url;
-                                        const publicId = result.info?.public_id;
-                                        console.log("Done! Here is the image info: ", secureUrl);
-                                        setUploadURL(secureUrl);
-                                        setPublicId(publicId);
-                                    }
+                                // onSuccess={(result, { widget }) => {
+                                //     if (result && result.event === "success") {
+
+                                //         const secureUrl = result.info?.secure_url;
+                                //         const publicId = result.info?.public_id;
+                                //         console.log("Done! Here is the image info: ", secureUrl);
+                                //         setUploadURL(secureUrl);
+                                //         setPublicId(publicId);
+                                //     }
 
 
-                                    widget.close();
-                                }}
+                                //     widget.close();
+                                // }}
+                                onSuccess={handleUpload}
                             >
                                 <span className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                                 >

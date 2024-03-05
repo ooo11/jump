@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { CldImage } from 'next-cloudinary';
 import { CldUploadButton } from "next-cloudinary";
 import crypto from "crypto";
 import axios from 'axios';
+
 
 
 export default function Page() {
@@ -12,6 +13,18 @@ export default function Page() {
     const [uploadURL, setUploadURL] = useState();
 
     const [publicId, setPublicId] = useState(); // Track the public ID of the uploaded image
+
+    const handleUpload = useCallback(async (results: any) => {
+        if (results && results.event === "success") {
+
+            const secureUrl = results.info?.secure_url;
+            const publicId = results.info?.public_id;
+            console.log("Done! Here is the image info: ", secureUrl);
+            setUploadURL(secureUrl);
+            setPublicId(publicId);
+        }
+
+    }, []);
 
 
     const generateSHA1 = (data: any) => {
@@ -74,21 +87,23 @@ export default function Page() {
             {/* once upload -> show image */}
 
             <CldUploadButton
-                options={{ sources: ['local'], maxFiles: 1, clientAllowedFormats: ['jpeg', 'png', 'jpg'], maxImageFileSize: 6900000 }}
+                options={{ sources: ['local'], multiple: false, maxFiles: 1, clientAllowedFormats: ['jpeg', 'png', 'jpg'], maxImageFileSize: 6900000 }}
 
                 uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}
-                onSuccess={(result, { widget }) => {
-                    if (result && result.event === "success") {
-                        const secureUrl = result.info?.secure_url;
-                        const publicId = result.info?.public_id;
-                        console.log("Done! Here is the image info: ", secureUrl);
-                        setUploadURL(secureUrl);
-                        setPublicId(publicId);
-                    }
+                // onSuccess={(results, { widget }) => {
+                //     if (results && results.event === "success") {
+
+                //         const secureUrl = results.info?.secure_url;
+                //         const publicId = results.info?.public_id;
+                //         console.log("Done! Here is the image info: ", secureUrl);
+                //         setUploadURL(secureUrl);
+                //         setPublicId(publicId);
+                //     }
 
 
-                    widget.close();
-                }}
+                //     widget.close();
+                // }}
+                onSuccess={handleUpload}
             >
                 <span>
                     Upload

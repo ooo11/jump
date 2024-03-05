@@ -300,7 +300,7 @@ export async function updatePackages(id: string, prevState: PackageState, formDa
     features: formData.get('features'),
   });
 
-  console.log('Form Data for Name:', validatedFields);
+
 
   // If form validation fails, return errors early. Otherwise, continue.
   //if no data enter -> return error, supposed if no data = existing data is input
@@ -406,7 +406,7 @@ export async function updatePosts(id: string, prevState: PostState, formData: Fo
     image_url: formData.get('image_url'),
   });
 
-  console.log('Form Data for Name:', validatedFields);
+
 
   // If form validation fails, return errors early. Otherwise, continue.
   //if no data enter -> return error, supposed if no data = existing data is input
