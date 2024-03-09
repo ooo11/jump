@@ -19,12 +19,12 @@ export default function EditVendorForm({
     vendor,
     categories,
     profilePic,
-    socialLink
+
 }: {
     vendor: VendorForm;
     categories: Category[];
     profilePic: VendorProfilePicForm;
-    socialLink: VendorLinkForm[];
+
 }) {
     const initialState = { message: null, errors: {} };
     const updateVendorWithId = updateVendor.bind(null, vendor.id);

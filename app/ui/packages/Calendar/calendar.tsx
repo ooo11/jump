@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; // Import the useRouter hook
 import ReactCalendar from 'react-calendar';
 import { add, format } from 'date-fns';
 
@@ -10,14 +11,13 @@ interface DateType {
 
 
 export function Calendar() {
-
+    const router = useRouter();
     const [date, setDate] = useState<DateType>({
         justDate: null,
         dateTime: null
     });
 
     console.log(date.dateTime);
-
 
     const getTimes = () => {
         if (!date.justDate) return
@@ -37,13 +37,21 @@ export function Calendar() {
 
     const times = getTimes();
 
+    const handleTimeSelection = (selectedTime: Date) => {
+        setDate((prev) => ({ ...prev, dateTime: selectedTime }));
+
+        // Navigate to the form page with the selected date and time
+        router.push(`/guest/newguest?dateTime=${selectedTime.toISOString()}`);
+    }
+
+
     return (
         <div>
             {date.justDate ? (
                 <div className='flex max-w-lg flex-wrap gap-4'>
                     {times?.map((time, i) => (
                         <div className='rounded-sm bg-gray-100 p-2' key={`time-${i}`}>
-                            <button onClick={() => setDate((prev) => ({ ...prev, dateTime: time }))} type='button'>
+                            <button onClick={() => handleTimeSelection(time)} type='button'>
                                 {format(time, 'kk:mm')}
                             </button>
                         </div>

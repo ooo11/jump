@@ -53,6 +53,7 @@ const users = [
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
     name: 'User',
     email: 'user@nextmail.com',
+    phone: '01116145510',
     password: '123456',
     city_id: cities[21].id,
   },
@@ -60,6 +61,7 @@ const users = [
     id: 'a297d2fd-63a0-4cb4-bda6-1404e2c8c09c',
     name: 'Jue',
     email: 'jue@nextmail.com',
+    phone: '0138953423',
     password: '123456',
     city_id: cities[19].id,
   },
@@ -552,6 +554,57 @@ const postsTags = [
 
 
 
+
+
+const jumpers = [
+  {
+    id: '66403b7c-2c2a-4b4e-96a1-1a1335d4389a',
+    name: 'Luke Sky',
+    email: 'luke@skywalker.com',
+    phone: '0164448888',
+    city_id: cities[13].id,
+  },
+  {
+    id: 'f73a218f-cc07-435d-95ca-2c399641007e',
+    name: 'soka nobender',
+    email: 'soka@avatar.com',
+    phone: '01922244555',
+    city_id: cities[9].id,
+  },
+  {
+    id: 'e5a07a99-da75-40ac-82ea-a48c2df7d817',
+    name: 'bumi indah',
+    email: 'bumi@earth.com',
+    phone: '0114562222',
+    city_id: cities[10].id,
+  }
+]
+
+const orders = [
+  {
+    id: '6326a628-9c89-4b2c-8944-fd7aa6b51f45',
+    package_id: packages[3].id,
+    jumper_id: jumpers[0].id,
+    datetime: '2024-03-19 12:00:00',
+    submittime: '2024-09-03 06:15:18'
+  },
+  {
+    id: '0430b23c-ae2a-4f68-8fa1-020e0ad11e07',
+    package_id: packages[1].id,
+    jumper_id: jumpers[1].id,
+    datetime: '2024-09-16 19:00:00',
+    submittime: '2024-09-03 06:15:18'
+  },
+  {
+    id: '6de1ab51-7529-405d-a57a-c03f68bc71ba',
+    package_id: packages[0].id,
+    jumper_id: jumpers[2].id,
+    datetime: '2024-12-23 17:00:00',
+    submittime: '2024-09-03 06:15:18'
+  }
+]
+
+
 module.exports = {
   cities,
   categories,
@@ -565,5 +618,7 @@ module.exports = {
   revenue,
   posts,
   tags,
-  postsTags
+  postsTags,
+  jumpers,
+  orders
 };

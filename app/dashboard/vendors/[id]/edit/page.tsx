@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
-  const [vendor, category, profilePic, socialLink] = await Promise.all([
+  const [vendor, category, profilePic] = await Promise.all([
     fetchVendorById(id),
     fetchCategory(),
     fetchVendorProfilePicById(id),
@@ -23,7 +23,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <main>
 
-      <Form vendor={vendor} categories={category} profilePic={profilePic} socialLink={socialLink} />
+      <Form vendor={vendor} categories={category} profilePic={profilePic} />
     </main>
   );
 }

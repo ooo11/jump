@@ -42,10 +42,12 @@ export default async function Page({ params }: { params: { id: string } }) {
                     <Image
                         className="rounded-3xl col-span-2 row-span-2"
                         src={pack.image_url}
-                        width={600}
-                        height={400}
+                        width={0}
+                        height={0}
+                        sizes='100vw'
                         priority
                         alt="Picture of the author"
+                        style={{ width: '100%', height: 'auto' }} // optional
                     />
 
                 </div>

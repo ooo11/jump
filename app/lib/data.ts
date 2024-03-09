@@ -559,3 +559,22 @@ export async function fetchCategory() {
     throw new Error('Failed to fetch all categories.');
   }
 }
+
+export async function fetchCity() {
+  noStore();
+
+  try {
+    const data = await sql<Category>`
+      SELECT
+        id,
+        name
+      FROM cities
+      ORDER BY name ASC
+    `;
+    const cities = data.rows;
+    return cities;
+  } catch (error) {
+    console.error('Failed to fetch city:', error);
+    throw new Error('Failed to fetch city.');
+  }
+}

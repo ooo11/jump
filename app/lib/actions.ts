@@ -6,8 +6,7 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { AnyPtrRecord } from 'dns';
-
+const bcrypt = require('bcrypt');
 
 
 const FormSchema = z.object({
@@ -68,6 +67,16 @@ const VendorLinkSchema = z.object({
   linkURL: z.string().url().or(z.literal("")),
 });
 
+//Schema for userForm
+const UserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  phone: z.string(),
+  password: z.string(),
+  city_id: z.string(),
+});
+
 
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
@@ -88,6 +97,10 @@ const UpdateVendors = VendorSchema.omit({ id: true, user_id: true });
 //things to omit from the form so that its the same.
 const CreateVendorLinks = VendorLinkSchema.omit({ id: true });
 const UpdateVendorLinks = VendorLinkSchema.omit({ id: true, name: true });
+
+//things to omit from the form so that its the same.
+const CreateUsers = UserSchema.omit({ id: true });
+const UpdateUsers = UserSchema.omit({ id: true });
 
 export type State = {
   errors?: {
@@ -134,6 +147,18 @@ export type VendorState = {
 export type VendorLinkState = {
   errors?: {
     linkURL?: string[];
+  };
+  message?: string | null;
+};
+
+
+export type UserState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    phone?: string[];
+    password?: string[];
+    city_id?: string[];
   };
   message?: string | null;
 };
@@ -509,3 +534,42 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
 
 }
 
+//create User
+export async function createUser(prevState: UserState, formData: FormData) {
+  const validatedFields = CreateUsers.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    password: formData.get('password'),
+    city_id: formData.get('city_id'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create New User.',
+    };
+  }
+
+  // Prepare data for insertion into the database
+  const { name, email, phone, password, city_id } = validatedFields.data;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+
+
+  try {
+    await sql`
+          INSERT INTO users (name, email, phone, password, city_id)
+          VALUES (${name}, ${email}, ${phone}, ${hashedPassword}, ${city_id})
+        `;
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create New User.',
+    };
+  };
+
+
+  revalidatePath(`/guest/profile`);
+  redirect(`/guest/profile`);
+}
