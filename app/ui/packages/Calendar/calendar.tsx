@@ -64,11 +64,14 @@ export function Calendar({ packageId }: { packageId: string }) {
 
 
     return (
-        <div>
+        <div className="flex flex-col justify-center items-center min-h-screen">
+            <p className='mb-10'>Select Date and Time ⏰</p>
+
             {date.justDate ? (
-                <div className='flex max-w-lg flex-wrap gap-4'>
+                <div className='flex max-w-xs sm:max-w-lg flex-wrap gap-4'>
+
                     {times?.map((time, i) => (
-                        <div className='rounded-sm bg-gray-100 p-2' key={`time-${i}`}>
+                        <div className='rounded-sm bg-gray-100 p-2 hover:bg-violet-500' key={`time-${i}`}>
                             <button onClick={() => handleTimeSelection(time)} type='button'>
                                 {format(time, 'kk:mm')}
                             </button>
@@ -77,7 +80,7 @@ export function Calendar({ packageId }: { packageId: string }) {
                 </div>
             ) : (
                 <ReactCalendar minDate={new Date()}
-                    className='REACT-CALENDAR p2'
+                    className='REACT-CALENDAR p-20 sm:p-4 p2'
                     view='month'
                     calendarType='gregory'
                     onClickDay={(date) => setDate((prev) => ({ ...prev, justDate: date }))}

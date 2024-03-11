@@ -37,36 +37,38 @@ export default async function Page() {
     return (
 
         <main>
-            <div className="mt-5 flex w-full justify-center">
-                <Image
-                    className="w-24 h-24 rounded-full"
-                    src={profilepic.image_url}
-                    width={100}
-                    height={100}
-                    priority
-                    alt="Picture of the vendor" />
-            </div>
+            <div className='p-4'>
+                <div className="mt-5 flex w-full justify-center">
+                    <Image
+                        className="w-24 h-24 rounded-full"
+                        src={profilepic.image_url}
+                        width={100}
+                        height={100}
+                        priority
+                        alt="Picture of the vendor" />
+                </div>
 
-            <h1 className={`${lusitana.className} text-xl md:text-2xl mt-5 flex w-full justify-center`}>
-                {vendor.name}
-            </h1>
-            <p className="flex w-full justify-center text-gray-400">
-                {category.name} • {city.name}
-            </p>
-
-            <div className="mt-5 flex w-full justify-center">
-                <p className='md:w-1/4 sm:w-full sm:mx-2'>
-                    {vendor.about}
+                <h1 className={`${lusitana.className} text-xl md:text-2xl mt-5 flex w-full justify-center`}>
+                    {vendor.name}
+                </h1>
+                <p className="flex w-full justify-center text-gray-400">
+                    {category.name} • {city.name}
                 </p>
-            </div>
+
+                <div className="mt-5 flex w-full justify-center">
+                    <p className='md:w-1/4 sm:w-full sm:mx-2'>
+                        {vendor.about}
+                    </p>
+                </div>
 
 
-            <div className='md:mx-44 grid sm:grid-cols-2 md:grid-cols-3 gap-1 sm:px-2'>
-                {pack.map((pack, index) => (
-                    <div key={index} className='overflow-hidden'>
-                        <Packages query={pack.id} />
-                    </div>
-                ))}
+                <div className='md:mx-44 grid sm:grid-cols-2 md:grid-cols-3 gap-1 sm:px-2'>
+                    {pack.map((pack, index) => (
+                        <div key={index} className='overflow-hidden'>
+                            <Packages query={pack.id} />
+                        </div>
+                    ))}
+                </div>
             </div>
         </main>
 

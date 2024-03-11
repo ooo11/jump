@@ -9,7 +9,6 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: string } }) {
     const packageId = params.id;
-    console.log("this is from the select page:", packageId);
 
     return (
         <div className="w-full">
