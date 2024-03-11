@@ -199,3 +199,19 @@ export type Day = {
   openTime: string;
   closeTime: string;
 };
+
+export type Jumpers = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  city_id: string;
+};
+
+export type Orders = {
+  id: string;
+  package_id: string;
+  jumper_id: string;
+  datetime: string;
+  submittime: string;
+};

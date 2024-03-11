@@ -8,14 +8,14 @@ export const metadata: Metadata = {
 
 
 export default async function Page({ params }: { params: { id: string } }) {
-    const id = params.id;
-    console.log(id);
+    const packageId = params.id;
+    console.log("this is from the select page:", packageId);
 
     return (
         <div className="w-full">
 
             <div className="mt-5 flex w-full justify-center">
-                <Calendar />
+                <Calendar packageId={packageId} />
             </div>
         </div>
     );

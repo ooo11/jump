@@ -3,7 +3,7 @@ import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 
 import { z } from 'zod';
-import { sql } from '@vercel/postgres';
+import { QueryResult, QueryResultRow, sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 const bcrypt = require('bcrypt');
@@ -68,13 +68,16 @@ const VendorLinkSchema = z.object({
 });
 
 //Schema for userForm
-const UserSchema = z.object({
+const JumperSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
   phone: z.string(),
-  password: z.string(),
   city_id: z.string(),
+  jumper_id: z.string(),
+  package_id: z.string(),
+  datetime: z.string(),
+  submittime: z.string()
 });
 
 
@@ -99,8 +102,8 @@ const CreateVendorLinks = VendorLinkSchema.omit({ id: true });
 const UpdateVendorLinks = VendorLinkSchema.omit({ id: true, name: true });
 
 //things to omit from the form so that its the same.
-const CreateUsers = UserSchema.omit({ id: true });
-const UpdateUsers = UserSchema.omit({ id: true });
+const CreateJumpers = JumperSchema.omit({ id: true, jumper_id: true, submittime: true });
+const UpdateJumpers = JumperSchema.omit({ id: true });
 
 export type State = {
   errors?: {
@@ -152,13 +155,17 @@ export type VendorLinkState = {
 };
 
 
-export type UserState = {
+export type JumperState = {
   errors?: {
     name?: string[];
     email?: string[];
     phone?: string[];
-    password?: string[];
     city_id?: string[];
+    // jumper_id: string[];
+    package_id?: string[];
+    datetime?: string[];
+    // submittime: string[];
+
   };
   message?: string | null;
 };
@@ -534,14 +541,15 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
 
 }
 
-//create User
-export async function createUser(prevState: UserState, formData: FormData) {
-  const validatedFields = CreateUsers.safeParse({
+//create jumpers and orders to database 
+export async function createJumper(prevState: JumperState, formData: FormData) {
+  const validatedFields = CreateJumpers.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
     phone: formData.get('phone'),
-    password: formData.get('password'),
     city_id: formData.get('city_id'),
+    package_id: formData.get('package_id'),
+    datetime: formData.get('datetime')
   });
 
   // If form validation fails, return errors early. Otherwise, continue.
@@ -553,16 +561,24 @@ export async function createUser(prevState: UserState, formData: FormData) {
   }
 
   // Prepare data for insertion into the database
-  const { name, email, phone, password, city_id } = validatedFields.data;
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const { name, email, phone, city_id, package_id, datetime } = validatedFields.data;
 
-
+  const submittime = new Date().toISOString(); // insert submitted time
 
   try {
+    const jumperResult = await sql`
+    INSERT INTO jumpers (name, email, phone, city_id)
+    VALUES (${name}, ${email}, ${phone}, ${city_id})
+    RETURNING id;`;
+
+    const jumper_id: string = (jumperResult as QueryResult<QueryResultRow & { id: string }>).rows[0].id;
+    console.log("This is the jumper: ", jumper_id);
+
+
     await sql`
-          INSERT INTO users (name, email, phone, password, city_id)
-          VALUES (${name}, ${email}, ${phone}, ${hashedPassword}, ${city_id})
-        `;
+    INSERT INTO orders (jumper_id, package_id, datetime, submittime)
+    VALUES (${jumper_id}, ${package_id}, ${datetime}, ${submittime});
+  `;
   } catch (error) {
     return {
       message: 'Database Error: Failed to Create New User.',
@@ -570,6 +586,6 @@ export async function createUser(prevState: UserState, formData: FormData) {
   };
 
 
-  revalidatePath(`/guest/profile`);
-  redirect(`/guest/profile`);
+  revalidatePath(`/guest/success`);
+  redirect(`/guest/success`);
 }

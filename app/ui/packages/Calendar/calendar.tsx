@@ -1,8 +1,9 @@
 'use client'
-import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Import the useRouter hook
+import { useCallback, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation'; // Import the useRouter hook
 import ReactCalendar from 'react-calendar';
 import { add, format } from 'date-fns';
+
 
 interface DateType {
     justDate: Date | null
@@ -10,14 +11,37 @@ interface DateType {
 }
 
 
-export function Calendar() {
+export function Calendar({ packageId }: { packageId: string }) {
+    const searchParams = useSearchParams()
     const router = useRouter();
     const [date, setDate] = useState<DateType>({
         justDate: null,
         dateTime: null
     });
 
-    console.log(date.dateTime);
+    console.log('Package ID inside Calendar:', packageId);
+
+    // console.log(date.dateTime);
+    const handleTimeSelection = useCallback((selectedTime: Date) => {
+        if (!date.justDate) {
+            // Handle the case where date.justDate is null
+            console.error('No date selected');
+            return;
+        }
+
+        // Combine date and time and format it as needed
+        const selectedDateTime = new Date(date.justDate);
+        selectedDateTime.setHours(selectedTime.getHours());
+        selectedDateTime.setMinutes(selectedTime.getMinutes());
+
+        // Build the URLSearchParams
+        const params = new URLSearchParams(searchParams.toString())
+        params.set('datetime', selectedDateTime.toISOString());
+
+        // Redirect to the form page with date and time as query parameters
+        router.push(`/guest/newuser?${params.toString()}&package=${packageId}`);
+    }, [date.justDate, packageId, router, searchParams]
+    );
 
     const getTimes = () => {
         if (!date.justDate) return
@@ -37,12 +61,6 @@ export function Calendar() {
 
     const times = getTimes();
 
-    const handleTimeSelection = (selectedTime: Date) => {
-        setDate((prev) => ({ ...prev, dateTime: selectedTime }));
-
-        // Navigate to the form page with the selected date and time
-        router.push(`/guest/newguest?dateTime=${selectedTime.toISOString()}`);
-    }
 
 
     return (

@@ -585,8 +585,8 @@ const orders = [
     id: '6326a628-9c89-4b2c-8944-fd7aa6b51f45',
     package_id: packages[3].id,
     jumper_id: jumpers[0].id,
-    datetime: '2024-03-19 12:00:00',
-    submittime: '2024-09-03 06:15:18'
+    datetime: '2024-03-19 12:00:00', //this will be a time get from params
+    submittime: '2024-09-03 06:15:18' // this will be a timestamp when customer submitted their orders 
   },
   {
     id: '0430b23c-ae2a-4f68-8fa1-020e0ad11e07',

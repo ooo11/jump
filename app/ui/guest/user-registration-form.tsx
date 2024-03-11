@@ -4,14 +4,23 @@ import { City, Package } from '@/app/lib/definitions';
 import Link from 'next/link';
 
 import { Button } from '@/app/ui/button';
-import { createUser } from '@/app/lib/actions';
+import { createJumper } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
+import { useSearchParams } from 'next/navigation';
 
 
 
-export default function Form({ cities, selectedDateTime }: { cities: City[], selectedDateTime: string }) {
+export default function Form({ cities }: { cities: City[] }) {
     const initialState = { message: null, errors: {} };
-    const [state, dispatch] = useFormState(createUser, initialState);
+    const [state, dispatch] = useFormState(createJumper, initialState); //Todo: make acton to save jumpers data -> after execute -> save orders data. 
+    const searchParams = useSearchParams()
+    console.log("this is from the params", searchParams.get('package')) // Logs "search"
+
+    const dateSelected = searchParams.get('datetime');
+    const packageSelected = searchParams.get('package');
+
+    const formattedDatetime = dateSelected ? String(dateSelected) : 'No Date & Time Selected';
+    const formattedPackageSelected = packageSelected ? String(packageSelected) : 'No Package Selected';
 
 
 
@@ -19,7 +28,8 @@ export default function Form({ cities, selectedDateTime }: { cities: City[], sel
     return (
         <form action={dispatch}>
             <div className="rounded-md bg-gray-50 p-6 md:p-20">
-                <input type="hidden" name="datetime" value={selectedDateTime} />
+                <input type="hidden" name="datetime" value={formattedDatetime} />
+                <input type="hidden" name="package_id" value={formattedPackageSelected} />
                 {/* Uer Name */}
                 <div className="mb-4">
                     <label htmlFor="name" className="mb-2 block text-sm font-medium">
@@ -143,7 +153,7 @@ export default function Form({ cities, selectedDateTime }: { cities: City[], sel
                 >
                     Cancel
                 </Link>
-                <Button type="submit">Register</Button>
+                <Button type="submit">I want it now!</Button>
             </div>
         </form>
     );

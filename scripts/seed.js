@@ -12,7 +12,9 @@ const {
   posts,
   postsTags,
   vendorprofilepic,
-  vendorlinks
+  vendorlinks,
+  jumpers,
+  orders
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -531,6 +533,92 @@ async function seedPostsTags(client) {
 };
 
 
+
+
+async function seedJumpers(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "jumpers" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS jumpers (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(255) NOT NULL,
+        city_id UUID NOT NULL
+      );
+    `;
+
+    console.log(`Created "jumpers" table`);
+
+    // Insert data into the "jumpers" table
+    const insertedJumpers = await Promise.all(
+      jumpers.map(
+        (jumper) => client.sql`
+        INSERT INTO jumpers (id, name, email, phone, city_id)
+        VALUES (${jumper.id}, ${jumper.name}, ${jumper.email}, ${jumper.phone}, ${jumper.city_id})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedJumpers.length} jumpers`);
+
+    return {
+      createTable,
+      jumpers: insertedJumpers,
+    };
+  } catch (error) {
+    console.error('Error seeding jumpers!:', error);
+    throw error;
+  }
+};
+
+
+
+async function seedOrders(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "orders" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS orders (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        jumper_id UUID NOT NULL,
+        package_id UUID NOT NULL,
+        datetime VARCHAR(255) NOT NULL,
+        submittime VARCHAR(255) NOT NULL
+      );
+    `;
+
+    console.log(`Created "orders" table`);
+
+    // Insert data into the "orders" table
+    const insertedOrders = await Promise.all(
+      orders.map(
+        (order) => client.sql`
+        INSERT INTO orders (id, jumper_id, package_id, datetime, submittime)
+        VALUES (${order.id}, ${order.jumper_id},${order.package_id}, ${order.datetime}, ${order.submittime})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedOrders.length} orders`);
+
+    return {
+      createTable,
+      orders: insertedOrders,
+    };
+  } catch (error) {
+    console.error('Error seeding orders!:', error);
+    throw error;
+  }
+};
+
+
+
 async function main() {
   const client = await db.connect();
 
@@ -547,6 +635,8 @@ async function main() {
   await seedTags(client);
   await seedPosts(client);
   await seedPostsTags(client);
+  await seedJumpers(client);
+  await seedOrders(client);
 
   await client.end();
 }
