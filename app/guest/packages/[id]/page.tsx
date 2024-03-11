@@ -47,7 +47,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
 
 
-                    <div className='grid grid-cols-3 gap-2 mb-4'>
+                    <div className='md:grid grid-cols-3 sm:grid-cols-1 gap-2 mb-4'>
                         <div className='col-span-2'>
                             <h1 className='text-xl'>{pack.name}</h1>
                             <p className=" text-base leading-10 text-gray-900">
@@ -76,9 +76,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 
                             </ul>
                         </div>
-                        <div className='bg-black rounded-3xl grid grid-rows-2 gap-2 '>
+                        <div className='bg-black rounded-xl sm:rounded-3xl grid grid-rows-2 gap-2 sm:grid-cols-1'>
                             <p className="mt-8 flex items-baseline  gap-x-2 place-self-center">
-                                <span className="text-5xl font-bold tracking-tight text-white">{formatCurrency(pack.price)}</span>
+                                <span className="text-xl sm:text-5xl font-bold tracking-tight text-white">{formatCurrency(pack.price)}</span>
                             </p>
                             <div className='mb-8 place-self-center'>
                                 <SelectGuestPackage
