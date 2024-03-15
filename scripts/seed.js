@@ -12,9 +12,9 @@ const {
   posts,
   postsTags,
   vendorprofilepic,
-  vendorlinks,
   jumpers,
-  orders
+  orders,
+  vendorURL
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -210,45 +210,6 @@ async function seedVendorProfilePic(client) {
     };
   } catch (error) {
     console.error('Error seeding vendorprofilepic:', error);
-    throw error;
-  }
-};
-
-async function seedVendorLinks(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-    // Create the "vendorlinks" table if it doesn't exist
-    const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS vendorlinks (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        url VARCHAR(255) NOT NULL,
-        vendor_id UUID NOT NULL
-      );
-    `;
-
-    console.log(`Created "vendorlinks" table`);
-
-    // Insert data into the "vendorlinks" table
-    const insertedVendorlinks = await Promise.all(
-      vendorlinks.map(
-        (vendorlink) => client.sql`
-        INSERT INTO vendorlinks (id, name, url, vendor_id)
-        VALUES (${vendorlink.id},${vendorlink.name}, ${vendorlink.url},${vendorlink.vendor_id})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-      ),
-    );
-
-    console.log(`Seeded ${insertedVendorlinks.length} vendorlinks`);
-
-    return {
-      createTable,
-      vendorlinks: insertedVendorlinks,
-    };
-  } catch (error) {
-    console.error('Error seeding vendorlinks:', error);
     throw error;
   }
 };
@@ -588,7 +549,8 @@ async function seedOrders(client) {
         jumper_id UUID NOT NULL,
         package_id UUID NOT NULL,
         datetime VARCHAR(255) NOT NULL,
-        submittime VARCHAR(255) NOT NULL
+        submittime VARCHAR(255) NOT NULL,
+        status VARCHAR(255) NOT NULL
       );
     `;
 
@@ -598,8 +560,8 @@ async function seedOrders(client) {
     const insertedOrders = await Promise.all(
       orders.map(
         (order) => client.sql`
-        INSERT INTO orders (id, jumper_id, package_id, datetime, submittime)
-        VALUES (${order.id}, ${order.jumper_id},${order.package_id}, ${order.datetime}, ${order.submittime})
+        INSERT INTO orders (id, jumper_id, package_id, datetime, submittime, status)
+        VALUES (${order.id}, ${order.jumper_id},${order.package_id}, ${order.datetime}, ${order.submittime}, ${order.status})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -618,6 +580,46 @@ async function seedOrders(client) {
 };
 
 
+async function seedvendorURL(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "vendorURL" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS vendorURL (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        url VARCHAR(255) NOT NULL,
+        vendor_id UUID NOT NULL
+      );
+    `;
+
+    console.log(`Created "vendorURL" table`);
+
+    // Insert data into the "vendorURL" table
+    const insertedvendorURL = await Promise.all(
+      vendorURL.map(
+        (link) => client.sql`
+        INSERT INTO vendorURL (id, url, vendor_id)
+        VALUES (${link.id},${link.url}, ${link.vendor_id})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedvendorURL.length} vendorURL`);
+
+    return {
+      createTable,
+      vendorURL: insertedvendorURL,
+    };
+  } catch (error) {
+    console.error('Error seeding vendorURL:', error);
+    throw error;
+  }
+};
+
+
+
 
 async function main() {
   const client = await db.connect();
@@ -627,7 +629,6 @@ async function main() {
   await seedUsers(client);
   await seedVendors(client);
   await seedVendorProfilePic(client);
-  await seedVendorLinks(client);
   await seedPackages(client);
   await seedCustomers(client);
   await seedInvoices(client);
@@ -637,6 +638,7 @@ async function main() {
   await seedPostsTags(client);
   await seedJumpers(client);
   await seedOrders(client);
+  await seedvendorURL(client);
 
   await client.end();
 }

@@ -1,7 +1,6 @@
 import Form from '@/app/ui/packages/create-form';
-import { fetchVendorById, fetchVendorByUserId } from '@/app/lib/data';
+import { fetchVendorById } from '@/app/lib/data';
 import { Metadata } from 'next';
-import { vendorId } from '@/app/lib/config';
 
 
 export const metadata: Metadata = {
@@ -9,8 +8,8 @@ export const metadata: Metadata = {
 };
 
 
-export default async function Page() {
-    const id = vendorId;
+export default async function Page({ params }: { params: { vendorId: string } }) {
+    const id = params.vendorId;
     const vendor = await fetchVendorById(id);
 
     return (

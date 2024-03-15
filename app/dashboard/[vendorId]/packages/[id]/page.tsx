@@ -3,7 +3,7 @@ import { fetchPackageById, fetchVendorById, getCategorybyId, getCitybyId, getUse
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
-import { DeletePackage, SelectPackage, UpdatePackage } from '@/app/ui/packages/buttons';
+import { DeletePackage, SelectPackageDisable, UpdatePackage } from '@/app/ui/packages/buttons';
 import { CheckIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, PromiseLikeOfReactNode, Key } from 'react';
 import BuyNowButton from '@/app/ui/packages/gotoPackageButton';
@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     return (
         <div className="rounded-md bg-gray-50 p-4 md:p-6 md:max-w-screen-lg sm:min-w-min">
             <div className="flex justify-end gap-2">
-                <UpdatePackage id={pack.id} />
+                <UpdatePackage vendorId={vendor.id} id={pack.id} />
                 <DeletePackage id={pack.id} />
             </div>
             <div className="p-8">
@@ -86,8 +86,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                             <span className="text-xl sm:text-5xl font-bold tracking-tight text-white">{formatCurrency(pack.price)}</span>
                         </p>
                         <div className='mb-8 place-self-center'>
-                            <SelectPackage
-                                id={pack.id} />
+                            <SelectPackageDisable />
                         </div>
                     </div>
                 </div>

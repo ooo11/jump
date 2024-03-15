@@ -1,4 +1,4 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { BellAlertIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { deleteInvoice } from '@/app/lib/actions';
 import Link from 'next/link';
 
@@ -14,14 +14,16 @@ export function CreateInvoice() {
   );
 }
 
-export function UpdateInvoice({ id }: { id: string }) {
+export function UpdateInvoice({ id, children }: { id: string; children?: React.ReactNode }) {
   return (
+
     <Link
-    href={`/dashboard/invoices/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      href={`/dashboard/orders/${id}/edit`}
+      className="rounded-md border p-2 bg-black text-white hover:bg-gray-800"
     >
-      <PencilIcon className="w-5" />
+      Update status
     </Link>
+
   );
 }
 

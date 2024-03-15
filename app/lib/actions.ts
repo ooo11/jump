@@ -1,3 +1,4 @@
+import { vendorId } from './config';
 'use server';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
@@ -21,6 +22,19 @@ const FormSchema = z.object({
     invalid_type_error: 'Please select an invoice status.',
   }),
   date: z.string(),
+});
+
+
+const VendorOrderFormSchema = z.object({
+  id: z.string(),
+  package_id: z.string(),
+  jumper_id: z.string(),
+  datetime: z.string(),
+  submittime: z.string(),
+  status: z.enum(['accepted', 'decline', 'incomplete', 'delivered'], {
+    invalid_type_error: 'Please select a status.',
+  }),
+
 });
 
 
@@ -60,12 +74,6 @@ const VendorSchema = z.object({
 });
 
 
-//Schema for vendorLinkForm
-const VendorLinkSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  linkURL: z.string().url().or(z.literal("")),
-});
 
 //Schema for userForm
 const JumperSchema = z.object({
@@ -77,7 +85,10 @@ const JumperSchema = z.object({
   jumper_id: z.string(),
   package_id: z.string(),
   datetime: z.string(),
-  submittime: z.string()
+  submittime: z.string(),
+  status: z.enum(['order placed', 'payment done', 'job acceptance', 'job done', 'completion'], {
+    invalid_type_error: 'Please select an order status.',
+  }),
 });
 
 
@@ -87,7 +98,7 @@ const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 //things to omit from the form so that its the same.
 const CreatePackages = PackageFormSchema.omit({ id: true });
-const UpdatePackages = PackageFormSchema.omit({ id: true, vendor_id: true });
+const UpdatePackages = PackageFormSchema.omit({ id: true });
 
 //things to omit from the form so that its the same.
 const CreatePosts = PostsFormSchema.omit({ id: true });
@@ -97,13 +108,14 @@ const UpdatePosts = PostsFormSchema.omit({ id: true, vendor_id: true });
 const CreateVendors = VendorSchema.omit({ id: true });
 const UpdateVendors = VendorSchema.omit({ id: true, user_id: true });
 
-//things to omit from the form so that its the same.
-const CreateVendorLinks = VendorLinkSchema.omit({ id: true });
-const UpdateVendorLinks = VendorLinkSchema.omit({ id: true, name: true });
 
 //things to omit from the form so that its the same.
-const CreateJumpers = JumperSchema.omit({ id: true, jumper_id: true, submittime: true });
+const CreateJumpers = JumperSchema.omit({ id: true, jumper_id: true, submittime: true, status: true });
 const UpdateJumpers = JumperSchema.omit({ id: true });
+
+//things to omit from the form so that its the same.
+const CreateVendorOrder = VendorOrderFormSchema.omit({ id: true });
+const UpdateVendorOrder = VendorOrderFormSchema.omit({ id: true, package_id: true, jumper_id: true, submittime: true, datetime: true });
 
 export type State = {
   errors?: {
@@ -123,6 +135,7 @@ export type PackageState = {
     // image_url?: string[];
     price?: string[];
     // features?: string[];
+    vendor_id?: string[];
   };
   message?: string | null;
 };
@@ -147,12 +160,6 @@ export type VendorState = {
   message?: string | null;
 };
 
-export type VendorLinkState = {
-  errors?: {
-    linkURL?: string[];
-  };
-  message?: string | null;
-};
 
 
 export type JumperState = {
@@ -165,7 +172,7 @@ export type JumperState = {
     package_id?: string[];
     datetime?: string[];
     // submittime: string[];
-
+    status?: string[];
   };
   message?: string | null;
 };
@@ -316,8 +323,8 @@ export async function createPackages(prevState: PackageState, formData: FormData
       message: 'Database Error: Failed to Create Packages.',
     };
   };
-  revalidatePath('/dashboard');
-  redirect('/dashboard');
+  revalidatePath(`/dashboard/${vendor_id}`);
+  redirect(`/dashboard/${vendor_id}`);
 }
 
 
@@ -330,6 +337,7 @@ export async function updatePackages(id: string, prevState: PackageState, formDa
     image_url: formData.get('image_url'),
     price: formData.get('price'),
     features: formData.get('features'),
+    vendor_id: formData.get('vendor_id')
   });
 
 
@@ -346,7 +354,7 @@ export async function updatePackages(id: string, prevState: PackageState, formDa
 
   }
 
-  const { name, detail, image_url, price, features } = validatedFields.data;
+  const { name, detail, image_url, price, features, vendor_id } = validatedFields.data;
   // const { name, detail, image_url, price } = validatedFields.data;
 
 
@@ -372,8 +380,8 @@ export async function updatePackages(id: string, prevState: PackageState, formDa
     };
   }
 
-  revalidatePath('/dashboard');
-  redirect('/dashboard');
+  revalidatePath(`/dashboard/${vendor_id}`);
+  redirect(`/dashboard/${vendor_id}`);
 
 }
 
@@ -393,98 +401,10 @@ export async function deletePackages(id: string) {
 }
 
 
-//create Posts
-export async function createPosts(prevState: PostState, formData: FormData) {
-  const validatedFields = CreatePosts.safeParse({
-    name: formData.get('name'),
-    detail: formData.get('detail'),
-    vendor_id: formData.get('vendor_id'),
-    image_url: formData.get('image_url'),
-  });
-
-  // If form validation fails, return errors early. Otherwise, continue.
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Posts.',
-    };
-  }
-
-  // Prepare data for insertion into the database
-  const { name, detail, vendor_id, image_url } = validatedFields.data;
-
-
-  try {
-    await sql`
-          INSERT INTO posts (name, detail, vendor_id, image_url)
-          VALUES (${name}, ${detail}, ${vendor_id}, ${image_url})
-        `;
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Create Posts.',
-    };
-  };
-  revalidatePath('/dashboard/portfolio');
-  redirect('/dashboard/portfolio');
-}
 
 
 
-//update Posts
-export async function updatePosts(id: string, prevState: PostState, formData: FormData) {
-  const validatedFields = UpdatePosts.safeParse({
-    name: formData.get('name'),
-    detail: formData.get('detail'),
-    image_url: formData.get('image_url'),
-  });
 
-
-
-  // If form validation fails, return errors early. Otherwise, continue.
-  //if no data enter -> return error, supposed if no data = existing data is input
-
-  if (!validatedFields.success) {
-    // console.log("Error on success");
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Posts.',
-    };
-
-  }
-
-  const { name, detail, image_url } = validatedFields.data;
-
-  try {
-    await sql`
-      UPDATE posts
-      SET name = ${name}, detail = ${detail}, image_url = ${image_url}
-      WHERE id = ${id}
-    `;
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Update Posts.',
-    };
-  }
-
-  revalidatePath('/dashboard/portfolio');
-  redirect('/dashboard/portfolio');
-
-}
-
-//delete posts
-
-export async function deletePosts(id: string) {
-
-  try {
-    await sql`DELETE FROM posts WHERE id = ${id}`;
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Delete posts.',
-    };
-  }
-  revalidatePath('/dashboard/portfolio');
-  redirect('/dashboard/portfolio');
-}
 
 
 // id: string;
@@ -536,8 +456,8 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
     };
   }
 
-  revalidatePath('/dashboard');
-  redirect('/dashboard');
+  revalidatePath(`/dashboard/${id}`);
+  redirect(`/dashboard/${id}`);
 
 }
 
@@ -565,6 +485,8 @@ export async function createJumper(prevState: JumperState, formData: FormData) {
 
   const submittime = new Date().toISOString(); // insert submitted time
 
+  const defaultStatus = 'pending payment'
+
   try {
     const jumperResult = await sql`
     INSERT INTO jumpers (name, email, phone, city_id)
@@ -576,8 +498,8 @@ export async function createJumper(prevState: JumperState, formData: FormData) {
 
 
     await sql`
-    INSERT INTO orders (jumper_id, package_id, datetime, submittime)
-    VALUES (${jumper_id}, ${package_id}, ${datetime}, ${submittime});
+    INSERT INTO orders (jumper_id, package_id, datetime, submittime, status)
+    VALUES (${jumper_id}, ${package_id}, ${datetime}, ${submittime}, ${defaultStatus});
   `;
   } catch (error) {
     return {
@@ -588,4 +510,40 @@ export async function createJumper(prevState: JumperState, formData: FormData) {
 
   revalidatePath(`/guest/success`);
   redirect(`/guest/success`);
+}
+
+
+export async function updateOrderStatus(id: string, prevState: State, formData: FormData) {
+  const validatedFields = UpdateVendorOrder.safeParse({
+    status: formData.get('status'),
+  });
+  // If form validation fails, return errors early. Otherwise, continue.
+  //if no data enter -> return error, supposed if no data = existing data is input
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
+    };
+
+  }
+
+  const { status } = validatedFields.data;
+
+
+  try {
+    await sql`
+      UPDATE orders
+      SET status = ${status}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Update Invoice.',
+    };
+  }
+
+  revalidatePath('/dashboard/orders');
+  redirect('/dashboard/orders');
+
 }

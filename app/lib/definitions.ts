@@ -83,6 +83,8 @@ export type LatestInvoice = {
   amount: string;
 };
 
+
+
 // The database returns a number for amount, but we later format it to a string with the formatCurrency function
 export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
   amount: number;
@@ -214,4 +216,41 @@ export type Orders = {
   jumper_id: string;
   datetime: string;
   submittime: string;
+  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'pending work' | 'complete' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
 };
+
+export type latestOrders = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  price: number;
+  datetime: string;
+  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'pending work' | 'complete' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
+};
+
+export type orderStatus = {
+  some: any;
+  id: string;
+  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'pending work' | 'complete' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
+};
+
+export type vendorURL = {
+  id: string;
+  url: string;
+  vendor_id: string;
+};
+
+export type vendorSingleUrl = {
+  url: string;
+};
+
+export type VendorPageData = {
+  id: string;
+  url: string;
+  name: string;
+  about: string;
+  category: string;
+  city: string;
+  vendorImageUrl: string;
+}

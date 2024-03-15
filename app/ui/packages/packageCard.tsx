@@ -44,7 +44,7 @@ export default async function Packages({
                     {/* Click then go to  selected package page*/}
 
 
-                    <BuyNowButton packageId={packages.id} />
+                    <BuyNowButton vendorId={vendor.id} packageId={packages.id} />
 
                     <div className="mt-4 flex items-center gap-x-4">
                         <h4 className="flex-none text-sm font-semibold leading-6 text-indigo-600">What’s included</h4>

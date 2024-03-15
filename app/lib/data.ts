@@ -1,3 +1,4 @@
+import { vendorId } from './config';
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 import {
@@ -17,7 +18,13 @@ import {
   Tags,
   PostTags,
   VendorProfilePic,
-  VendorLink
+  VendorLink,
+  Orders,
+  latestOrders,
+  orderStatus,
+  VendorPageData,
+  vendorURL,
+  vendorSingleUrl
 
 } from './definitions';
 import { formatCurrency } from './utils';
@@ -305,7 +312,7 @@ export async function getAllPackages() {
   }
 }
 
-export async function fetchPackageByVendorId(id: string) {
+export async function fetchPackageByVendorURL(url: string) {
 
   noStore();
 
@@ -320,7 +327,8 @@ export async function fetchPackageByVendorId(id: string) {
         packages.price,
         packages.features
       FROM packages
-      WHERE packages.vendor_id = ${id};
+      JOIN vendorURL ON packages.vendor_id = vendorURL.vendor_id
+      WHERE vendorURL.url = ${url};
     `;
 
     const pack = data.rows.map((pack) => ({
@@ -419,26 +427,6 @@ export async function fetchVendorProfilePicById(id: string) {
   }
 };
 
-export async function fetchLinkByVendorId(id: string) {
-
-  noStore();
-
-  try {
-    const data = await sql<VendorLink>`
-      SELECT
-       *
-      FROM vendorlinks
-      WHERE vendorlinks.vendor_id = ${id};
-    `;
-
-    const links = data.rows;
-    return links;
-
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch vendor social link.');
-  }
-}
 
 export async function fetchVendorByUserId(id: string) {
 
@@ -564,7 +552,7 @@ export async function fetchCity() {
   noStore();
 
   try {
-    const data = await sql<Category>`
+    const data = await sql<City>`
       SELECT
         id,
         name
@@ -576,5 +564,364 @@ export async function fetchCity() {
   } catch (error) {
     console.error('Failed to fetch city:', error);
     throw new Error('Failed to fetch city.');
+  }
+}
+
+export async function fetchLatestOrders() {
+  noStore();
+
+  try {
+    const data = await sql<latestOrders>`
+      SELECT orders.id, jumpers.name, jumpers.email, jumpers.phone, packages.price, orders.datetime, orders.status
+      FROM orders
+      JOIN jumpers ON orders.jumper_id = jumpers.id
+      JOIN packages ON orders.package_id = packages.id
+      ORDER BY orders.submittime DESC
+      LIMIT 5`;
+
+    const latestOrders = data.rows.map((order) => ({
+      ...order,
+      price: formatCurrency(order.price),
+    }));
+    return latestOrders;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the latest invoices.');
+  }
+}
+
+
+export async function fetchFilteredOrders(
+  query: string,
+  currentPage: number,
+  vendorId: string
+) {
+  noStore();
+
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const orders = await sql<latestOrders>`
+      SELECT
+        orders.id,
+        orders.datetime,
+        orders.status,
+        jumpers.name,
+        jumpers.email,
+        jumpers.phone,
+        packages.price
+      FROM orders
+      JOIN jumpers ON orders.jumper_id = jumpers.id
+      JOIN packages ON orders.package_id = packages.id
+      WHERE
+        (jumpers.name ILIKE ${`%${query}%`} OR
+        jumpers.email ILIKE ${`%${query}%`} OR
+        jumpers.phone ILIKE ${`%${query}%`} OR
+        packages.price::text ILIKE ${`%${query}%`} OR
+        orders.datetime::text ILIKE ${`%${query}%`} OR
+        orders.status ILIKE ${`%${query}%`})
+        AND packages.vendor_id = ${vendorId}
+      ORDER BY orders.submittime DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return orders.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch orders.');
+  }
+}
+
+
+export async function fetchOrdersPages(query: string, vendorId: string) {
+  noStore();
+
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM orders
+    JOIN jumpers ON orders.jumper_id = jumpers.id
+    JOIN packages ON orders.package_id = packages.id
+    WHERE
+      (jumpers.name ILIKE ${`%${query}%`} OR
+      jumpers.email ILIKE ${`%${query}%`} OR
+      jumpers.phone ILIKE ${`%${query}%`} OR
+      packages.price::text ILIKE ${`%${query}%`} OR
+      orders.datetime::text ILIKE ${`%${query}%`} OR
+      orders.status ILIKE ${`%${query}%`})
+      AND packages.vendor_id = ${vendorId}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of orders.');
+  }
+}
+
+export async function fetchOrderById(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<latestOrders>`
+      SELECT
+      orders.id,
+      orders.datetime,
+      orders.status,
+      jumpers.name,
+      jumpers.email,
+      jumpers.phone,
+      packages.price
+    FROM orders
+    JOIN jumpers ON orders.jumper_id = jumpers.id
+    JOIN packages ON orders.package_id = packages.id
+      WHERE orders.id = ${id};
+    `;
+
+    const order = data.rows.map((order) => ({
+      ...order,
+      // Convert amount from cents to dollars
+      price: order.price / 100,
+    }));
+    // console.log(invoice);
+    return order[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch order based on id.');
+  }
+}
+
+
+export async function fetchJumpers() {
+  noStore();
+
+  try {
+    const data = await sql<CustomerField>`
+      SELECT
+        *
+      FROM jumpers
+      ORDER BY name ASC
+    `;
+
+    const jumpers = data.rows;
+    return jumpers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all jumpers.');
+  }
+}
+
+// export async function fetchStatusOrder(id: string) {
+//   noStore();
+
+//   try {
+//     const data = await sql<orderStatus>`
+//       SELECT
+//         id,
+//         status
+//       FROM orders
+//       JOIN packages ON orders.package_id = packages.id
+//       WHERE packages.vendor_id = ${id};
+//     `;
+
+//     const orders = data.rows;
+//     return orders;
+//   } catch (err) {
+//     console.error('Database Error:', err);
+//     throw new Error('Failed to fetch all order status.');
+//   }
+// };
+
+export async function fetchVendorByURL(url: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<VendorPageData>`
+      SELECT
+      vendorURL.id AS id,
+      vendorURL.url AS url,
+      vendors.name AS name,
+      vendors.about AS about,
+      categories.name AS category,
+      cities.name AS city,
+      vendorprofilepic.image_url AS vendorImageUrl
+    FROM vendorURL
+    JOIN vendors ON vendorURL.vendor_id = vendors.id
+    JOIN categories ON vendors.category_id = categories.id
+    JOIN users ON vendors.user_id = users.id
+    JOIN cities ON users.city_id = cities.id
+    JOIN vendorprofilepic ON vendorURL.vendor_id = vendorprofilepic.vendor_id
+    WHERE vendorURL.url = ${url};
+    `;
+
+    const vendor = data.rows[0];
+    return vendor;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to vendor based on url.');
+  }
+}
+
+
+export async function fetchVendorProfilePicByURL(url: string) {
+  noStore();
+
+  try {
+    // Find the vendor ID based on the URL
+    const vendorIdQuery = await sql<vendorURL>`
+      SELECT
+        vendor_id
+      FROM vendorURL
+      WHERE url = ${url};
+    `;
+    const vendorId = vendorIdQuery.rows[0]?.vendor_id;
+
+    if (!vendorId) {
+      throw new Error('Vendor not found for the given URL.');
+    }
+
+    // Fetch the profile picture using the vendor ID
+    const data = await sql<VendorProfilePic>`
+      SELECT
+        *
+      FROM vendorprofilepic
+      WHERE vendor_id = ${vendorId};
+    `;
+
+    if (!data) {
+      throw new Error('VendorPicData not found for the given URL.');
+    }
+
+    const profilepic = data.rows[0];
+    return profilepic;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch profilepic.');
+  }
+}
+
+export async function fetchPackageByVendorId(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<PackageForm>`
+      SELECT
+        packages.id,
+        packages.name,
+        packages.detail,
+        packages.vendor_id,
+        packages.image_url,
+        packages.price,
+        packages.features
+      FROM packages
+      WHERE packages.vendor_id = ${id};
+    `;
+
+    const pack = data.rows.map((pack) => ({
+      ...pack,
+      // Convert amount from cents to dollars
+      price: pack.price / 100,
+    }));
+    // console.log(pack);
+    return pack;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch package.');
+  }
+}
+
+export async function fetchOrdersByVendorId(vendorId: string) {
+  noStore();
+
+  try {
+    // Find the package IDs associated with the provided vendor ID
+    const packageIdsQuery = await sql<Package>`
+      SELECT
+        id
+      FROM packages
+      WHERE vendor_id = ${vendorId};
+    `;
+    const packageIds = packageIdsQuery.rows.map(row => `'${row.id}'`);
+
+    if (!packageIds.length) {
+      throw new Error('No packages found for the given vendor ID.');
+    }
+
+    // Concatenate packageIds with commas and surround with parentheses
+    const packageIdsString = `(${packageIds.join(', ')})`;
+    console.log("packageIdsString", packageIdsString);
+
+    // Fetch orders corresponding to the package IDs
+    const ordersQuery = await sql<orderStatus>`
+      SELECT
+        id,
+        status
+      FROM orders
+      WHERE package_id IN ${packageIdsString};
+    `;
+
+    console.log("THis is the ordersQuery", ordersQuery);
+
+
+    if (!ordersQuery) {
+      throw new Error('ordersQuery not found for the given vendor_id.');
+    }
+
+    const orders = ordersQuery.rows;
+    return orders;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch orders.');
+  }
+}
+export async function fetchOrdersByPackageId(packageIds: string[]) {
+  noStore();
+
+  try {
+
+    const packageIdsString = `(${packageIds.join(', ')})`;
+    // Fetch orders corresponding to the package IDs
+    const ordersQuery = await sql<orderStatus>`
+      SELECT
+        id,
+        status
+      FROM orders
+      WHERE package_id IN ${packageIdsString};
+    `;
+
+
+    if (!ordersQuery) {
+      throw new Error('ordersQuery not found for the given vendor_id.');
+    }
+
+    const orders = ordersQuery.rows;
+    return orders;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch orders.');
+  }
+}
+
+export async function fetchVendorUrlById(id: string) {
+  noStore();
+
+  try {
+    const data = await sql<vendorSingleUrl>`
+    SELECT
+    url
+  FROM vendorurl
+  WHERE vendorurl.vendor_id = ${id};
+    `;
+    const urls = data.rows[0];
+    return urls;
+  } catch (error) {
+    console.error('Failed to fetch url:', error);
+    throw new Error('Failed to fetch url.');
   }
 }

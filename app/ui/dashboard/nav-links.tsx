@@ -11,32 +11,57 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx';
-import { CogIcon, } from '@heroicons/react/20/solid';
+import { CogIcon, InboxArrowDownIcon, } from '@heroicons/react/20/solid';
+import { orderStatus } from '@/app/lib/definitions';
+
+// const id = '57c76c6a-a085-4bfc-89de-b07850d17a6f'
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
-const links = [
-  { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'Invoices',
-    href: '/dashboard/invoices',
-    icon: DocumentDuplicateIcon,
-  },
-  {
-    name: 'Settings',
-    href: '/dashboard/settings',
-    icon: CogIcon
-  },
-  {
-    name: 'Help',
-    href: '/dashboard/help',
-    icon: ExclamationCircleIcon
-  },
+// const links = [
+//   { name: 'Home', href: `/dashboard/${id}`, icon: HomeIcon },
+//   {
+//     name: 'Orders',
+//     href: `/dashboard/${id}/orders`,
+//     icon: InboxArrowDownIcon,
+//   },
+//   {
+//     name: 'Settings',
+//     href: `/dashboard/${id}/settings`,
+//     icon: CogIcon
+//   },
+//   {
+//     name: 'Help',
+//     href: '/dashboard/help',
+//     icon: ExclamationCircleIcon
+//   },
 
-];
-
-export default function NavLinks() {
+// ];
+// { orders }: { orders: orderStatus[] }
+export default function NavLinks({ id }: { id: string }) {
   const pathname = usePathname();
+  // Check if any order has status 'paid' or 'accepted'
+  // const hasNotification = orders.some((order: { status: string; }) => order.status === 'paid' || order.status === 'accepted');
+  const links = [
+    { name: 'Home', href: `/dashboard/${id}`, icon: HomeIcon },
+    {
+      name: 'Orders',
+      href: `/dashboard/${id}/orders`,
+      icon: InboxArrowDownIcon,
+    },
+    {
+      name: 'Settings',
+      href: `/dashboard/${id}/settings`,
+      icon: CogIcon
+    },
+    {
+      name: 'Help',
+      href: `/dashboard/${id}/help`,
+      icon: ExclamationCircleIcon
+    },
+
+  ];
+
   return (
     <>
       {links.map((link) => {
@@ -54,6 +79,7 @@ export default function NavLinks() {
           >
             <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
+            {/* {link.name === 'Orders' && hasNotification && <div className="w-3 h-3 rounded-full bg-red-500"></div>} */}
           </Link>
         );
       })}

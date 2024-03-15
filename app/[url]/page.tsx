@@ -1,11 +1,8 @@
-
 import { lusitana } from '@/app/ui/fonts';
-import { fetchPackageByVendorURL, fetchVendorByURL, fetchVendorProfilePicById, fetchVendorProfilePicByURL } from '@/app/lib/data'
-
+import { fetchPackageByVendorURL, fetchVendorByURL, fetchVendorProfilePicByURL } from '@/app/lib/data'
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Packages from '../ui/guest/packageCard';
-
+import Packages from '@/app/ui/guest/packageCard';
 import Image from 'next/image';
 
 
@@ -17,8 +14,8 @@ export const metadata: Metadata = {
 
 
 
-export default async function Page() {
-    const url = 'vuestudio';
+export default async function Page({ params }: { params: { url: string } }) {
+    const url = params.url;
     const [vendor, pack, photo] = await Promise.all([
         fetchVendorByURL(url),
         fetchPackageByVendorURL(url),
@@ -27,9 +24,6 @@ export default async function Page() {
     if (!vendor) {
         notFound();
     }
-
-    console.log('This is the profilepic data here: ', photo.image_url);
-
 
     return (
 

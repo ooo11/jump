@@ -85,6 +85,20 @@ const vendors = [
 
 ];
 
+const vendorURL = [
+  {
+    id: 'd2c2f4cc-ca22-4d57-a4a2-27c665262bb7',
+    url: 'chopchop',
+    vendor_id: vendors[0].id
+  },
+  {
+    id: 'a084cdcb-4019-472c-a15b-094c999c370e',
+    url: 'vuestudio',
+    vendor_id: vendors[1].id
+  },
+
+];
+
 const vendorprofilepic = [
   {
     id: '85627e91-2046-4641-9347-bf5fdee51525',
@@ -97,58 +111,6 @@ const vendorprofilepic = [
     vendor_id: vendors[1].id,
   }
 
-];
-
-
-const vendorlinks = [
-  {
-    id: 'ee49f1fd-8fe6-4911-9f1f-5078247836af',
-    name: 'Twitter',
-    url: 'https://twitter.com/mizuropeter',
-    vendor_id: vendors[0].id,
-  },
-  {
-    id: 'ac8475a5-7034-4adc-aad1-99fcd8668caa',
-    name: 'Youtube',
-    url: 'https://www.youtube.com/@mizurotaa',
-    vendor_id: vendors[0].id,
-  },
-  {
-    id: '65593696-2823-4671-82ca-4f42cc05357d',
-    name: 'Tik Tok',
-    url: 'https://www.tiktok.com/@chelsism',
-    vendor_id: vendors[0].id,
-  },
-  {
-    id: '13deefd0-b779-4b38-9b24-53de0383a287',
-    name: 'Facebook',
-    url: 'https://www.facebook.com/mizuropeter',
-    vendor_id: vendors[0].id,
-  },
-  {
-    id: 'e27bb63e-e5d0-43df-b83c-3e966ebdb42f',
-    name: 'Youtube',
-    url: 'https://www.youtube.com/@mizurotaa',
-    vendor_id: vendors[1].id,
-  },
-  {
-    id: 'f673131b-ada4-4695-8141-e5ac16990dee',
-    name: 'Tik Tok',
-    url: 'https://www.tiktok.com/@chelsism',
-    vendor_id: vendors[1].id,
-  },
-  {
-    id: 'fcea529e-68c4-4048-af8c-6208497322a6',
-    name: 'Twitter',
-    url: 'https://twitter.com/mizuropeter',
-    vendor_id: vendors[1].id,
-  },
-  {
-    id: 'a1aad978-830e-4790-a049-904524aa0186',
-    name: 'Facebook',
-    url: 'https://www.facebook.com/@chelsism',
-    vendor_id: vendors[1].id,
-  }
 ];
 
 const packages = [
@@ -586,21 +548,24 @@ const orders = [
     package_id: packages[3].id,
     jumper_id: jumpers[0].id,
     datetime: '2024-03-19 12:00:00', //this will be a time get from params
-    submittime: '2024-09-03 06:15:18' // this will be a timestamp when customer submitted their orders 
+    submittime: '2024-02-15T10:48:51.000Z', // this will be a timestamp when customer submitted their orders 
+    status: 'paid'
   },
   {
     id: '0430b23c-ae2a-4f68-8fa1-020e0ad11e07',
     package_id: packages[1].id,
     jumper_id: jumpers[1].id,
     datetime: '2024-09-16 19:00:00',
-    submittime: '2024-09-03 06:15:18'
+    submittime: '2024-02-16T02:48:51.000Z',
+    status: 'delivered'
   },
   {
     id: '6de1ab51-7529-405d-a57a-c03f68bc71ba',
     package_id: packages[0].id,
     jumper_id: jumpers[2].id,
     datetime: '2024-12-23 17:00:00',
-    submittime: '2024-09-03 06:15:18'
+    submittime: '2024-02-21T18:48:51.000Z',
+    status: 'complete'
   }
 ]
 
@@ -611,7 +576,6 @@ module.exports = {
   users,
   vendors,
   vendorprofilepic,
-  vendorlinks,
   packages,
   customers,
   invoices,
@@ -620,5 +584,6 @@ module.exports = {
   tags,
   postsTags,
   jumpers,
-  orders
+  orders,
+  vendorURL
 };

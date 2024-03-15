@@ -8,7 +8,7 @@ import { Cog8ToothIcon } from '@heroicons/react/20/solid';
 export function UpdateVendor({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/vendors/${id}/edit`}
+      href={`/dashboard/${id}/vendors/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       Update Vendor Details

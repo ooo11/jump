@@ -1,6 +1,6 @@
 import Form from '@/app/ui/invoices/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+import { fetchInvoiceById, fetchCustomers, fetchOrderById, fetchJumpers } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
@@ -8,29 +8,28 @@ export const metadata: Metadata = {
   title: 'Edit Invoice',
 };
 
- 
+
 export default async function Page({ params }: { params: { id: string } }) {
-const id = params.id;
-const [invoice, customers] = await Promise.all([
-    fetchInvoiceById(id),
-    fetchCustomers(),
-]);
-if (!invoice) {
-  notFound();
-}
+  const id = params.id;
+  const [order] = await Promise.all([
+    fetchOrderById(id),
+  ]);
+  if (!order) {
+    notFound();
+  }
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Orders', href: `/dashboard/${id}/orders` },
           {
-            label: 'Edit Invoice',
-            href: `/dashboard/invoices/${id}/edit`,
+            label: 'Edit Orders',
+            href: `/dashboard/orders/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <Form invoice={invoice} customers={customers} />
+      <Form order={order} />
     </main>
   );
 }

@@ -1,12 +1,11 @@
 
 import { lusitana } from '@/app/ui/fonts';
-import { fetchLinkByVendorId, fetchPackageByVendorId, fetchVendorById, fetchVendorProfilePicById, getCategorybyId, getCitybyId, getUserbyId } from '@/app/lib/data'
+import { fetchPackageByVendorId, fetchPackageByVendorURL, fetchVendorById, fetchVendorByURL, fetchVendorProfilePicById, fetchVendorProfilePicByURL, fetchVendorUrlById, getCategorybyId, getCitybyId, getUserbyId } from '@/app/lib/data'
 
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Packages from '../ui/packages/packageCard';
-import { CreatePackages } from '../ui/packages/buttons';
-import { vendorId } from '../lib/config';
+import Packages from '../../ui/packages/packageCard';
+import { CreatePackages, GoToHomepage } from '../../ui/packages/buttons';
 import Image from 'next/image';
 
 
@@ -15,17 +14,14 @@ export const metadata: Metadata = {
 };
 
 
+export default async function Page({ params }: { params: { vendorId: string } }) {
+  const id = params.vendorId;
 
-
-
-export default async function Page() {
-  const id = vendorId;
-
-  const [vendor, pack, profilepic, links] = await Promise.all([
+  const [vendor, pack, profilepic, url] = await Promise.all([
     fetchVendorById(id),
     fetchPackageByVendorId(id),
     fetchVendorProfilePicById(id),
-    fetchLinkByVendorId(id)
+    fetchVendorUrlById(id)
   ]);
   if (!vendor) {
     notFound();
@@ -36,6 +32,7 @@ export default async function Page() {
   const category = await getCategorybyId(vendor.category_id)
 
   return (
+
 
     <main>
       <div className="mt-5 flex w-full justify-center">
@@ -62,8 +59,10 @@ export default async function Page() {
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <CreatePackages />
+        <CreatePackages vendorId={vendor.id} />
+        <GoToHomepage url={url.url} />
       </div>
+
 
 
       <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-1 sm:px-2'>
