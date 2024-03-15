@@ -11,7 +11,7 @@ interface DateType {
 }
 
 
-export function Calendar({ packageId }: { packageId: string }) {
+export function Calendar({ packageId, vendorURL }: { packageId: string, vendorURL: string }) {
     const searchParams = useSearchParams()
     const router = useRouter();
     const [date, setDate] = useState<DateType>({
@@ -39,8 +39,8 @@ export function Calendar({ packageId }: { packageId: string }) {
         params.set('datetime', selectedDateTime.toISOString());
 
         // Redirect to the form page with date and time as query parameters
-        router.push(`/guest/newuser?${params.toString()}&package=${packageId}`);
-    }, [date.justDate, packageId, router, searchParams]
+        router.push(`/${vendorURL}/newuser?${params.toString()}&package=${packageId}`);
+    }, [date.justDate, packageId, router, searchParams, vendorURL]
     );
 
     const getTimes = () => {

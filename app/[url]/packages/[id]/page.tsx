@@ -1,5 +1,5 @@
 
-import { fetchPackageById, fetchVendorById, getCategorybyId, getCitybyId, getUserbyId } from '@/app/lib/data';
+import { fetchPackageById, fetchVendorById, fetchVendorUrlById, getCategorybyId, getCitybyId, getUserbyId } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -23,6 +23,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
 
     const vendor = await fetchVendorById(pack.vendor_id);
+    const url = await fetchVendorUrlById(pack.vendor_id)
     const user = await getUserbyId(vendor.user_id);
     const city = await getCitybyId(user.city_id);
     const category = await getCategorybyId(vendor.category_id);
@@ -82,7 +83,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                             </p>
                             <div className='mb-8 place-self-center'>
                                 <SelectGuestPackage
-                                    id={pack.id} />
+                                    id={pack.id}
+                                    url={url.url} />
                             </div>
                         </div>
                     </div>

@@ -22,6 +22,7 @@ export function GoToHomepage({ url }: { url: string }) {
       className="flex h-10 items-center rounded-lg bg-black px-4 text-sm font-medium text-white transition-colors hover:bg-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
       rel="noopener noreferrer">
       <span className="hidden md:block">See what your customers see 👁️ </span>
+      <span className='md:ml-4 sm:hidden'>👁️</span>
       <ArrowRightIcon className="h-5 md:ml-4" />
     </a>
 

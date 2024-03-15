@@ -1,5 +1,5 @@
 
-import { fetchPackageById, fetchVendorById, getCategorybyId, getCitybyId, getUserbyId } from '@/app/lib/data';
+import { fetchPackageById, fetchVendorById, fetchVendorUrlById, getCategorybyId, getCitybyId, getUserbyId } from '@/app/lib/data';
 import Image from 'next/image';
 import { CheckIcon } from '@heroicons/react/20/solid'
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, PromiseLikeOfReactNode, Key } from 'react';
@@ -14,6 +14,7 @@ export default async function Packages({
 }) {
     const packages = await fetchPackageById(query);
     const vendor = await fetchVendorById(packages.vendor_id);
+    const url = await fetchVendorUrlById(packages.vendor_id)
     const user = await getUserbyId(vendor.user_id);
     const city = await getCitybyId(user.city_id);
     const category = await getCategorybyId(vendor.category_id);
@@ -44,7 +45,7 @@ export default async function Packages({
                     {/* Click then go to  selected package page*/}
 
 
-                    <BuyNowButton packageId={packages.id} />
+                    <BuyNowButton packageId={packages.id} url={url.url} />
 
                     <div className="mt-4 flex items-center gap-x-4">
                         <h4 className="flex-none text-sm font-semibold leading-6 text-indigo-600">What’s included</h4>

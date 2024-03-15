@@ -89,6 +89,7 @@ const JumperSchema = z.object({
   status: z.enum(['order placed', 'payment done', 'job acceptance', 'job done', 'completion'], {
     invalid_type_error: 'Please select an order status.',
   }),
+  url: z.string(),
 });
 
 
@@ -173,6 +174,7 @@ export type JumperState = {
     datetime?: string[];
     // submittime: string[];
     status?: string[];
+    url?: string[];
   };
   message?: string | null;
 };
@@ -469,7 +471,8 @@ export async function createJumper(prevState: JumperState, formData: FormData) {
     phone: formData.get('phone'),
     city_id: formData.get('city_id'),
     package_id: formData.get('package_id'),
-    datetime: formData.get('datetime')
+    datetime: formData.get('datetime'),
+    url: formData.get('url')
   });
 
   // If form validation fails, return errors early. Otherwise, continue.
@@ -481,7 +484,7 @@ export async function createJumper(prevState: JumperState, formData: FormData) {
   }
 
   // Prepare data for insertion into the database
-  const { name, email, phone, city_id, package_id, datetime } = validatedFields.data;
+  const { name, email, phone, city_id, package_id, datetime, url } = validatedFields.data;
 
   const submittime = new Date().toISOString(); // insert submitted time
 
@@ -508,8 +511,8 @@ export async function createJumper(prevState: JumperState, formData: FormData) {
   };
 
 
-  revalidatePath(`/guest/success`);
-  redirect(`/guest/success`);
+  revalidatePath(`/${url}/success`);
+  redirect(`/${url}/success`);
 }
 
 

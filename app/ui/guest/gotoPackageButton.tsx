@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation';
 
 interface BuyNowButtonProps {
     packageId: string;
+    url: string
 }
 
-const BuyNowButton: React.FC<BuyNowButtonProps> = ({ packageId }) => {
+const BuyNowButton: React.FC<BuyNowButtonProps> = ({ packageId, url }) => {
     const router = useRouter();
 
     const handleBuyNowClick = () => {
         // Navigate to the package detail page
-        router.push(`/guest/packages/${packageId}`);
+        router.push(`/${url}/packages/${packageId}`);
         console.log("click");
 
     };

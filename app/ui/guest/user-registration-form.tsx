@@ -10,11 +10,11 @@ import { useSearchParams } from 'next/navigation';
 
 
 
-export default function Form({ cities }: { cities: City[] }) {
+export default function Form({ url, cities }: { url: string, cities: City[] }) {
     const initialState = { message: null, errors: {} };
     const [state, dispatch] = useFormState(createJumper, initialState); //Todo: make acton to save jumpers data -> after execute -> save orders data. 
     const searchParams = useSearchParams()
-    console.log("this is from the params", searchParams.get('package')) // Logs "search"
+    console.log("this is from the form", url) // Logs "search"
 
     const dateSelected = searchParams.get('datetime');
     const packageSelected = searchParams.get('package');
@@ -30,6 +30,7 @@ export default function Form({ cities }: { cities: City[] }) {
             <div className="rounded-md bg-gray-50 p-6 md:p-20">
                 <input type="hidden" name="datetime" value={formattedDatetime} />
                 <input type="hidden" name="package_id" value={formattedPackageSelected} />
+                <input type="hidden" name="url" value={url} />
                 {/* Uer Name */}
                 <div className="mb-4">
                     <label htmlFor="name" className="mb-2 block text-sm font-medium">
