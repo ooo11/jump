@@ -9,14 +9,14 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: string, url: string } }) {
     const packageId = params.id;
-    const vendorUrl = params.url
+    const vendorURL = params.url
 
 
     return (
         <div className="w-full">
 
             <div className="mt-5 flex w-full justify-center">
-                <Calendar packageId={packageId} vendorURL={vendorUrl} />
+                <Calendar packageId={packageId} vendorURL={vendorURL} />
             </div>
         </div>
     );
