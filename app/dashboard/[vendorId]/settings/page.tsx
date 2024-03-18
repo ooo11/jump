@@ -14,12 +14,11 @@ export default async function Page({ params }: { params: { vendorId: string } })
     const id = params.vendorId;
     console.log("this is the id", id);
 
-    const [vendor, category, profilePic, url, allURL] = await Promise.all([
+    const [vendor, category, profilePic, url] = await Promise.all([
         fetchVendorById(id),
         fetchCategory(),
         fetchVendorProfilePicById(id),
         fetchVendorUrlById(id),
-        fetchVendorUrl()
     ]);
     if (!vendor) {
         notFound();
@@ -27,7 +26,7 @@ export default async function Page({ params }: { params: { vendorId: string } })
     return (
         <main>
 
-            <Form vendor={vendor} categories={category} profilePic={profilePic} url={url.url} allURL={allURL} />
+            <Form vendor={vendor} categories={category} profilePic={profilePic} url={url.url} />
         </main>
     );
 }

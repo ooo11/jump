@@ -20,7 +20,6 @@ export default function EditVendorForm({
     categories,
     profilePic,
     url
-
 }: {
     vendor: VendorForm;
     categories: Category[];
