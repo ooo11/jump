@@ -624,13 +624,14 @@ export async function fetchFilteredOrders(
   try {
     const orders = await sql<latestOrders>`
       SELECT
-        orders.id,
-        orders.datetime,
-        orders.status,
-        jumpers.name,
-        jumpers.email,
-        jumpers.phone,
-        packages.price
+        orders.id AS id,
+        orders.datetime AS datetime,
+        orders.status AS status,
+        jumpers.name AS name,
+        jumpers.email AS email,
+        jumpers.phone AS phone,
+        packages.price AS price,
+        packages.name AS packagename
       FROM orders
       JOIN jumpers ON orders.jumper_id = jumpers.id
       JOIN packages ON orders.package_id = packages.id
@@ -639,6 +640,7 @@ export async function fetchFilteredOrders(
         jumpers.email ILIKE ${`%${query}%`} OR
         jumpers.phone ILIKE ${`%${query}%`} OR
         packages.price::text ILIKE ${`%${query}%`} OR
+        packages.name ILIKE ${`%${query}%`} OR
         orders.datetime::text ILIKE ${`%${query}%`} OR
         orders.status ILIKE ${`%${query}%`})
         AND packages.vendor_id = ${vendorId}
@@ -671,6 +673,7 @@ export async function fetchAllOrders(
         jumpers.email AS email,
         jumpers.phone AS phone,
         packages.price as price,
+        packages.name as packagename,
         vendors.name AS vendorname,
         cities.name AS city
       FROM orders
@@ -683,6 +686,7 @@ export async function fetchAllOrders(
         jumpers.email ILIKE ${`%${query}%`} OR
         jumpers.phone ILIKE ${`%${query}%`} OR
         packages.price::text ILIKE ${`%${query}%`} OR
+        packages.name ILIKE ${`%${query}%`} OR
         orders.datetime::text ILIKE ${`%${query}%`} OR
         orders.status ILIKE ${`%${query}%`} OR
         vendors.name ILIKE ${`%${query}%`}

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
+import { formatDateToLocal, formatCurrency, formatTimeToLocal } from '@/app/lib/utils';
 import { fetchFilteredOrders } from '@/app/lib/data';
 import OrderStatus from '@/app/ui/invoices/status';
 
@@ -41,7 +41,11 @@ export default async function InvoicesTable({
                     <p className="text-xl font-medium">
                       {formatCurrency(order.price / 100)}
                     </p>
-                    <p>{formatDateToLocal(order.datetime)}</p>
+                    <p>
+                      {order.packagename} <br />
+                      {formatDateToLocal(order.datetime)} <br />
+                      {formatTimeToLocal(order.datetime)} <br />
+                      {order.city}</p>
                   </div>
                   <div className="flex justify-end gap-2">
                     {(order.status === 'paid' || order.status === 'accepted') && (
@@ -60,16 +64,16 @@ export default async function InvoicesTable({
                   Customer
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Contact
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Phone
+                  Package
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Amount
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date & time
+                  Location & Time
                 </th>
 
                 <th scope="col" className="px-3 py-5 font-medium">
@@ -92,16 +96,20 @@ export default async function InvoicesTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {order.email}
+                    {order.email} <br />
+                    {order.phone}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {order.phone}
+                    {order.packagename}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(order.price / 100)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(order.datetime)}
+                    {order.packagename} <br />
+                    {formatDateToLocal(order.datetime)} <br />
+                    {formatTimeToLocal(order.datetime)} <br />
+                    {order.city}
                   </td>
 
                   <td className="whitespace-nowrap px-3 py-3">

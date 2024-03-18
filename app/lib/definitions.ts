@@ -230,6 +230,7 @@ export type latestOrders = {
   datetime: string;
   status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
   vendorname: string;
+  packagename: string;
 };
 
 export type orderStatus = {

@@ -28,7 +28,7 @@ export default async function InvoicesTable({
                     <div className="mb-2 flex items-center">
                       <p>{order.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{order.email} {order.vendorname}</p>
+                    <p className="text-sm text-gray-500">{order.email} <br /> {order.phone}<br /> {order.vendorname}</p>
                   </div>
                   <OrderStatus status={order.status} />
                 </div>
@@ -37,7 +37,9 @@ export default async function InvoicesTable({
                     <p className="text-xl font-medium">
                       {formatCurrency(order.price / 100)}
                     </p>
-                    <p>{formatDateToLocal(order.datetime)} <br />
+                    <p>
+                      {order.packagename} <br />
+                      {formatDateToLocal(order.datetime)} <br />
                       {formatTimeToLocal(order.datetime)} <br />
                       {order.city}</p>
                   </div>
@@ -61,13 +63,13 @@ export default async function InvoicesTable({
                   Contact
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Vendor
+                  Vendor & Package
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Amount
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date & time
+                  Location & Time
                 </th>
 
                 <th scope="col" className="px-3 py-5 font-medium">
@@ -94,7 +96,8 @@ export default async function InvoicesTable({
                     {order.phone}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {order.vendorname.length > 15 ? order.vendorname.substring(0, 15) + '...' : order.vendorname}
+                    {order.vendorname.length > 15 ? order.vendorname.substring(0, 15) + '...' : order.vendorname} <br />
+                    {order.packagename}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(order.price / 100)}
