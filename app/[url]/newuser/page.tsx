@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 export default async function Page({ params }: { params: { url: string } }) {
     const [city] = await Promise.all([fetchCity()]);
 
-    console.log("Here at form new user", params.url);
 
     return (
         <div className="mt-5 flex w-full justify-center">

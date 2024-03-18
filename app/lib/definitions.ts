@@ -1,3 +1,4 @@
+import { vendorId } from './config';
 // This file contains type definitions for your data.
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
@@ -216,7 +217,7 @@ export type Orders = {
   jumper_id: string;
   datetime: string;
   submittime: string;
-  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'pending work' | 'complete' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
+  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
 };
 
 export type latestOrders = {
@@ -224,15 +225,17 @@ export type latestOrders = {
   name: string;
   email: string;
   phone: string;
+  city: string;
   price: number;
   datetime: string;
-  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'pending work' | 'complete' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
+  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
+  vendorname: string;
 };
 
 export type orderStatus = {
   some: any;
   id: string;
-  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'pending work' | 'complete' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
+  status: 'pending payment' | 'paid' | 'accepted' | 'decline' | 'delivered' | 'incomplete' | 'release payment' | 'report issue' | 'cancelled';
 };
 
 export type vendorURL = {

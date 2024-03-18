@@ -1,6 +1,9 @@
+"use client"
+
 import { BellAlertIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { deleteInvoice } from '@/app/lib/actions';
+import { deleteInvoice, deleteOrderAdmin } from '@/app/lib/actions';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export function CreateInvoice() {
   return (
@@ -14,11 +17,11 @@ export function CreateInvoice() {
   );
 }
 
-export function UpdateInvoice({ id, children }: { id: string; children?: React.ReactNode }) {
+export function UpdateInvoice({ vendorId, id, children }: { vendorId: string; id: string; children?: React.ReactNode }) {
   return (
 
     <Link
-      href={`/dashboard/orders/${id}/edit`}
+      href={`/dashboard/${vendorId}/orders/${id}/edit`}
       className="rounded-md border p-2 bg-black text-white hover:bg-gray-800"
     >
       Update status
@@ -26,6 +29,20 @@ export function UpdateInvoice({ id, children }: { id: string; children?: React.R
 
   );
 }
+
+export function UpdateAdminOrder({ id, children }: { id: string; children?: React.ReactNode }) {
+  return (
+
+    <Link
+      href={`/dashboard/admin/orders/${id}/edit`}
+      className="rounded-md border p-2 bg-black text-white hover:bg-gray-800"
+    >
+      <BellAlertIcon className="w-4" />
+    </Link>
+
+  );
+}
+
 
 export function DeleteInvoice({ id }: { id: string }) {
   const deleteInvoiceWithId = deleteInvoice.bind(null, id);
@@ -35,6 +52,45 @@ export function DeleteInvoice({ id }: { id: string }) {
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-4" />
       </button>
+    </form>
+  );
+}
+
+export function DeleteAdminOrder({ id }: { id: string }) {
+  const [isConfirming, setIsConfirming] = useState(false);
+
+  const deleteOrderWithId = () => {
+    if (isConfirming) {
+      deleteOrderAdmin(id);
+    } else {
+      setIsConfirming(true);
+    }
+  };
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); }}>
+      {isConfirming ? (
+        <>
+          <p>Delete this order forever?</p>
+          <button
+            className="rounded-md border p-2 bg-red-500 text-white mr-2"
+            onClick={deleteOrderWithId}
+          >
+            Confirm
+          </button>
+          <button
+            className="rounded-md border p-2 bg-gray-200 text-gray-700"
+            onClick={() => setIsConfirming(false)}
+          >
+            Cancel
+          </button>
+        </>
+      ) : (
+        <button className="rounded-md border p-2 hover:bg-gray-100" onClick={deleteOrderWithId}>
+          <span className="sr-only">Delete</span>
+          <TrashIcon className="w-4" />
+        </button>
+      )}
     </form>
   );
 }

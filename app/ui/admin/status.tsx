@@ -72,7 +72,7 @@ function getStatusTooltip(status: string): string {
     case 'incomplete':
       return 'Payment refund to the customer 😭';
     case 'release payment':
-      return '🎉🎊Congratulations!🎊🎉';
+      return 'Release Payment';
     case 'report issue':
       return 'Report subbmitted.';
     case 'cancelled':

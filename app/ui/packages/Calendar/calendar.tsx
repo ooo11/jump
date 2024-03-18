@@ -19,9 +19,7 @@ export function Calendar({ packageId, vendorURL }: { packageId: string, vendorUR
         dateTime: null
     });
 
-    console.log('Package ID inside Calendar:', packageId);
 
-    // console.log(date.dateTime);
     const handleTimeSelection = useCallback((selectedTime: Date) => {
         if (!date.justDate) {
             // Handle the case where date.justDate is null

@@ -12,17 +12,37 @@ export const formatDateToLocal = (
   locale: string = 'en-UK',
 ) => {
   const date = new Date(dateStr);
-  const options: Intl.DateTimeFormatOptions = {
+
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
+  });
+
+
+  const formattedDate = dateFormatter.format(date);
+
+  return `${formattedDate}`;
+};
+
+export const formatTimeToLocal = (
+  dateStr: string,
+  locale: string = 'en-UK',
+) => {
+  const date = new Date(dateStr);
+
+  const timeFormatter = new Intl.DateTimeFormat(locale, {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true,
-  };
-  const formatter = new Intl.DateTimeFormat(locale, options);
-  return formatter.format(date);
+  });
+
+  const formattedTime = timeFormatter.format(date);
+
+  return `${formattedTime}`;
 };
+
+
 
 export const generateYAxis = (revenue: Revenue[]) => {
   // Calculate what labels we need to display on the y-axis

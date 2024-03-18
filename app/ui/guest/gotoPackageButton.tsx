@@ -14,7 +14,6 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({ packageId, url }) => {
     const handleBuyNowClick = () => {
         // Navigate to the package detail page
         router.push(`/${url}/packages/${packageId}`);
-        console.log("click");
 
     };
 

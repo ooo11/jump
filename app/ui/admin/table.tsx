@@ -1,26 +1,22 @@
-import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredOrders } from '@/app/lib/data';
-import OrderStatus from '@/app/ui/invoices/status';
+import { DeleteAdminOrder, UpdateAdminOrder } from '@/app/ui/invoices/buttons';
+import { formatDateToLocal, formatCurrency, formatTimeToLocal } from '@/app/lib/utils';
+import { fetchAllOrders, fetchVendorById } from '@/app/lib/data';
+import OrderStatus from '@/app/ui/admin/status';
 
 export default async function InvoicesTable({
   query,
   currentPage,
-  vendorId,
 }: {
   query: string;
   currentPage: number;
-  vendorId: string;
 }) {
-  const orders = await fetchFilteredOrders(query, currentPage, vendorId);
-  console.log("table herer ", vendorId);
+  const orders = await fetchAllOrders(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          {/* this one is for the mobile view */}
           <div className="md:hidden">
             {orders?.map((order) => (
               <div
@@ -32,7 +28,7 @@ export default async function InvoicesTable({
                     <div className="mb-2 flex items-center">
                       <p>{order.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{order.email}</p>
+                    <p className="text-sm text-gray-500">{order.email} {order.vendorname}</p>
                   </div>
                   <OrderStatus status={order.status} />
                 </div>
@@ -41,13 +37,15 @@ export default async function InvoicesTable({
                     <p className="text-xl font-medium">
                       {formatCurrency(order.price / 100)}
                     </p>
-                    <p>{formatDateToLocal(order.datetime)}</p>
+                    <p>{formatDateToLocal(order.datetime)} <br />
+                      {formatTimeToLocal(order.datetime)} <br />
+                      {order.city}</p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    {(order.status === 'paid' || order.status === 'accepted') && (
-                      <UpdateInvoice vendorId={vendorId} id={order.id} />
+                    {(order.status === 'pending payment' || order.status === 'delivered') && (
+                      <UpdateAdminOrder id={order.id} />
                     )}
-
+                    <DeleteAdminOrder id={order.id} />
                   </div>
                 </div>
               </div>
@@ -60,10 +58,10 @@ export default async function InvoicesTable({
                   Customer
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Contact
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Phone
+                  Vendor
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Amount
@@ -92,16 +90,19 @@ export default async function InvoicesTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {order.email}
+                    {order.email} <br />
+                    {order.phone}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {order.phone}
+                    {order.vendorname.length > 15 ? order.vendorname.substring(0, 15) + '...' : order.vendorname}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(order.price / 100)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(order.datetime)}
+                    {formatDateToLocal(order.datetime)} <br />
+                    {formatTimeToLocal(order.datetime)} <br />
+                    {order.city}
                   </td>
 
                   <td className="whitespace-nowrap px-3 py-3">
@@ -109,10 +110,10 @@ export default async function InvoicesTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      {(order.status === 'paid' || order.status === 'accepted') && (
-                        <UpdateInvoice vendorId={vendorId} id={order.id} />
+                      {(order.status === 'pending payment' || order.status === 'delivered') && (
+                        <UpdateAdminOrder id={order.id} />
                       )}
-
+                      <DeleteAdminOrder id={order.id} />
                     </div>
                   </td>
                 </tr>

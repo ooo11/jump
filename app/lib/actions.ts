@@ -9,6 +9,10 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 const bcrypt = require('bcrypt');
 
+const phoneRegex = new RegExp(
+  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
+);
+
 
 const FormSchema = z.object({
   id: z.string(),
@@ -34,6 +38,19 @@ const VendorOrderFormSchema = z.object({
   status: z.enum(['accepted', 'decline', 'incomplete', 'delivered'], {
     invalid_type_error: 'Please select a status.',
   }),
+  vendor_id: z.string(),
+
+});
+
+const AdminOrderFormSchema = z.object({
+  id: z.string(),
+  package_id: z.string(),
+  jumper_id: z.string(),
+  datetime: z.string(),
+  submittime: z.string(),
+  status: z.enum(['pending payment', 'paid', 'accepted', 'decline', 'delivered', 'pending work', 'complete', 'incomplete', 'release payment', 'report issue', 'cancelled'], {
+    invalid_type_error: 'Please select a status.',
+  })
 
 });
 
@@ -71,6 +88,13 @@ const VendorSchema = z.object({
   user_id: z.string(),
   category_id: z.string(),
   image_url: z.string(),
+  url: z
+    .string()
+    .trim()
+    .min(4, { message: "Must be 4 or more characters long" })
+    .max(100, { message: "Must be 100 or fewer characters long" })
+    .refine((value) => /^[a-zA-Z]+[-'s]?[a-zA-Z ]+$/.test(value ?? ""), 'Name should contain only alphabets')
+
 });
 
 
@@ -80,7 +104,7 @@ const JumperSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
-  phone: z.string(),
+  phone: z.string().regex(phoneRegex, 'Invalid Phone Number!').min(9, { message: "Must be 9 or more characters long" }).startsWith("01"),
   city_id: z.string(),
   jumper_id: z.string(),
   package_id: z.string(),
@@ -117,6 +141,10 @@ const UpdateJumpers = JumperSchema.omit({ id: true });
 //things to omit from the form so that its the same.
 const CreateVendorOrder = VendorOrderFormSchema.omit({ id: true });
 const UpdateVendorOrder = VendorOrderFormSchema.omit({ id: true, package_id: true, jumper_id: true, submittime: true, datetime: true });
+
+const CreateAdminOrder = AdminOrderFormSchema.omit({ id: true });
+const UpdateAdminOrder = AdminOrderFormSchema.omit({ id: true, package_id: true, jumper_id: true, submittime: true, datetime: true });
+
 
 export type State = {
   errors?: {
@@ -157,6 +185,7 @@ export type VendorState = {
     userId?: string[];
     categoryId?: string[];
     image_url?: string[];
+    url?: string[];
   };
   message?: string | null;
 };
@@ -298,7 +327,7 @@ export async function createPackages(prevState: PackageState, formData: FormData
     features: formData.get('features'),
 
   });
-  console.log(validatedFields);
+
 
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
@@ -423,9 +452,9 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
     about: formData.get('about'),
     category_id: formData.get('category_id'),
     image_url: formData.get('image_url'),
+    url: formData.get('url')
   });
 
-  console.log('Form Data for update vendor:', validatedFields);
 
   if (!validatedFields.success) {
     return {
@@ -435,7 +464,7 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
 
   }
 
-  const { name, about, category_id, image_url } = validatedFields.data;
+  const { name, about, category_id, image_url, url } = validatedFields.data;
 
 
 
@@ -449,6 +478,13 @@ export async function updateVendor(id: string, prevState: VendorState, formData:
     UPDATE vendorprofilepic
     SET image_url = ${image_url}
     WHERE vendor_id = ${id}
+    `;
+
+    await sql`
+    UPDATE vendorurl
+    SET url = ${url}
+    WHERE vendor_id = ${id}
+    AND NOT EXISTS (SELECT 1 FROM vendorurl WHERE url = ${url})
     `;
 
 
@@ -497,8 +533,6 @@ export async function createJumper(prevState: JumperState, formData: FormData) {
     RETURNING id;`;
 
     const jumper_id: string = (jumperResult as QueryResult<QueryResultRow & { id: string }>).rows[0].id;
-    console.log("This is the jumper: ", jumper_id);
-
 
     await sql`
     INSERT INTO orders (jumper_id, package_id, datetime, submittime, status)
@@ -518,6 +552,42 @@ export async function createJumper(prevState: JumperState, formData: FormData) {
 
 export async function updateOrderStatus(id: string, prevState: State, formData: FormData) {
   const validatedFields = UpdateVendorOrder.safeParse({
+    status: formData.get('status'),
+    vendor_id: formData.get('vendor_id'),
+  });
+  // If form validation fails, return errors early. Otherwise, continue.
+  //if no data enter -> return error, supposed if no data = existing data is input
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
+    };
+
+  }
+
+  const { status, vendor_id } = validatedFields.data;
+
+
+  try {
+    await sql`
+      UPDATE orders
+      SET status = ${status}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Update Invoice.',
+    };
+  }
+
+  revalidatePath(`/dashboard/${vendor_id}/orders`);
+  redirect(`/dashboard/${vendor_id}/orders`);
+
+}
+
+export async function updateAdminOrderStatus(id: string, prevState: State, formData: FormData) {
+  const validatedFields = UpdateAdminOrder.safeParse({
     status: formData.get('status'),
   });
   // If form validation fails, return errors early. Otherwise, continue.
@@ -546,7 +616,22 @@ export async function updateOrderStatus(id: string, prevState: State, formData: 
     };
   }
 
-  revalidatePath('/dashboard/orders');
-  redirect('/dashboard/orders');
+  revalidatePath('/dashboard/admin/orders');
+  redirect('/dashboard/admin/orders');
 
+}
+
+
+export async function deleteOrderAdmin(id: string) {
+
+  try {
+    await sql`DELETE FROM orders WHERE id = ${id}`;
+    revalidatePath('/dashboard/admin/order');
+    return { message: `Deleted Order id ${id}` };
+
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Delete Order.',
+    };
+  }
 }

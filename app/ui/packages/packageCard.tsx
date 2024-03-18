@@ -22,8 +22,7 @@ export default async function Packages({
         <div className="mx-auto max-w-lg px-2 lg:px-4">
             <div className="mx-auto mt-8 max-w-lg rounded-3xl ring-1 ring-gray-200 sm:mt-20 lg:mx-0 lg:flex lg:max-w-none">
                 <div className="p-6 sm:p-8 lg:flex-auto">
-                    <div className="relative flex h-32 w-38 cursor-pointer flex-col overflow-hidden rounded-xl bg-white bg-clip-border text-gray-700 shadow-md transition-opacity hover:opacity-90"
-                        data-dialog-target="image-dialog" >
+                    <div className="relative flex h-32 w-38 flex-col overflow-hidden rounded-xl bg-white bg-clip-border text-gray-700 shadow-md transition-opacity" >
                         <Image
                             src={packages.image_url}
                             width={300}

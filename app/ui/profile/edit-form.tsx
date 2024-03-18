@@ -1,7 +1,7 @@
 'use client';
 import { updatePackages, updateVendor } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-import { Category, VendorForm, VendorLinkForm, VendorProfilePicForm } from '@/app/lib/definitions';
+import { Category, VendorForm, VendorLinkForm, VendorProfilePicForm, vendorURL } from '@/app/lib/definitions';
 import {
 
     CurrencyDollarIcon, HashtagIcon,
@@ -19,11 +19,13 @@ export default function EditVendorForm({
     vendor,
     categories,
     profilePic,
+    url
 
 }: {
     vendor: VendorForm;
     categories: Category[];
     profilePic: VendorProfilePicForm;
+    url: string;
 
 }) {
     const initialState = { message: null, errors: {} };
@@ -37,8 +39,6 @@ export default function EditVendorForm({
     };
 
 
-    const baseLink = `/dashboard`
-
     const [uploadURL, setUploadURL] = useState();
 
     const [publicId, setPublicId] = useState(); // Track the public ID of the uploaded image
@@ -47,7 +47,7 @@ export default function EditVendorForm({
 
             const secureUrl = results.info?.secure_url;
             const publicId = results.info?.public_id;
-            console.log("Done! Here is the image info: ", secureUrl);
+
             setUploadURL(secureUrl);
             setPublicId(publicId);
         }
@@ -82,7 +82,7 @@ export default function EditVendorForm({
                 timestamp: timestamp,
             });
 
-            console.log("Image deleted! Here are the delete callback: ", response);
+
 
         } catch (error) {
             console.error(error);
@@ -100,7 +100,7 @@ export default function EditVendorForm({
             <input type="hidden" name="id" value={vendor.id} />
             <input type="hidden" name="vendor_id" value={vendor.user_id} />
             <div className="rounded-md bg-gray-50 p-4 md:p-6">
-                {/* Package Name */}
+                {/* Business Name */}
                 <div className="mb-4">
                     <label htmlFor="name" className="mb-2 block text-sm font-medium">
                         What&apos;s your business name?
@@ -130,7 +130,38 @@ export default function EditVendorForm({
                     </div>
                 </div>
 
-                {/* Package Detail */}
+                {/* Business URL */}
+                <div className="mb-4">
+                    <label htmlFor="url" className="mb-2 block text-sm font-medium">
+                        What&apos;s your business url?
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <input
+                                id="url"
+                                type="text"
+                                name="url"
+                                defaultValue={url}
+                                placeholder="Enterbusinessurl"
+                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-32 text-sm outline-2 placeholder:text-gray-500"
+                                aria-describedby="name-error"
+                            />
+                            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" >jumpsay.com/</span>
+                        </div>
+                    </div>
+
+
+                    <div id="customer-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.url &&
+                            state.errors.url.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                {/* Business About */}
 
                 <div className="mb-4">
                     <label htmlFor="about" className="mb-2 block text-sm font-medium">
@@ -198,8 +229,8 @@ export default function EditVendorForm({
                             {!uploadURL && (
                                 <div>
                                     <CldImage
-                                        width="960"
-                                        height="600"
+                                        width="300"
+                                        height="300"
                                         src={profilePic.image_url}
                                         sizes="100vw"
                                         alt="Description of my uploaded image"
@@ -212,8 +243,8 @@ export default function EditVendorForm({
                                 <div>
                                     <input type="hidden" name="image_url" value={uploadURL} />
                                     <CldImage
-                                        width="960"
-                                        height="600"
+                                        width="300"
+                                        height="300"
                                         src={uploadURL}
                                         sizes="100vw"
                                         alt="Description of my uploaded image"
@@ -278,7 +309,7 @@ export default function EditVendorForm({
             </div>
             <div className="mt-6 flex justify-end gap-4">
                 <Link
-                    href='/dashboard'
+                    href={`/dashboard/${vendor.id}`}
                     className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
                 >
                     Cancel

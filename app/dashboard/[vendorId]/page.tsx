@@ -17,15 +17,18 @@ export const metadata: Metadata = {
 export default async function Page({ params }: { params: { vendorId: string } }) {
   const id = params.vendorId;
 
-  const [vendor, pack, profilepic, url] = await Promise.all([
-    fetchVendorById(id),
+  const vendor = await fetchVendorById(id);
+  if (!vendor) {
+    notFound();
+  }
+
+  const [pack, profilepic, url] = await Promise.all([
+
     fetchPackageByVendorId(id),
     fetchVendorProfilePicById(id),
     fetchVendorUrlById(id)
   ]);
-  if (!vendor) {
-    notFound();
-  }
+
 
   const user = await getUserbyId(vendor.user_id);
   const city = await getCitybyId(user.city_id);
@@ -65,7 +68,7 @@ export default async function Page({ params }: { params: { vendorId: string } })
 
 
 
-      <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-1 sm:px-2'>
+      <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-2 sm:px-2'>
         {pack.map((pack, index) => (
           <div key={index} className='overflow-hidden'>
             <Packages query={pack.id} />

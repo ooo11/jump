@@ -1,4 +1,4 @@
-import { fetchCategory, fetchVendorById, fetchVendorProfilePicById } from '@/app/lib/data';
+import { fetchCategory, fetchVendorById, fetchVendorProfilePicById, fetchVendorUrl, fetchVendorUrlById } from '@/app/lib/data';
 import { UpdateVendor } from '@/app/ui/profile/buttons';
 import { Metadata } from 'next';
 import Form from '@/app/ui/profile/edit-form';
@@ -14,11 +14,12 @@ export default async function Page({ params }: { params: { vendorId: string } })
     const id = params.vendorId;
     console.log("this is the id", id);
 
-    const [vendor, category, profilePic] = await Promise.all([
+    const [vendor, category, profilePic, url, allURL] = await Promise.all([
         fetchVendorById(id),
         fetchCategory(),
         fetchVendorProfilePicById(id),
-
+        fetchVendorUrlById(id),
+        fetchVendorUrl()
     ]);
     if (!vendor) {
         notFound();
@@ -26,7 +27,7 @@ export default async function Page({ params }: { params: { vendorId: string } })
     return (
         <main>
 
-            <Form vendor={vendor} categories={category} profilePic={profilePic} />
+            <Form vendor={vendor} categories={category} profilePic={profilePic} url={url.url} allURL={allURL} />
         </main>
     );
 }

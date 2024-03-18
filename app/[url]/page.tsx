@@ -16,14 +16,20 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { url: string } }) {
     const url = params.url;
-    const [vendor, pack, photo] = await Promise.all([
-        fetchVendorByURL(url),
-        fetchPackageByVendorURL(url),
-        fetchVendorProfilePicByURL(url)
-    ]);
+
+    const vendor = await fetchVendorByURL(url);
+
+    // Check if vendor exists, if not, navigate to 404 page
     if (!vendor) {
         notFound();
     }
+
+
+    const [pack, photo] = await Promise.all([
+        fetchPackageByVendorURL(url),
+        fetchVendorProfilePicByURL(url)
+    ]);
+
 
     return (
 
@@ -53,7 +59,7 @@ export default async function Page({ params }: { params: { url: string } }) {
                 </div>
 
 
-                <div className='md:mx-44 grid sm:grid-cols-2 md:grid-cols-3 gap-1 sm:px-2'>
+                <div className='md:mx-44 grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:px-2'>
                     {pack.map((pack, index) => (
                         <div key={index} className='overflow-hidden'>
                             <Packages query={pack.id} />

@@ -402,7 +402,28 @@ export async function fetchVendorById(id: string) {
 
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch vendor.');
+    throw new Error('Failed to fetch vendor by id.');
+  }
+}
+
+export async function fetchVendorByIdFront(id: string) {
+
+  noStore();
+
+  try {
+    const data = await sql<Vendor>`
+      SELECT
+        *
+      FROM vendors
+      WHERE vendors.id = ${id};
+    `;
+
+    const vendor = data.rows[0];
+    return vendor;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    return null; // Return null instead of throwing an error
   }
 }
 
@@ -629,6 +650,77 @@ export async function fetchFilteredOrders(
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch orders.');
+  }
+}
+
+export async function fetchAllOrders(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const orders = await sql<latestOrders>`
+      SELECT
+        orders.id AS id,
+        orders.datetime AS datetime,
+        orders.status AS status,
+        jumpers.name AS name,
+        jumpers.email AS email,
+        jumpers.phone AS phone,
+        packages.price as price,
+        vendors.name AS vendorname,
+        cities.name AS city
+      FROM orders
+      JOIN jumpers ON orders.jumper_id = jumpers.id
+      JOIN packages ON orders.package_id = packages.id
+      JOIN vendors ON packages.vendor_id = vendors.id
+      JOIN cities ON jumpers.city_id = cities.id
+      WHERE
+        jumpers.name ILIKE ${`%${query}%`} OR
+        jumpers.email ILIKE ${`%${query}%`} OR
+        jumpers.phone ILIKE ${`%${query}%`} OR
+        packages.price::text ILIKE ${`%${query}%`} OR
+        orders.datetime::text ILIKE ${`%${query}%`} OR
+        orders.status ILIKE ${`%${query}%`} OR
+        vendors.name ILIKE ${`%${query}%`}
+      ORDER BY orders.submittime DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+
+    return orders.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch orders.');
+  }
+}
+
+
+export async function fetchAdminOrdersPages(query: string) {
+  noStore();
+
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM orders
+    JOIN jumpers ON orders.jumper_id = jumpers.id
+    JOIN packages ON orders.package_id = packages.id
+    WHERE
+      jumpers.name ILIKE ${`%${query}%`} OR
+      jumpers.email ILIKE ${`%${query}%`} OR
+      jumpers.phone ILIKE ${`%${query}%`} OR
+      packages.price::text ILIKE ${`%${query}%`} OR
+      orders.datetime::text ILIKE ${`%${query}%`} OR
+      orders.status ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of orders.');
   }
 }
 
@@ -923,5 +1015,23 @@ export async function fetchVendorUrlById(id: string) {
   } catch (error) {
     console.error('Failed to fetch url:', error);
     throw new Error('Failed to fetch url.');
+  }
+}
+
+
+export async function fetchVendorUrl() {
+  noStore();
+
+  try {
+    const data = await sql<vendorURL>`
+    SELECT
+    *
+  FROM vendorurl
+    `;
+    const urls = data.rows;
+    return urls;
+  } catch (error) {
+    console.error('Failed to fetch all url:', error);
+    throw new Error('Failed to fetch all url.');
   }
 }

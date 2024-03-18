@@ -24,7 +24,6 @@ export default function EditPackageForm({
     const initialState = { message: null, errors: {} };
     const updatePackageWithId = updatePackages.bind(null, pack.id);
     const [state, dispatch] = useFormState(updatePackageWithId, initialState);
-    const baseLink = `/dashboard/packages/` + pack.id
 
     const [uploadURL, setUploadURL] = useState();
 
@@ -34,7 +33,7 @@ export default function EditPackageForm({
 
             const secureUrl = results.info?.secure_url;
             const publicId = results.info?.public_id;
-            console.log("Done! Here is the image info: ", secureUrl);
+            // console.log("Done! Here is the image info: ", secureUrl);
             setUploadURL(secureUrl);
             setPublicId(publicId);
         }
@@ -70,7 +69,7 @@ export default function EditPackageForm({
                 timestamp: timestamp,
             });
 
-            console.log("Image deleted! Here are the delete callback: ", response);
+            // console.log("Image deleted! Here are the delete callback: ", response);
 
         } catch (error) {
             console.error(error);
@@ -295,7 +294,7 @@ export default function EditPackageForm({
             </div>
             <div className="mt-6 flex justify-end gap-4">
                 <Link
-                    href='/dashboard'
+                    href={`/dashboard/${pack.vendor_id}`}
                     className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
                 >
                     Cancel
