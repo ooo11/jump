@@ -1,48 +1,76 @@
+import NextAuth from "next-auth"
+import { PrismaAdapter } from '@auth/prisma-adapter';
 
-import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import { authConfig } from './auth.config';
-import { z } from 'zod';
-import { sql } from '@vercel/postgres';
-import type { User } from '@/app/lib/definitions';
-import bcrypt from 'bcrypt';
+import authConfig from "@/auth.config"
+import { db } from '@/app/lib/db';
+import { getUserById } from "@/data/user";
+import { UserRole } from "@prisma/client";
+import { getAccountByUserId } from "@/data/account";
 
-async function getUser(email: string): Promise<User | undefined> {
-  try {
-    const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
-    return user.rows[0];
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
-  }
-}
 
-export const { auth, signIn, signOut } = NextAuth({
-  ...authConfig,
-  providers: [
-    Credentials({
-      async authorize(credentials) {
-        const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
-          .safeParse(credentials);
 
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
-          const user = await getUser(email);
-          if (!user) return null;
-          const passwordsMatch = await bcrypt.compare(password, user.password);
-
-          if (passwordsMatch) return user;
+export const {
+    handlers: { GET, POST },
+    auth,
+    signIn,
+    signOut,
+    unstable_update,
+} = NextAuth({
+    pages: {
+        signIn: "/auth/login",
+        error: "/auth/error",
+    },
+    events: {
+        async linkAccount({ user }) {
+            await db.user.update({
+                where: { id: user.id },
+                data: { emailVerified: new Date() }
+            })
         }
+    },
+    callbacks: {
+        async signIn({ user, account }) {
 
-        console.log('Invalid credentials');
-        return null;
-      },
+            const existingUser = await getUserById(user.id);
 
-    }),
-
-  ],
-
-});
+            // Prevent sign in without email verification
+            if (!existingUser?.emailVerified) return false;
 
 
+
+            return true;
+        },
+        async session({ token, session }) {
+            if (token.sub && session.user) {
+                session.user.id = token.sub
+            }
+            if (token.role && session.user) {
+                session.user.role = token.role as UserRole
+            }
+            if (session.user) {
+                session.user = {
+                    ...session.user,
+                    name: token.name,
+                    image: token.image as string | null | undefined,
+                }
+            }
+            return session;
+        },
+        async jwt({ token }) {
+            if (!token.sub) return token;
+            const existingUser = await getUserById(token.sub);
+
+            if (!existingUser) return token
+
+            token.name = existingUser.name;
+            token.email = existingUser.email;
+            token.role = existingUser.role;
+            token.image = existingUser.image;
+
+            return token;
+        }
+    },
+    adapter: PrismaAdapter(db),
+    session: { strategy: "jwt" },
+    ...authConfig,
+})

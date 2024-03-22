@@ -1,12 +1,13 @@
 "use client"
 
 import Link from 'next/link';
-import NavLinks from '@/app/ui/dashboard/nav-links';
+import NavLinks from '@/app/(protected)/_components/nav-links';
 import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { logout } from '@/actions/logout';
+import JumpLogo from '@/app/(protected)/_components/jump-logo';
 
-export default function SideNav({ id }: { id: string }) {
+export default function SideNav({ id }: { id: string | undefined }) {
   const onClick = () => {
     logout();
   }
@@ -15,10 +16,10 @@ export default function SideNav({ id }: { id: string }) {
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
       <Link
         className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
-        href="/"
+        href="/dashboard"
       >
         <div className="w-32 text-white md:w-40">
-          <AcmeLogo />
+          <JumpLogo />
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
