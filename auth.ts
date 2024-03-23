@@ -31,6 +31,7 @@ export const {
     callbacks: {
         async signIn({ user, account }) {
 
+
             const existingUser = await getUserById(user.id);
 
             // Prevent sign in without email verification

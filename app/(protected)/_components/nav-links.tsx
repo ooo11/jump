@@ -22,7 +22,7 @@ export default function NavLinks({ id }: { id: string | undefined }) {
     { name: 'Home', href: `/dashboard`, icon: HomeIcon },
     {
       name: 'Orders',
-      href: `/dashboard/${id}/orders`,
+      href: `/orders`,
       icon: InboxArrowDownIcon,
     },
     {

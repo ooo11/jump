@@ -4,12 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { UserInfo } from '@/app/(protected)/_components/user-info';
 import { fetchCategoryById, fetchCityById } from '@/data/fetch-data';
 import { useCurrentUser } from '@/hooks/use-current-user';
-import { Category } from '@prisma/client';
-
-type City = {
-    id: string;
-    name: string;
-};
+import { Category, City } from '@prisma/client';
 
 export default function DashboardPage() {
     const user = useCurrentUser();
