@@ -18,6 +18,21 @@ export function CardSkeleton() {
   );
 }
 
+export function UserInfoSkeleton() {
+  return (
+    <div
+      className={`${shimmer} relative overflow-hidden rounded-xl bg-gray-100 p-2 shadow-sm`}
+    >
+      <div className="mt-5 flex w-full justify-center">
+        <div className="w-24 h-24 bg-gray-300 rounded-full" />
+      </div>
+      <div className="mt-5 h-6 bg-gray-300 rounded w-3/4 mx-auto"></div>
+      <div className="mt-2 h-4 bg-gray-300 rounded w-1/2 mx-auto"></div>
+      <div className="mt-5 h-4 bg-gray-300 rounded w-11/12 mx-auto"></div>
+    </div>
+  );
+}
+
 export function CardsSkeleton() {
   return (
     <>

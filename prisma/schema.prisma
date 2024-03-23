@@ -46,9 +46,26 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  about         String?
+  cityId        String? // Foreign key for City
+  categoryId    String? // Foreign key for Category
+  cities        City?     @relation(fields: [cityId], references: [id])
+  categories    Category? @relation(fields: [categoryId], references: [id])
   password      String?
   role          UserRole  @default(USER)
   accounts      Account[]
+}
+
+model City {
+  id    String @id @default(cuid())
+  name  String
+  users User[] // This indicates a City can have multiple Users
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String
+  users User[] // This indicates a Category can have multiple Users
 }
 
 model VerificationToken {

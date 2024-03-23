@@ -10,6 +10,7 @@ import { generateVerificationToken } from "@/app/lib/tokens";
 import { sendVerificationEmail } from "@/app/lib/mail";
 import { unstable_update } from "@/auth";
 
+
 export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
     const user = await currentUser();
     if (!user) {
@@ -68,11 +69,13 @@ export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
         user: {
             name: updatedUser.name,
             email: updatedUser.email,
-            role: updatedUser.role,
             image: updatedUser.image,
+            about: updatedUser.about,
+            cityId: updatedUser.cityId,
+            categoryId: updatedUser.categoryId,
+            role: updatedUser.role,
         }
     });
 
     return { success: "Settings Updated!" }
-
 }

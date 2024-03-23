@@ -1,12 +1,21 @@
 import { UserRole } from '@prisma/client';
 import * as z from 'zod';
 
+export const CategoriesSchema = z.object({
+    id: z.string(),
+    name: z.string()
+})
+
 
 export const SettingsSchema = z.object({
     name: z.string().optional(),
     role: z.enum([UserRole.ADMIN, UserRole.USER]),
     email: z.string().email().optional(),
     image: z.string().optional(),
+    about: z.string().optional(),
+    cityId: z.string().optional(),
+    categoryId: z.string().optional(),
+
     // Allow both undefined and empty strings, but enforce min length if a value is provided
     password: z.union([z.string().min(6), z.literal("")]).optional(),
     newPassword: z.union([z.string().min(6), z.literal("")]).optional(),

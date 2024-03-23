@@ -52,6 +52,10 @@ export const {
                     ...session.user,
                     name: token.name,
                     image: token.image as string | null | undefined,
+                    about: token.about as string | null,
+                    categoryId: token.categoryId as string | null | undefined,
+                    cityId: token.cityId as string | null | undefined,
+
                 }
             }
             return session;
@@ -66,6 +70,9 @@ export const {
             token.email = existingUser.email;
             token.role = existingUser.role;
             token.image = existingUser.image;
+            token.about = existingUser.about;
+            token.categoryId = existingUser.categoryId;
+            token.cityId = existingUser.cityId;
 
             return token;
         }
