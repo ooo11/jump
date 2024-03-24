@@ -5,8 +5,11 @@ import { UserInfo } from '@/app/(protected)/_components/user-info';
 import { fetchCategoryById, fetchCityById } from '@/data/fetch-data';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { Category, City } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+import LoginForm from '@/app/ui/login-form';
 
 export default function DashboardPage() {
+    const { data: session } = useSession()
     const user = useCurrentUser();
     const [city, setCity] = useState<City | null>(null); // State to store the city data
     const [category, setCategory] = useState<Category | null>(null); // State to store the city data
@@ -36,12 +39,19 @@ export default function DashboardPage() {
         }
     }, [user]); // Depend on `user` so it re-runs when `user` changes
 
+    if (session) {
+        return (
+            <main>
+                {/* Only pass `city` prop if it is not null */}
+                <UserInfo user={user} city={city} category={category} />
+            </main>
+        );
+    }
 
 
     return (
         <main>
-            {/* Only pass `city` prop if it is not null */}
-            <UserInfo user={user} city={city} category={category} />
+            <LoginForm />
         </main>
     );
 }
