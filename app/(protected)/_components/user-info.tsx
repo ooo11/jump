@@ -28,54 +28,52 @@ export const UserInfo = ({
 
     return (
 
-
-        <div className="min-h-screen gap-6 flex items-center justify-center ">
-            <div
-                className="bg-gray-100 relative  overflow-hidden group rounded-xl p-5 w-1/2">
-                <div className="flex items-center gap-4">
-                    {user?.image && isCloudinaryImage(user.image) ? (
-                        <CldImage
-                            className="w-24 h-24 rounded-full"
-                            width={100}
-                            height={100}
-                            src={`${user.image}?c_fill,g_auto,w_100,h_100`}
-                            sizes="100vw"
-                            alt="User profile image"
-                            crop="fill"
-                            priority
-                        />
-                    ) : (
-                        <Image
-                            className="w-24 h-24 rounded-full"
-                            width={100}
-                            height={100}
-                            src={user?.image || 'https://res.cloudinary.com/dqqwgyyfw/image/upload/v1710001757/n5gcpcacet43cel18w0t.jpg'}
-                            alt="User profile image"
-                        />
-                    )}
-                    <div className="w-fit ">
-                        <h1 className="text-gray-900  font-bold">
-                            {user?.name}
-                        </h1>
-                        <p className="text-gray-700">{user?.email}</p>
-                        <a
-                            className="text-xs text-gray-800  ">
-                            <div className="flex items-center space-x-1">
-                                <MapPinIcon className="w-5 h-5" />
-                                <span>{city?.name}</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                                <TagIcon className="w-5 h-5" />
-                                <span>{category?.name}</span>
-                            </div>
-                        </a>
-
-                    </div>
+        <div
+            className="bg-gray-100 relative overflow-hidden group rounded-xl p-3 md:p-5 w-full md:w-1/2"
+        >
+            <div className="flex items-center gap-4">
+                {user?.image && isCloudinaryImage(user.image) ? (
+                    <CldImage
+                        className="w-24 h-24 rounded-full"
+                        width={100}
+                        height={100}
+                        src={`${user.image}?c_fill,g_auto,w_100,h_100`}
+                        sizes="100vw"
+                        alt="User profile image"
+                        crop="fill"
+                        priority
+                    />
+                ) : (
+                    <Image
+                        className="w-24 h-24 rounded-full"
+                        width={100}
+                        height={100}
+                        src={user?.image || 'https://res.cloudinary.com/dqqwgyyfw/image/upload/v1710001757/n5gcpcacet43cel18w0t.jpg'}
+                        alt="User profile image"
+                    />
+                )}
+                <div className="w-fit ">
+                    <h1 className="text-gray-900  font-bold">
+                        {user?.name}
+                    </h1>
+                    <p className="text-gray-700">{user?.email}</p>
+                    <a
+                        className="text-xs text-gray-800  ">
+                        <div className="flex items-center space-x-1">
+                            <MapPinIcon className="w-5 h-5" />
+                            <span>{city?.name}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                            <TagIcon className="w-5 h-5" />
+                            <span>{category?.name}</span>
+                        </div>
+                    </a>
 
                 </div>
-                <div className="flex items-center mt-4">
-                    {user?.about}
-                </div>
+
+            </div>
+            <div className="flex items-center mt-4">
+                {user?.about}
             </div>
         </div>
     )

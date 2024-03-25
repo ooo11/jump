@@ -41,8 +41,9 @@ export default function DashboardPage() {
 
     return (
         <main>
-            {/* Only pass `city` prop if it is not null */}
-            <UserInfo user={user} city={city} category={category} />
+            <div className="min-h-screen gap-6 flex items-center justify-center ">
+                <UserInfo user={user} city={city} category={category} />
+            </div>
         </main>
     );
 }
