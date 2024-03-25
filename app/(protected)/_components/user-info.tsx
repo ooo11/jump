@@ -4,6 +4,7 @@ import { CldImage } from 'next-cloudinary';
 import { MapPinIcon, TagIcon } from "@heroicons/react/24/outline";
 import { Category } from "@prisma/client";
 import Image from "next/image";
+import { fill } from "lodash";
 
 interface UserInfoProps {
     user?: ExtendedUser;
@@ -26,41 +27,57 @@ export const UserInfo = ({
 
 
     return (
-        <div>
-            <div className="mt-5 flex w-full justify-center">
-                {user?.image && isCloudinaryImage(user.image) ? (
-                    <CldImage
-                        className="w-24 h-24 rounded-full"
-                        width={100}
-                        height={100}
-                        src={user.image}
-                        sizes="100vw"
-                        alt="User profile image"
-                        priority
-                    />
-                ) : (
-                    <Image
-                        className="w-24 h-24 rounded-full"
-                        width={100}
-                        height={100}
-                        src={user?.image || 'https://res.cloudinary.com/dqqwgyyfw/image/upload/v1710001757/n5gcpcacet43cel18w0t.jpg'}
-                        alt="User profile image"
-                    />
-                )}
-            </div>
-            <h1 className={`${lusitana.className} text-xl md:text-2xl mt-5 flex w-full justify-center`}>
-                {user?.name}
-            </h1>
-            <p className="flex w-full justify-center text-gray-400">
-                <MapPinIcon className="w-5 h-5" />{city?.name}
-                <TagIcon className="w-5 h-5" />{category?.name}
-            </p>
 
-            <div className="mt-5 flex w-full justify-center">
-                <p className='md:w-500 sm:w-full sm:mx-2'>
+
+        <div className="min-h-screen gap-6 flex items-center justify-center ">
+            <div
+                className="bg-gray-100 relative  overflow-hidden group rounded-xl p-5 w-1/2">
+                <div className="flex items-center gap-4">
+                    {user?.image && isCloudinaryImage(user.image) ? (
+                        <CldImage
+                            className="w-24 h-24 rounded-full"
+                            width={100}
+                            height={100}
+                            src={`${user.image}?c_fill,g_auto,w_100,h_100`}
+                            sizes="100vw"
+                            alt="User profile image"
+                            crop="fill"
+                            priority
+                        />
+                    ) : (
+                        <Image
+                            className="w-24 h-24 rounded-full"
+                            width={100}
+                            height={100}
+                            src={user?.image || 'https://res.cloudinary.com/dqqwgyyfw/image/upload/v1710001757/n5gcpcacet43cel18w0t.jpg'}
+                            alt="User profile image"
+                        />
+                    )}
+                    <div className="w-fit ">
+                        <h1 className="text-gray-900  font-bold">
+                            {user?.name}
+                        </h1>
+                        <p className="text-gray-700">{user?.email}</p>
+                        <a
+                            className="text-xs text-gray-800  ">
+                            <div className="flex items-center space-x-1">
+                                <MapPinIcon className="w-5 h-5" />
+                                <span>{city?.name}</span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                                <TagIcon className="w-5 h-5" />
+                                <span>{category?.name}</span>
+                            </div>
+                        </a>
+
+                    </div>
+
+                </div>
+                <div className="flex items-center mt-4">
                     {user?.about}
-                </p>
+                </div>
             </div>
         </div>
     )
 }
+

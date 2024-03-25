@@ -25,6 +25,7 @@ export const login = async (
     const { email, password, code } = validatedFields.data;
 
     const existingUser = await getUserByEmail(email);
+
     if (!existingUser || !existingUser.email || !existingUser.password) {
         return { error: "Email does not exist!" }
     }
@@ -88,12 +89,11 @@ export const login = async (
         }
     }
 
-
     try {
         await signIn("credentials", {
             email,
             password,
-            redirectTo: DEFAULT_LOGIN_REDIRECT,
+            redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
         })
     } catch (error) {
         if (error instanceof AuthError) {
