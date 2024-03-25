@@ -4,7 +4,6 @@ import { SessionProvider } from 'next-auth/react';
 import { auth } from "@/auth";
 import { Metadata } from 'next';
 
-import '../app/ui/packages/Calendar/calendar.css';
 
 export const metadata: Metadata = {
   title: {
@@ -22,6 +21,8 @@ export default async function RootLayout({
 }) {
 
   const session = await auth()
+
+
   return (
     <SessionProvider session={session}>
       <html lang="en">

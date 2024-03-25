@@ -3,6 +3,7 @@ import { lusitana } from '@/app/ui/fonts';
 import { CldImage } from 'next-cloudinary';
 import { MapPinIcon, TagIcon } from "@heroicons/react/24/outline";
 import { Category } from "@prisma/client";
+import Image from "next/image";
 
 interface UserInfoProps {
     user?: ExtendedUser;
@@ -21,21 +22,31 @@ export const UserInfo = ({
     category
 }: UserInfoProps
 ) => {
-
+    const isCloudinaryImage = (imageUrl: string) => imageUrl.includes("cloudinary.com");
 
 
     return (
         <div>
             <div className="mt-5 flex w-full justify-center">
-                <CldImage
-                    className="w-24 h-24 rounded-full"
-                    width={100}
-                    height={100}
-                    src={user?.image || 'https://res.cloudinary.com/dqqwgyyfw/image/upload/v1710001757/n5gcpcacet43cel18w0t.jpg'}
-                    sizes="100vw"
-                    alt="Description of my uploaded image"
-                    priority
-                />
+                {user?.image && isCloudinaryImage(user.image) ? (
+                    <CldImage
+                        className="w-24 h-24 rounded-full"
+                        width={100}
+                        height={100}
+                        src={user.image}
+                        sizes="100vw"
+                        alt="User profile image"
+                        priority
+                    />
+                ) : (
+                    <Image
+                        className="w-24 h-24 rounded-full"
+                        width={100}
+                        height={100}
+                        src={user?.image || 'https://res.cloudinary.com/dqqwgyyfw/image/upload/v1710001757/n5gcpcacet43cel18w0t.jpg'}
+                        alt="User profile image"
+                    />
+                )}
             </div>
             <h1 className={`${lusitana.className} text-xl md:text-2xl mt-5 flex w-full justify-center`}>
                 {user?.name}

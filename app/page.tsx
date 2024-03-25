@@ -15,39 +15,6 @@ export default function Page() {
             <strong>Welcome to Jumpsay</strong>
           </p>
           <Link
-            href="/dashboard/46f6b95b-067b-4553-af41-2a3f572b86c8"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>See the Dashboard For Meow Down Under Studio</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
-          <Link
-            href="/dashboard/57c76c6a-a085-4bfc-89de-b07850d17a6f"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>See the Dashboard For Vue Studio</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
-          <Link
-            href="/chopchop"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>See the Meow Down Under Studio Homepage</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
-          <Link
-            href="/vuestudio"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>See the Vue Studio Homepage</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
-
-          <Link
-            href="/dashboard/admin"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>See the Admin Homepage</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
-
-
-          <Link
             href="/auth/login"
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
           >

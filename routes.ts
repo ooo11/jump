@@ -6,7 +6,7 @@
 export const publicRoutes = [
     "/",
     "/auth/new-verification",
-
+    "/api/auth/providers",
 ];
 
 //todo: /[url] to be a public route
@@ -19,7 +19,8 @@ export const authRoutes = [
     "/auth/login",
     "/auth/register",
     "/auth/reset",
-    "/auth/new-password"
+    "/auth/new-password",
+    "/auth/error"
 ];
 
 

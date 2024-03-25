@@ -5,7 +5,8 @@ import authConfig from "@/auth.config"
 import { db } from '@/app/lib/db';
 import { getUserById } from "@/data/user";
 import { UserRole } from "@prisma/client";
-import { getAccountByUserId } from "@/data/account";
+import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
+import { getAccountByUserId } from "./data/account";
 
 
 
@@ -31,27 +32,45 @@ export const {
     callbacks: {
         async signIn({ user, account }) {
 
+            // Allow OAuth without email verification
+            if (account?.provider !== "credentials") return true;
 
             const existingUser = await getUserById(user.id);
 
             // Prevent sign in without email verification
             if (!existingUser?.emailVerified) return false;
 
+            if (existingUser.isTwoFactorEnabled) {
+                const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
 
+                if (!twoFactorConfirmation) return false;
+
+                // Delete two factor confirmation for next sign in
+                await db.twoFactorConfirmation.delete({
+                    where: { id: twoFactorConfirmation.id }
+                });
+            }
 
             return true;
         },
         async session({ token, session }) {
             if (token.sub && session.user) {
-                session.user.id = token.sub
+                session.user.id = token.sub;
             }
+
             if (token.role && session.user) {
-                session.user.role = token.role as UserRole
+                session.user.role = token.role as UserRole;
             }
+
+            if (session.user) {
+                session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+            }
+
             if (session.user) {
                 session.user = {
                     ...session.user,
                     name: token.name,
+                    isOAuth: token.isOAuth as boolean,
                     image: token.image as string | null | undefined,
                     about: token.about as string | null,
                     categoryId: token.categoryId as string | null | undefined,
@@ -63,10 +82,17 @@ export const {
         },
         async jwt({ token }) {
             if (!token.sub) return token;
+
             const existingUser = await getUserById(token.sub);
 
-            if (!existingUser) return token
+            if (!existingUser) return token;
 
+            const existingAccount = await getAccountByUserId(
+                existingUser.id
+            );
+
+            token.isOAuth = !!existingAccount;
+            token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
             token.name = existingUser.name;
             token.email = existingUser.email;
             token.role = existingUser.role;
@@ -79,6 +105,8 @@ export const {
         }
     },
     adapter: PrismaAdapter(db),
-    session: { strategy: "jwt" },
+    session: {
+        strategy: "jwt",
+    },
     ...authConfig,
 })
