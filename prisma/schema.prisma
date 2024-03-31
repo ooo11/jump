@@ -56,6 +56,7 @@ model User {
   accounts              Account[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  Product               Product[]
 }
 
 model City {
@@ -102,6 +103,19 @@ model TwoFactorConfirmation {
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+//This to be commented out
+model Product {
+  id     String  @id @default(cuid())
+  name   String
+  image  String?
+  price  String
+  detail String
+  user   User    @relation(fields: [userId], references: [id])
+  userId String
 
   @@unique([userId])
 }
