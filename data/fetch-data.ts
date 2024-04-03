@@ -28,3 +28,29 @@ export const fetchCategoryById = async (id: string | undefined) => {
         return null
     }
 }
+
+export const getAllProductByUserId = async (userId: string | undefined) => {
+    try {
+        const products = await db.product.findMany({
+            where: {
+                userId,
+            }
+        })
+        return products;
+    } catch (err) {
+        throw new Error('Failed to fetch the selected city!');
+    }
+};
+
+export const fetchProductById = async (id: string | undefined) => {
+    try {
+        const product = await db.product.findUnique({
+            where: {
+                id,
+            }
+        })
+        return product;
+    } catch {
+        return null
+    }
+}

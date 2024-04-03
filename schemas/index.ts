@@ -6,6 +6,21 @@ export const CategoriesSchema = z.object({
     name: z.string()
 })
 
+export const ProductsSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    image: z.string().optional(),
+    price: z.string(),
+    detail: z.string(),
+})
+
+export const ProductsFormSchema = z.object({
+    name: z.string(),
+    image: z.string().optional(),
+    price: z.string(),
+    detail: z.string(),
+})
+
 
 export const SettingsSchema = z.object({
     name: z.string().optional(),

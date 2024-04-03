@@ -32,7 +32,7 @@ export const getAllCities = async () => {
 
         return categories;
     } catch (err) {
-        throw new Error('Failed to fetch categories');
+        throw new Error('Failed to fetch cities');
     }
 };
 
@@ -48,3 +48,4 @@ export const getCityById = async (id: string | undefined) => {
         throw new Error('Failed to fetch the selected city!');
     }
 }
+

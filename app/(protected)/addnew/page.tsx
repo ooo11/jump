@@ -8,7 +8,7 @@ export default function Page() {
 
     return (
         <div>
-            Kelp 🍙
+            <CreateProductForm />
         </div>
     );
 }

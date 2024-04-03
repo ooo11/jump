@@ -2,7 +2,9 @@
 import {
   HomeIcon,
   ExclamationCircleIcon,
-  BuildingLibraryIcon
+  BuildingLibraryIcon,
+  BoltIcon,
+  PlusIcon
 
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -21,10 +23,16 @@ export default function NavLinks({ id }: { id: string | undefined }) {
   const links = [
     { name: 'Home', href: `/dashboard`, icon: HomeIcon },
     {
+      name: 'New Products',
+      href: `/addnew`,
+      icon: PlusIcon,
+    },
+    {
       name: 'Orders',
       href: `/orders`,
       icon: InboxArrowDownIcon,
     },
+
     {
       name: 'Settings',
       href: `/settings`,
