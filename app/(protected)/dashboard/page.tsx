@@ -15,7 +15,7 @@ interface Product {
     image: string | null;
     price: string;
     detail: string;
-    userId: string; // Include this if you're using it in your component
+    userId: string;
 }
 
 
@@ -24,15 +24,15 @@ export default function DashboardPage() {
     const user = useCurrentUser();
     const [city, setCity] = useState<City | null>(null); // State to store the city data
     const [category, setCategory] = useState<Category | null>(null); // State to store the city data
-    const [isLoading, setIsLoading] = useState(true); // New loading state
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // This effect runs when the component mounts and whenever the user.id changes
+
         if (user && user.cityId) {
-            // Assuming `user` has a `cityId` property to fetch the city for
+
             fetchCityById(user.cityId).then(fetchedCity => {
                 if (fetchedCity) {
-                    setCity(fetchedCity); // Update state if city data is fetched successfully
+                    setCity(fetchedCity);
                 }
             }).catch(error => {
                 console.error('Failed to fetch city data', error);
@@ -40,16 +40,16 @@ export default function DashboardPage() {
         }
 
         if (user && user.categoryId) {
-            // Assuming `user` has a `categoryId` property to fetch the city for
+
             fetchCategoryById(user.categoryId).then(category => {
                 if (category) {
-                    setCategory(category); // Update state if city data is fetched successfully
+                    setCategory(category);
                 }
             }).catch(error => {
                 console.error('Failed to fetch category data', error);
             });
         }
-    }, [user]); // Depend on `user` so it re-runs when `user` changes
+    }, [user]);
 
     const [products, setProducts] = useState<Product[]>([]);
 
