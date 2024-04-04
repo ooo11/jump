@@ -3,7 +3,6 @@ import { db } from '@/app/lib/db';
 import { currentUser } from '@/app/lib/auth';
 import { getUserById } from '@/data/user';
 
-// No need for ProductsFormValues and ProductsSchema in delete operation
 
 export const deleteProduct = async (productId: string) => {
     const user = await currentUser();
@@ -17,7 +16,6 @@ export const deleteProduct = async (productId: string) => {
         return { error: "Unauthorized!" };
     }
 
-    // Check if the product belongs to the user
     const product = await db.product.findUnique({
         where: {
             id: productId,

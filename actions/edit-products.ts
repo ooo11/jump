@@ -13,10 +13,8 @@ interface ProductsFormValues {
     image?: string | null; // Allow null here
 }
 
-// Assuming `ProductsSchema` includes `id` for update purposes,
-// or you could directly pass `productId` and a partial update schema.
 export const updateProduct = async (productId: string, values: ProductsFormValues) => {
-    const validatedFields = ProductsSchema.partial().safeParse(values); // Use `.partial()` if not all fields are required to update
+    const validatedFields = ProductsSchema.partial().safeParse(values);
     if (!validatedFields.success) {
         return {
             error: "Invalid fields!"
