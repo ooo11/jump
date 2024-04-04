@@ -20,6 +20,7 @@ export const {
     pages: {
         signIn: "/auth/login",
         error: "/auth/error",
+        signOut: "/auth/login"
     },
     events: {
         async linkAccount({ user }) {
@@ -27,7 +28,7 @@ export const {
                 where: { id: user.id },
                 data: { emailVerified: new Date() }
             })
-        }
+        },
     },
     callbacks: {
         async signIn({ user, account }) {
