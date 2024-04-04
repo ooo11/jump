@@ -176,9 +176,9 @@ export default function LoginForm() {
         </div>
 
       </form >
-      <div className='mt-4'>
+      {/* <div className='mt-4'>
         <Social />
-      </div>
+      </div> */}
 
 
     </div >
