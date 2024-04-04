@@ -1,6 +1,13 @@
-## Next.js App Router Course - Starter
+## This Is Jump Says
 
-This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.
+`npx prisma migrate reset`
 
-For more information, see the [course curriculum](https://nextjs.org/learn) on the Next.js Website.
-# j
+`npx prisma db seed`
+
+`npx prisma generate`
+
+`npx prisma db push`
+
+`npx prisma studio`
+
+# jumpsay

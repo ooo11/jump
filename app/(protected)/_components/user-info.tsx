@@ -50,6 +50,7 @@ export const UserInfo = ({
                         height={100}
                         src={user?.image || 'https://res.cloudinary.com/dqqwgyyfw/image/upload/v1710001757/n5gcpcacet43cel18w0t.jpg'}
                         alt="User profile image"
+                        priority
                     />
                 )}
                 <div className="w-fit ">

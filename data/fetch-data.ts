@@ -37,8 +37,8 @@ export const getAllProductByUserId = async (userId: string | undefined) => {
             }
         })
         return products;
-    } catch (err) {
-        throw new Error('Failed to fetch the selected city!');
+    } catch {
+        throw new Error('Failed to fetch the product!');
     }
 };
 

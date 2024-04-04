@@ -7,7 +7,6 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 import { Category, City } from '@prisma/client';
 import ProductCard from "@/app/ui/product-card";
 import { getAllProductByUserId } from "@/data/fetch-data";
-import { deleteProduct } from '@/actions/delete-products';
 
 
 interface Product {
@@ -25,6 +24,7 @@ export default function DashboardPage() {
     const user = useCurrentUser();
     const [city, setCity] = useState<City | null>(null); // State to store the city data
     const [category, setCategory] = useState<Category | null>(null); // State to store the city data
+    const [isLoading, setIsLoading] = useState(true); // New loading state
 
     useEffect(() => {
         // This effect runs when the component mounts and whenever the user.id changes
@@ -56,20 +56,25 @@ export default function DashboardPage() {
 
     useEffect(() => {
         async function fetchProducts() {
+            setIsLoading(true); // Start loading
             if (user?.id) {
                 try {
                     const fetchedProducts = await getAllProductByUserId(user.id);
                     setProducts(fetchedProducts);
                 } catch (error) {
                     console.error("Failed to fetch products:", error);
-                    // Handle the error appropriately
-                    setProducts([]); // Resetting or setting to a default value might be a good idea
+                    setProducts([]); // Optional: Decide how you want to handle this case
+                } finally {
+                    setIsLoading(false); // End loading
                 }
+            } else {
+                setIsLoading(false); // Ensure loading is false if there's no user
             }
         }
 
         fetchProducts();
-    }, [user?.id]); // This effect depends on `user?.id`
+    }, [user?.id]);
+
     const deleteProduct = async (id: string) => {
         // Display a confirmation dialog
         const isConfirmed = window.confirm("Are you sure you want to delete this forever?");
@@ -97,17 +102,21 @@ export default function DashboardPage() {
                 <UserInfo user={user} city={city} category={category} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                {products.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        id={product.id}
-                        name={product.name}
-                        detail={product.detail}
-                        price={product.price}
-                        image={product.image || ""}
-                        onDelete={deleteProduct} // Passing the delete function as a prop
-                    />
-                ))}
+                {isLoading ? (
+                    <p>Loading products...</p> // Placeholder loading message; consider replacing with a spinner or similar
+                ) : (
+                    products.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            id={product.id}
+                            name={product.name}
+                            detail={product.detail}
+                            price={product.price}
+                            image={product.image || ""}
+                            onDelete={() => deleteProduct(product.id)}
+                        />
+                    ))
+                )}
             </div>
         </main>
     );

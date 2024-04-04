@@ -44,7 +44,7 @@ export default function ProductCard({ id, name, detail, image, price, onDelete }
                     </div>
                     <div className="flex items-center justify-between md:items-center lg:justify-between ">
                         <div className="flex">
-                            <p className="!mb-0 text-sm font-bold text-blue-500">MYR {price} </p>
+                            <p className="!mb-0 text-sm font-bold text-blue-500">MYR  {(parseFloat(price) / 100).toFixed(2)} </p>
                         </div>
                         <button className="linear rounded-[20px] bg-blue-900 px-4 py-2 text-base font-medium transition duration-200 text-white hover:bg-blue-800 active:bg-blue-700">Order Now</button>
                     </div>

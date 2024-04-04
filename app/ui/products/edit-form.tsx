@@ -42,6 +42,12 @@ export default function EditPackageForm({
     const [success, setSuccess] = useState<string | undefined>();
     const [uploadURL, setUploadURL] = useState(pack.image || '');
     const [publicId, setPublicId] = useState('');
+    const [detailLength, setDetailLength] = useState(pack.detail.length);
+
+    const handleDetailChange = useCallback((event: { target: { value: string | any[]; }; }) => {
+        const inputLength = event.target.value.length;
+        setDetailLength(inputLength); // Update the state with the current input length
+    }, []);
 
 
     const { register, handleSubmit, formState: { errors } } = useForm<ProductsFormValues>({
@@ -113,8 +119,9 @@ export default function EditPackageForm({
 
     const onSubmit = async (data: ProductsFormValues) => {
 
+        const priceInCent = (parseFloat(data.price) * 100)
         // Update data object with the image URL.
-        const formData = { ...data, image: uploadURL };
+        const formData = { ...data, image: uploadURL, price: priceInCent.toString() };
 
         // Assuming newProducts is an API call to submit the form data, including the image URL.
         try {
@@ -151,6 +158,7 @@ export default function EditPackageForm({
                                     id="name"
                                     type="text"
                                     name="name"
+                                    maxLength={100}
                                     placeholder="Enter package name"
                                     className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                     aria-describedby="name-error"
@@ -165,11 +173,9 @@ export default function EditPackageForm({
                         )}
                     </div>
 
-                    {/* Package Detail */}
-
                     <div className="mb-4">
                         <label htmlFor="detail" className="mb-2 block text-sm font-medium">
-                            What&apos;s your package details
+                            What&apos;s your product details
                         </label>
                         <div className="relative mt-2 rounded-md">
                             <div className="relative">
@@ -178,12 +184,19 @@ export default function EditPackageForm({
                                     id="detail"
                                     type="text"
                                     name="detail"
-                                    placeholder="Describe the package detail"
+                                    maxLength={140}
+                                    onChange={handleDetailChange} // Add this line
+                                    placeholder="Describe the product detail"
                                     className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                     aria-describedby="detail-error"
                                 />
+                                {/* Display the character count */}
+                                <div className="mt-1 text-right text-sm text-gray-500">
+                                    {detailLength}/140
+                                </div>
                             </div>
                         </div>
+
 
 
                         {errors.detail && (
@@ -254,6 +267,7 @@ export default function EditPackageForm({
                                     name="price"
                                     type="number"
                                     step="0.01"
+                                    min="10.00"
                                     placeholder="Enter MYR amount"
                                     className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                     aria-describedby="amount-error"
