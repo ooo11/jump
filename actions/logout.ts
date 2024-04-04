@@ -1,12 +1,12 @@
 "use server";
 
 import { auth, signOut } from "@/auth";
+import { redirect } from 'next/navigation'
+
 
 export const logout = async () => {
 
-    await signOut({
-        redirect: true,
-        redirectTo: `/auth/login`,
-    })
+    const data = await signOut({ redirect: false, redirectTo: "/auth/login" })
+    redirect(data.url)
 
 }
