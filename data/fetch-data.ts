@@ -54,3 +54,25 @@ export const fetchProductById = async (id: string | undefined) => {
         return null
     }
 }
+
+export const fetchAllCity = async () => {
+    try {
+        const cities = await db.city.findMany();
+        return cities;
+    } catch (err) {
+        throw new Error('Failed to fetch cities');
+    }
+}
+
+export const fetchOrderById = async (id: string | undefined) => {
+    try {
+        const order = await db.order.findUnique({
+            where: {
+                id,
+            }
+        })
+        return order;
+    } catch {
+        return null
+    }
+}

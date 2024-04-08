@@ -13,7 +13,7 @@ export default function Payment() {
 
     return (
 
-        <Elements stripe={stripePromise} options={{ appearance: { theme: "stripe" } }}>
+        <Elements stripe={stripePromise}>
             <PaymentForm />
         </Elements>
 

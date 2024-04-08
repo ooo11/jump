@@ -1,6 +1,27 @@
 import { UserRole } from '@prisma/client';
 import * as z from 'zod';
 
+export const OrderSchema = z.object({
+    name: z.string(),
+    email: z.string().email(),
+    phone: z.string(),
+    date: z.string(),
+    time: z.string(),
+    location: z.string(),
+    cityId: z.string(),
+    productId: z.string(),
+})
+
+export const OrderFormSchema = z.object({
+    name: z.string(),
+    email: z.string().email(),
+    phone: z.string(),
+    date: z.string(),
+    time: z.string(),
+    location: z.string(),
+    cityId: z.string()
+})
+
 export const CategoriesSchema = z.object({
     id: z.string(),
     name: z.string()

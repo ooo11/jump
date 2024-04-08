@@ -60,9 +60,10 @@ model User {
 }
 
 model City {
-  id    String @id @default(cuid())
-  name  String
-  users User[] // This indicates a City can have multiple Users
+  id     String  @id @default(cuid())
+  name   String
+  users  User[] // This indicates a City can have multiple Users
+  orders Order[]
 }
 
 model Category {
@@ -107,7 +108,6 @@ model TwoFactorConfirmation {
   @@unique([userId])
 }
 
-//This to be commented out
 model Product {
   id     String  @id @default(cuid())
   name   String
@@ -116,4 +116,21 @@ model Product {
   detail String
   user   User    @relation(fields: [userId], references: [id])
   userId String
+  orders Order[]
+}
+
+model Order {
+  id            String    @id @default(cuid())
+  name          String
+  email         String
+  emailVerified DateTime?
+  phone         String
+  submission    DateTime
+  date          String
+  time          String
+  location      String
+  city          City      @relation(fields: [cityId], references: [id])
+  cityId        String
+  product       Product   @relation(fields: [productId], references: [id])
+  productId     String
 }
