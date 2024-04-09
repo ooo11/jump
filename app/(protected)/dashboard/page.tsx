@@ -25,7 +25,7 @@ export default function DashboardPage() {
     const [city, setCity] = useState<City | null>(null); // State to store the city data
     const [category, setCategory] = useState<Category | null>(null); // State to store the city data
     const [isLoading, setIsLoading] = useState(true);
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<Product[] | null>([]);
 
     useEffect(() => {
 
@@ -84,7 +84,7 @@ export default function DashboardPage() {
             });
             if (response.ok) {
                 // Remove the deleted product from the state
-                setProducts(currentProducts => currentProducts.filter(product => product.id !== id));
+                setProducts(currentProducts => (currentProducts || []).filter(product => product.id !== id));
             } else {
                 alert('Failed to delete the product');
             }
@@ -103,7 +103,7 @@ export default function DashboardPage() {
                 {isLoading ? (
                     <p>Loading products...</p> // Placeholder loading message; consider replacing with a spinner or similar
                 ) : (
-                    products.map((product) => (
+                    products!.map((product) => (
                         <ProductCard
                             key={product.id}
                             id={product.id}
