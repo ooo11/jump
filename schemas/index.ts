@@ -1,6 +1,11 @@
 import { UserRole } from '@prisma/client';
 import * as z from 'zod';
 
+export const UrlsSchema = z.object({
+    link: z.string(),
+    userId: z.string()
+})
+
 export const OrderSchema = z.object({
     name: z.string(),
     email: z.string().email(),

@@ -25,6 +25,7 @@ export default function DashboardPage() {
     const [city, setCity] = useState<City | null>(null); // State to store the city data
     const [category, setCategory] = useState<Category | null>(null); // State to store the city data
     const [isLoading, setIsLoading] = useState(true);
+    const [products, setProducts] = useState<Product[]>([]);
 
     useEffect(() => {
 
@@ -50,9 +51,6 @@ export default function DashboardPage() {
             });
         }
     }, [user]);
-
-    const [products, setProducts] = useState<Product[]>([]);
-
 
     useEffect(() => {
         async function fetchProducts() {

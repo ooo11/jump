@@ -57,6 +57,7 @@ model User {
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   Product               Product[]
+  Urls                  Urls?
 }
 
 model City {
@@ -133,4 +134,11 @@ model Order {
   cityId        String
   product       Product   @relation(fields: [productId], references: [id])
   productId     String
+}
+
+model Urls {
+  id     String @id @default(cuid())
+  link   String @unique
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }

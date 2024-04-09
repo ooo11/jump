@@ -4,13 +4,14 @@
  * @type {string[]}
  */
 export const publicRoutes = [
+    "/s/:path",
     "/",
     "/auth/new-verification",
     "/auth/new-order-verification",
     "/api/auth/providers",
 ];
 
-//todo: /[url] to be a public route
+// "/s/:path" is open link for public path
 
 /**
  * Array of routes that are used for authentication
