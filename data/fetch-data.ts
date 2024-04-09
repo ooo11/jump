@@ -31,14 +31,20 @@ export const fetchCategoryById = async (id: string | undefined) => {
 
 export const getAllProductByUserId = async (userId: string | undefined) => {
     try {
+        if (!userId) {
+            console.log("No userId provided");
+            return null; // or you might want to throw an error instead
+        }
+
         const products = await db.product.findMany({
             where: {
                 userId,
-            }
-        })
+            },
+        });
         return products;
-    } catch {
-        throw new Error('Failed to fetch the product!');
+    } catch (error) {
+        console.error("Failed to fetch products for userId", userId, error);
+        return null;
     }
 };
 
@@ -51,7 +57,7 @@ export const fetchProductById = async (id: string | undefined) => {
         })
         return product;
     } catch {
-        return null
+        return null;
     }
 }
 
