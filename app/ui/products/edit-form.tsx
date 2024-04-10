@@ -1,5 +1,4 @@
 'use client';
-import * as z from 'zod';
 import {
 
     CurrencyDollarIcon,
@@ -19,7 +18,7 @@ import { useForm } from 'react-hook-form';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { deleteProduct } from '@/actions/delete-products';
+import { formatCurrency } from '@/app/lib/utils';
 
 interface ProductsFormValues {
     id: string;
@@ -56,7 +55,7 @@ export default function EditPackageForm({
             id: pack.id,
             name: pack.name,
             detail: pack.detail,
-            price: pack.price,
+            price: formatCurrency(Number(pack.price) / 100),
             image: pack?.image || null,
 
         }
@@ -149,7 +148,7 @@ export default function EditPackageForm({
                     {/* Package Name */}
                     <div className="mb-4">
                         <label htmlFor="name" className="mb-2 block text-sm font-medium">
-                            What&apos;s your package name
+                            What&apos;s your product name
                         </label>
                         <div className="relative mt-2 rounded-md">
                             <div className="relative">
@@ -159,7 +158,7 @@ export default function EditPackageForm({
                                     type="text"
                                     name="name"
                                     maxLength={100}
-                                    placeholder="Enter package name"
+                                    placeholder="Enter product name"
                                     className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                     aria-describedby="name-error"
                                     autoComplete='off'
