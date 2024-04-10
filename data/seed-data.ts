@@ -49,3 +49,15 @@ export const getCityById = async (id: string | undefined) => {
     }
 }
 
+export const getLinkById = async (id: string | undefined) => {
+    try {
+        const url = await db.urls.findUnique({
+            where: {
+                userId: id,
+            }
+        })
+        return url;
+    } catch (err) {
+        throw new Error('Failed to fetch the selected url!');
+    }
+}

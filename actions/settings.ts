@@ -57,13 +57,42 @@ export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
         values.password = hashedPassword;
         values.newPassword = undefined;
     }
+    const { link, ...updateValues } = values;
 
     const updatedUser = await db.user.update({
         where: { id: dbUser.id },
         data: {
-            ...values,
+            ...updateValues,
         }
     });
+
+    if (values.link) {
+        const existingUrl = await db.urls.findUnique({ where: { userId: user.id } });
+        if (existingUrl) {
+            await db.urls.update({
+                where: { userId: user.id },
+                data: { link: values.link },
+            });
+        } else if (values.link && user?.id) {
+            try {
+                await db.urls.create({
+                    data: {
+                        link: values.link,
+                        userId: user.id, // Assuredly a string, not undefined
+                    },
+                });
+                // Handle success, e.g., setting a success state or message
+            } catch (error) {
+                console.error("Failed to save URL:", error);
+                // Handle error, e.g., setting an error state or message
+            }
+        } else {
+            // Handle the case where userId is undefined
+            console.error("User ID is undefined. Cannot save URL.");
+            // Set an error state or message as needed
+        }
+
+    }
 
     unstable_update({
         user: {

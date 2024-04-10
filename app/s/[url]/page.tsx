@@ -31,11 +31,11 @@ export default async function ShopPage({ params }: { params: { url: string } }) 
     }
 
     return (
-        <main>
+        <main className='flex-grow p-6 md:overflow-y-auto md:p-24'>
             <div className="flex items-center justify-center py-10">
                 <VendorInfo user={user} city={city} category={category} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 md:p-10">
                 {products.map((product) => (
                     <PublicProductCard
                         key={product.id}

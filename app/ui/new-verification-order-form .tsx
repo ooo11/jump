@@ -75,7 +75,7 @@ export default function NewOrderVerificationForm() {
 
                 <div
                     className='mt-5 mb-8 flex item-center w-full justify-center'
-                ><Link href={`/checkout/${orderId}`} className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>
+                ><Link href={`/s/checkout/${orderId}`} className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>
                         Payment Link</Link>
                 </div>
 

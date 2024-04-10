@@ -77,24 +77,26 @@ export default function Page({ params }: { params: { orderId: string } }) {
 
 
     return (
-        <div className="content-center flex flex-row">
-            <div className="rounded-l-xl bg-gray-200 basis-1/2 p-10">
-                <h1 className="mb-5 font-semibold text-2xl font-sans text-indigo-600">Order Summary</h1>
-                <ul className=" text-gray-600 font-light list-disc list-inside">
-                    <li>Product: {product?.name}</li>
-                    <li>Order Id: {data.id}</li>
-                    <li>Event Location: {data.location}</li>
-                    <li>Event Date: {data.date}</li>
-                    <li>Event Time: {data.time}</li>
-                    <li>Order by {data.name}</li>
-                </ul>
-                <div className="mt-10 border-gray-300 border-t-2 pt-2 text-gray-600">
-                    Total: {formatCurrency(Number(product?.price) / 100)}
+        <main className='flex-grow p-6 md:overflow-y-auto md:p-10'>
+            <div className="flex flex-col md:flex-row content-center">
+                <div className="bg-gray-200 md:basis-1/2 rounded-lg basis-full p-8">
+                    <h1 className="mb-5 font-semibold text-2xl font-sans text-indigo-600">Order Summary</h1>
+                    <ul className=" text-gray-600 font-light list-disc list-inside">
+                        <li>Product: {product?.name}</li>
+                        <li>Order Id: {data.id}</li>
+                        <li>Event Location: {data.location}</li>
+                        <li>Event Date: {data.date}</li>
+                        <li>Event Time: {data.time}</li>
+                        <li>Order by {data.name}</li>
+                    </ul>
+                    <div className="mt-10 border-gray-300 border-t-2 pt-2 text-gray-600">
+                        Total: {formatCurrency(Number(product?.price) / 100)}
+                    </div>
+                </div>
+                <div className="md:basis-1/2  rounded-lg basis-full md:p-4">
+                    <Payment />
                 </div>
             </div>
-            <div className="rounded-r-xl  basis-1/2 p-10">
-                <Payment />
-            </div>
-        </div>
+        </main>
     );
 }

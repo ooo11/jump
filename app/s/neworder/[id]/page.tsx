@@ -39,19 +39,21 @@ export default function Page({ params }: { params: { id: string } }) {
     }
 
     return (
-        <div className="content-center flex flex-row">
-            <div className="rounded-l-xl bg-gray-200 basis-1/2 p-10">
-                <ProductCartCard
-                    id={data.id}
-                    name={data.name}
-                    detail={data.detail}
-                    price={data.price}
-                    image={data.image || ""}
-                />
+        <main className='flex-grow p-6 md:overflow-y-auto md:p-20'>
+            <div className="flex flex-col md:flex-row content-center">
+                <div className="bg-gray-200 md:basis-1/2 rounded-lg basis-full p-10">
+                    <ProductCartCard
+                        id={data.id}
+                        name={data.name}
+                        detail={data.detail}
+                        price={data.price}
+                        image={data.image || ""}
+                    />
+                </div>
+                <div className="md:basis-1/2  rounded-lg basis-full bg-blue-100 p-10">
+                    <NewOrderForm productId={data.id} />
+                </div>
             </div>
-            <div className="rounded-r-xl bg-blue-100 basis-1/2 p-10">
-                <NewOrderForm productId={data.id} />
-            </div>
-        </div>
+        </main>
     );
 }

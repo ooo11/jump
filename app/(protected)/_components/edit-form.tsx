@@ -21,6 +21,8 @@ import { AtSymbolIcon, ChatBubbleBottomCenterIcon, HashtagIcon, KeyIcon, UserCir
 
 type SettingsFormValues = z.infer<typeof SettingsSchema>;
 
+
+
 interface Category {
     id: string;
     name: string;
@@ -37,11 +39,13 @@ interface City {
 export default function EditVendorForm(
     {
         categories,
-        cities
+        cities,
+        link
     }:
         {
             categories: Category[],
-            cities: City[]
+            cities: City[],
+            link: string | undefined
         }) {
 
 
@@ -63,6 +67,7 @@ export default function EditVendorForm(
             cityId: user?.cityId || undefined,
             categoryId: user?.categoryId || undefined,
             role: UserRole.USER,
+            link: link || undefined,
         }
     });
 
@@ -128,7 +133,13 @@ export default function EditVendorForm(
 
     const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
 
+        if (values.cityId === "") {
+            values.cityId = null;
+        }
 
+        if (values.categoryId === "") {
+            values.categoryId = null;
+        }
 
         // Create a copy of values to modify
         const submissionValues = {
@@ -177,7 +188,7 @@ export default function EditVendorForm(
                 <div className="w-full">
                     <div>
                         <label
-                            className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                            className="mb-3 mt-5 block text-sm font-medium text-gray-900"
                             htmlFor="name"
                         >
                             Name
@@ -199,7 +210,7 @@ export default function EditVendorForm(
 
                     <div>
                         <label
-                            className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                            className="mb-3 mt-5 block text-sm font-medium text-gray-900"
                             htmlFor="email"
                         >
                             Email
@@ -266,7 +277,7 @@ export default function EditVendorForm(
 
                     <div>
                         <label
-                            className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                            className="mb-3 mt-5 block text-sm font-medium text-gray-900"
                             htmlFor="about"
                         >
                             About
@@ -294,7 +305,7 @@ export default function EditVendorForm(
                             <select
                                 {...register("categoryId")} // Use the name that matches your schema if different
                                 className="select-none peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                defaultValue={user?.categoryId || ''}
+                                defaultValue={user?.categoryId || ""}
                             >
                                 <option value="" disabled>
                                     Select a category
@@ -324,7 +335,7 @@ export default function EditVendorForm(
                             <select
                                 {...register("cityId")} // Use the name that matches your schema if different
                                 className="select-none peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                defaultValue={user?.cityId || ''}
+                                defaultValue={user?.cityId || ""}
                             >
                                 <option value="" disabled>
                                     Select a city
@@ -345,8 +356,30 @@ export default function EditVendorForm(
                         </div>
                     </div>
 
+
                     <div className="mt-4">
-                        <label htmlFor="password" className="block text-xs font-medium text-gray-900">
+                        <label
+                            className="mb-3 mt-5 block text-sm font-medium text-gray-900"
+                            htmlFor="link"
+                        >
+                            Shop Link
+                        </label>
+                        <div className="relative">
+                            <input
+                                {...register("link")}
+                                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-[130px] text-sm outline-2 placeholder:text-gray-500"
+                                id="link"
+                                type="string"
+                                placeholder="yourshophere"
+                                disabled={isPending}
+                            />
+                            <p className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" >jumpsay.com/s/</p>
+                        </div>
+                        {errors.link && <p>{errors.link.message}</p>}
+                    </div>
+
+                    <div className="mt-4">
+                        <label htmlFor="password" className="mb-3 mt-5 block text-sm font-medium text-gray-900">
                             Current Password
                         </label>
                         <div className="relative">
@@ -364,7 +397,7 @@ export default function EditVendorForm(
 
                     <div className="mt-4">
                         <label
-                            className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                            className="mb-3 mt-5 block text-sm font-medium text-gray-900"
                             htmlFor="password"
                         >
                             New Password
@@ -382,10 +415,6 @@ export default function EditVendorForm(
                         </div>
                         {errors.password && <p>{errors.password.message}</p>}
                     </div>
-
-
-
-
 
                 </div>
                 <FormError message={error} />

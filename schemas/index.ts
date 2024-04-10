@@ -2,8 +2,7 @@ import { UserRole } from '@prisma/client';
 import * as z from 'zod';
 
 export const UrlsSchema = z.object({
-    link: z.string(),
-    userId: z.string()
+    link: z.string().optional(),
 })
 
 export const OrderSchema = z.object({
@@ -54,9 +53,10 @@ export const SettingsSchema = z.object({
     email: z.string().email().optional(),
     image: z.string().optional(),
     about: z.string().optional(),
-    cityId: z.string().optional(),
-    categoryId: z.string().optional(),
+    cityId: z.string().optional().nullable(),
+    categoryId: z.string().optional().nullable(),
 
+    link: z.string().optional(),
     // Allow both undefined and empty strings, but enforce min length if a value is provided
     password: z.union([z.string().min(6), z.literal("")]).optional(),
     newPassword: z.union([z.string().min(6), z.literal("")]).optional(),
