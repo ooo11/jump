@@ -5,7 +5,6 @@ import ProductCartCard from "@/app/ui/product-cart-card";
 import { fetchProductById } from "@/data/fetch-data";
 import { useEffect, useState } from 'react';
 
-
 interface Product {
     id: string;
     name: string;
@@ -15,7 +14,8 @@ interface Product {
     userId: string;
 }
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: { id: string, url: string } }) {
+
 
     const [data, setData] = useState<Product | null>(null);
 
@@ -51,7 +51,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     />
                 </div>
                 <div className="md:basis-1/2  rounded-lg basis-full bg-blue-100 p-10">
-                    <NewOrderForm productId={data.id} />
+                    <NewOrderForm productId={data.id} url={params.url} />
                 </div>
             </div>
         </main>

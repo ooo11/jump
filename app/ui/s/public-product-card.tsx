@@ -6,8 +6,11 @@ import * as z from "zod";
 import { formatCurrency } from "@/app/lib/utils";
 
 type ProductCardValues = z.infer<typeof ProductsSchema>;
+type ExtendedProductCardValues = ProductCardValues & {
+    url: string;
+};
 
-export default function PublicProductCard({ id, name, detail, image, price }: ProductCardValues) {
+export default function PublicProductCard({ id, name, detail, image, price, url }: ExtendedProductCardValues) {
 
 
 
@@ -33,7 +36,7 @@ export default function PublicProductCard({ id, name, detail, image, price }: Pr
                         <div className="flex">
                             <p className="!mb-0 text-sm font-bold text-blue-500">{formatCurrency(Number(price) / 100)}</p>
                         </div>
-                        <Link href={`/s/neworder/${id}`} className="linear rounded-[20px] bg-blue-900 px-4 py-2 text-base font-medium transition duration-200 text-white hover:bg-blue-800 active:bg-blue-700">Order Now</Link>
+                        <Link href={`/s/${url}/order/${id}`} className="linear rounded-[20px] bg-blue-900 px-4 py-2 text-base font-medium transition duration-200 text-white hover:bg-blue-800 active:bg-blue-700">Order Now</Link>
                     </div>
                 </div>
             </div>

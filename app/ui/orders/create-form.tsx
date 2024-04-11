@@ -13,9 +13,8 @@ import { useForm } from "react-hook-form";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { newOrders } from "@/actions/new-orders";
-
 import { fetchAllCity } from "@/data/fetch-data";
-import { log } from "console";
+
 
 type OrdersFormValues = z.infer<typeof OrderSchema>;
 
@@ -25,7 +24,7 @@ interface City {
 }
 
 
-export default function NewOrderForm({ productId }: { productId: string }) {
+export default function NewOrderForm({ productId, url }: { productId: string, url: string }) {
 
 
     const [error, setAsError] = useState<string | undefined>();
@@ -272,7 +271,7 @@ export default function NewOrderForm({ productId }: { productId: string }) {
             <FormSuccess message={success} />
             <div className="mt-6 flex justify-end gap-4">
                 {/* todo: fix this "cancel" btn */}
-                <Link href={`/dashboard`} className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">Cancel</Link>
+                <Link href={`/s/${url}`} className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">Cancel</Link>
                 <Button type="submit" disabled={isFormSubmitted && !!success}  >Submit Order</Button>
             </div>
         </form>

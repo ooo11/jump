@@ -3,6 +3,11 @@ import { getAllProductByUserId } from "@/data/fetch-data";
 import { getVendorById, getVendorIdByLink } from '@/data/user';
 import PublicProductCard from '@/app/ui/s/public-product-card';
 import { VendorInfo } from '@/app/ui/s/vendor-info';
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    title: 'Shop',
+}
 
 export default async function ShopPage({ params }: { params: { url: string } }) {
     const vendorId = await getVendorIdByLink(params.url);
@@ -44,6 +49,7 @@ export default async function ShopPage({ params }: { params: { url: string } }) 
                         detail={product.detail}
                         price={product.price}
                         image={product.image || ""}
+                        url={params.url}
                     />
                 ))}
             </div>

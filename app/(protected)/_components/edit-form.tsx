@@ -205,7 +205,7 @@ export default function EditVendorForm(
                             />
                             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
-                        {errors.name && <p>{errors.name.message}</p>}
+                        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                     </div>
 
                     <div>
@@ -228,7 +228,7 @@ export default function EditVendorForm(
                             />
                             <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
-                        {errors.email && <p>{errors.email.message}</p>}
+                        {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                     </div>
 
                     <div className="mt-4">
@@ -271,7 +271,7 @@ export default function EditVendorForm(
 
 
                         <div id="customer-error" aria-live="polite" aria-atomic="true">
-                            {errors.image && <p>{errors.image.message}</p>}
+                            {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
                         </div>
                     </div>
 
@@ -293,7 +293,7 @@ export default function EditVendorForm(
                             />
                             <ChatBubbleBottomCenterIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
-                        {errors.about && <p>{errors.about.message}</p>}
+                        {errors.about && <p className="text-red-500 text-sm">{errors.about.message}</p>}
                     </div>
 
                     {/* Category Select Section */}
@@ -375,7 +375,7 @@ export default function EditVendorForm(
                             />
                             <p className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" >jumpsay.com/s/</p>
                         </div>
-                        {errors.link && <p>{errors.link.message}</p>}
+                        {errors.link && <p className="text-red-500 text-sm">{errors.link.message}</p>}
                     </div>
 
                     <div className="mt-4">
@@ -392,7 +392,7 @@ export default function EditVendorForm(
                             />
                             <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
-                        {errors.password && <p>{errors.password.message}</p>}
+                        {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                     </div>
 
                     <div className="mt-4">
@@ -413,7 +413,7 @@ export default function EditVendorForm(
                             />
                             <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
-                        {errors.password && <p>{errors.password.message}</p>}
+                        {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                     </div>
 
                 </div>

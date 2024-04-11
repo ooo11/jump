@@ -48,6 +48,7 @@ export default function EditPackageForm({
         setDetailLength(inputLength); // Update the state with the current input length
     }, []);
 
+    const priceMYR = (Number(pack.price) / 100).toFixed(2).toString();
 
     const { register, handleSubmit, formState: { errors } } = useForm<ProductsFormValues>({
         resolver: zodResolver(ProductsSchema),
@@ -55,7 +56,7 @@ export default function EditPackageForm({
             id: pack.id,
             name: pack.name,
             detail: pack.detail,
-            price: formatCurrency(Number(pack.price) / 100),
+            price: priceMYR,
             image: pack?.image || null,
 
         }

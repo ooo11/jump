@@ -46,6 +46,7 @@ export const ProductsFormSchema = z.object({
     detail: z.string(),
 })
 
+const reservedNames = ["jump", "test", "admin", "root", "auth", "says"];
 
 export const SettingsSchema = z.object({
     name: z.string().optional(),
@@ -56,7 +57,15 @@ export const SettingsSchema = z.object({
     cityId: z.string().optional().nullable(),
     categoryId: z.string().optional().nullable(),
 
-    link: z.string().optional(),
+    link: z.string()
+        .min(4, "Must be 4 or more characters long")
+        .optional()
+        .refine((value) => {
+            return typeof value === 'undefined' || !reservedNames.some(reserved => value.startsWith(reserved));
+        }, {
+            message: "This link name is reserved and cannot be used.",
+        }),
+
     // Allow both undefined and empty strings, but enforce min length if a value is provided
     password: z.union([z.string().min(6), z.literal("")]).optional(),
     newPassword: z.union([z.string().min(6), z.literal("")]).optional(),

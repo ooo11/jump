@@ -22,6 +22,20 @@ export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
         return { error: "Unauthorized!" }
     }
 
+    // Check if link exists and belongs to another user
+    if (values.link) {
+        const existingLink = await db.urls.findFirst({
+            where: {
+                link: values.link,
+                userId: { not: user.id }
+            }
+        });
+
+        if (existingLink) {
+            return { error: "Great choice for a link name, but the shop link provided is already in use. Please try another one." };
+        }
+    }
+
     if (values.email && values.email !== user.email) {
         const existingUser = await getUserByEmail(values.email);
 
@@ -78,18 +92,14 @@ export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
                 await db.urls.create({
                     data: {
                         link: values.link,
-                        userId: user.id, // Assuredly a string, not undefined
+                        userId: user.id,
                     },
                 });
-                // Handle success, e.g., setting a success state or message
             } catch (error) {
-                console.error("Failed to save URL:", error);
-                // Handle error, e.g., setting an error state or message
+                return { error: "Failed to save link" };
             }
         } else {
-            // Handle the case where userId is undefined
-            console.error("User ID is undefined. Cannot save URL.");
-            // Set an error state or message as needed
+            return { error: "Unauthorized!" }
         }
 
     }
