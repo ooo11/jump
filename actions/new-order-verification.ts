@@ -21,7 +21,8 @@ export const newOrderVerification = async (token: string, orderId: string) => {
         },
         data: {
             emailVerified: new Date(),
-            email: existingToken.email
+            email: existingToken.email,
+            isSubmitted: true,
         }
     });
 
@@ -29,6 +30,6 @@ export const newOrderVerification = async (token: string, orderId: string) => {
         where: { id: existingToken.id }
     });
 
-    return { success: "Please proceed to payment link" }
+    return { success: "✨ Order submitted ✨" }
 
 }

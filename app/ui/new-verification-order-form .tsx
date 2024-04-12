@@ -10,6 +10,8 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { newOrderVerification } from '@/actions/new-order-verification';
 
+const domain = process.env.NEXT_PUBLIC_APP_URL;
+
 export default function NewOrderVerificationForm() {
 
     const [error, setError] = useState<string | undefined>();
@@ -19,9 +21,6 @@ export default function NewOrderVerificationForm() {
 
     const token = searchParams.get("token");
     const orderId = searchParams.get("orderid");
-
-    console.log(orderId);
-
 
     const onSubmit = useCallback(() => {
         if (success || error) return;
@@ -53,7 +52,7 @@ export default function NewOrderVerificationForm() {
         <form className="space-y-3">
             <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
                 <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-                    Order verification
+                    Order Submitted
                 </h1>
                 <div className='flex item-center w-full justify-center'>
                     {!success && !error && (
@@ -61,22 +60,14 @@ export default function NewOrderVerificationForm() {
                     )}
 
                     <FormSuccess message={success} />
-                    {!success && (
-                        <div>
-                            <FormError message={error} />
-                            {(success || error) && (
-                                <p className='mt-4 text-sm'> If already verified please proceed to payment link below. </p>
-                            )}
-                        </div>
-
-                    )}
+                    {!success && <FormError message={error} />}
 
                 </div>
 
                 <div
                     className='mt-5 mb-8 flex item-center w-full justify-center'
-                ><Link href={`/s/checkout/${orderId}`} className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>
-                        Payment Link</Link>
+                ><Link href={`${domain}/status?orderid=${orderId}`} className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>
+                        See Order Status</Link>
                 </div>
 
 

@@ -134,6 +134,9 @@ model Order {
   cityId        String
   product       Product   @relation(fields: [productId], references: [id])
   productId     String
+  isSubmitted   Boolean   @default(false)
+  isAccepted    Boolean   @default(false)
+  isPaid        Boolean   @default(false)
 }
 
 model Urls {

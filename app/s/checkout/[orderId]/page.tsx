@@ -1,9 +1,9 @@
 "use client"
 import Payment from "@/app/(protected)/_components/payment";
 import { formatCurrency } from "@/app/lib/utils";
+import OrderSummary from "@/app/ui/s/order-summary";
 import { fetchOrderById, fetchProductById } from "@/data/fetch-data";
 import { useEffect, useState } from "react";
-
 
 interface Order {
     id: string;
@@ -40,7 +40,7 @@ export default function Page({ params }: { params: { orderId: string } }) {
                 setError("Order Not Found");
                 return;
             } else if (order.emailVerified === null) {
-                setError("Check your email and verify to proceed with payment.");
+                setError("Check your email to verify.");
                 return;
             } else {
                 setData(order);
@@ -66,13 +66,13 @@ export default function Page({ params }: { params: { orderId: string } }) {
     }, [params.orderId]);
 
     if (error) {
-        return <div className="error-message">{error}</div>;
+        return <div className="error-message flex justify-center items-center h-screen">{error}</div>;
     }
 
 
     if (!data) {
         // Placeholder while loading or if product is not found
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
 
 
@@ -80,18 +80,8 @@ export default function Page({ params }: { params: { orderId: string } }) {
         <main className='flex-grow p-6 md:overflow-y-auto md:p-10'>
             <div className="flex flex-col md:flex-row content-center">
                 <div className="bg-gray-200 md:basis-1/2 rounded-lg basis-full p-8">
-                    <h1 className="mb-5 font-semibold text-2xl font-sans text-indigo-600">Order Summary</h1>
-                    <ul className=" text-gray-600 font-light list-disc list-inside">
-                        <li>Product: {product?.name}</li>
-                        <li>Order Id: {data.id}</li>
-                        <li>Event Location: {data.location}</li>
-                        <li>Event Date: {data.date}</li>
-                        <li>Event Time: {data.time}</li>
-                        <li>Order by {data.name}</li>
-                    </ul>
-                    <div className="mt-10 border-gray-300 border-t-2 pt-2 text-gray-600">
-                        Total: {formatCurrency(Number(product?.price) / 100)}
-                    </div>
+                    <OrderSummary id={data.id} productname={product?.name} location={data.location}
+                        date={data.date} time={data.time} customername={data.name} price={product?.price} />
                 </div>
                 <div className="md:basis-1/2  rounded-lg basis-full md:p-4">
                     <Payment />

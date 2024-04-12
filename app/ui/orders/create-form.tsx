@@ -57,7 +57,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                 setIsFormSubmitted(false); // Ensure the form can be resubmitted if there was an error
             } else {
                 if (result.success) {
-                    setSuccess("Check your email for verification");
+                    setSuccess("Please check your email for updates on your order status.");
                     setIsFormSubmitted(true); // Disable the button because the form was successfully submitted
                 } else {
                     setAsError("An error occurred."); // Handle this case as you see fit

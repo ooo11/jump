@@ -28,12 +28,14 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
 export const sendOrderVerificationEmail = async (email: string, token: string, id: string) => {
     const confirmLink = `${domain}/new-order-verification?token=${token}&orderid=${id}`;
+    const statusLink = `${domain}/status?orderid=${id}`;
 
     await resend.emails.send({
         from: "onboarding@resend.dev",
         to: email,
-        subject: "[Order Confirmation] Confirm your email to proceed for payment.",
-        html: `<p><a href="${confirmLink}">Click the link here</a> to proceed with payment 🤟🏻</p>`
+        subject: "[Email Confirmation] Email Confirmation and Status",
+        html: `<p>Step 1: <a href="${confirmLink}">Click here to confirm your email.</a></p>
+        <p>Step 2: <a href="${statusLink}">See your order status here.</a></p>`
     });
 }
 
