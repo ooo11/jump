@@ -101,7 +101,7 @@ export default function DashboardPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                 {isLoading ? (
-                    <p>Loading products...</p> // Placeholder loading message; consider replacing with a spinner or similar
+                    <p className='flex justify-center items-center h-screen'>Loading products...</p> // Placeholder loading message; consider replacing with a spinner or similar
                 ) : (
                     products!.map((product) => (
                         <ProductCard

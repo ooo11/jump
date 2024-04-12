@@ -23,6 +23,12 @@ interface City {
     name: string;
 }
 
+const settings = {
+    initialOpeningHour: 7,
+    initialClosingHour: 22,
+    initialClosingMinutes: 30
+};
+
 
 export default function NewOrderForm({ productId, url }: { productId: string, url: string }) {
 
@@ -31,6 +37,61 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
     const [success, setSuccess] = useState<string | undefined>();
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [cities, setCities] = useState<City[]>([]);
+
+    const settings = {
+        initialOpeningHour: 9,
+        initialOpeningMinutes: 0,
+        initialClosingHour: 21,
+        initialClosingMinutes: 0
+    };
+
+    const { initialOpeningHour, initialOpeningMinutes, initialClosingHour, initialClosingMinutes } = settings;
+
+    // State to store opening and closing times
+    const [openingHour, setOpeningHour] = useState<number>(initialOpeningHour);
+    const [openingMinutes, setOpeningMinutes] = useState<number>(initialOpeningMinutes);
+    const [closingHour, setClosingHour] = useState<number>(initialClosingHour);
+    const [closingMinutes, setClosingMinutes] = useState<number>(initialClosingMinutes);
+
+    // Calculate options based on opening and closing times
+    const timeOptions = (): string[] => {
+        let options = [];
+        let currentHour = openingHour;
+        let currentMinutes = openingMinutes;
+
+        while (true) {
+            const time = `${currentHour.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}`;
+            options.push(time);
+
+            if (currentHour === closingHour && currentMinutes === closingMinutes) {
+                break;
+            }
+
+            // Increment the time by 30 minutes
+            currentMinutes += 30;
+            if (currentMinutes >= 60) {
+                currentMinutes = 0;
+                currentHour++;
+            }
+        }
+
+        return options;
+    };
+
+
+    const today = new Date();
+    const currentYear = today.getFullYear();
+
+    // Calculate tomorrow's date
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const minDate = tomorrow.toISOString().split('T')[0]; // Format as "yyyy-mm-dd"
+
+    // Calculate the last day of the current year
+    const lastDayOfYear = new Date(currentYear, 11, 31); // December 31st
+    const maxDate = lastDayOfYear.toISOString().split('T')[0]; // Format as "yyyy-mm-dd"
+
+
 
     useEffect(() => {
         fetchAllCity().then(setCities).catch(() => console.log('Failed to fetch cities'));
@@ -43,7 +104,6 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
     });
 
     const onSubmit = async (data: OrdersFormValues) => {
-
 
         const formData = { ...data, productId };
 
@@ -93,6 +153,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                                 aria-describedby="name-error"
                                 disabled={isFormSubmitted && !!success}
                                 autoComplete="off"
+                                required
                             />
                         </div>
                     </div>
@@ -120,6 +181,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="email-error"
                                 disabled={isFormSubmitted && !!success}
+                                required
                             />
                         </div>
                     </div>
@@ -146,6 +208,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="phone-error"
                                 disabled={isFormSubmitted && !!success}
+                                required
                             />
                         </div>
                     </div>
@@ -158,24 +221,24 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
 
                 {/* Client date */}
                 <div className="mb-4">
-                    <label htmlFor="name" className="mb-2 block text-sm font-medium">
-                        What&apos;s your event date
+                    <label htmlFor="date" className="mb-2 block text-sm font-medium">
+                        Event date
                     </label>
                     <div className="relative mt-2 rounded-md">
-                        <div className="relative">
-                            <input
-                                {...register("date")}
-                                id="date"
-                                type="date"
-                                name="date"
-                                placeholder="Enter date"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                aria-describedby="date-error"
-                                disabled={isFormSubmitted && !!success}
-                            />
-                        </div>
+                        <input
+                            {...register("date")}
+                            id="date"
+                            type="date"
+                            name="date"
+                            placeholder="Enter date"
+                            className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                            aria-describedby="date-error"
+                            disabled={isFormSubmitted && !!success}
+                            min={minDate} // Set minimum date to tomorrow
+                            max={maxDate} // Set maximum date to December 31st of the current year
+                            required
+                        />
                     </div>
-
 
                     {errors.date && (
                         <p className="text-red-500">{errors.date.message}</p>
@@ -188,25 +251,45 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                         Event time
                     </label>
                     <div className="relative mt-2 rounded-md">
-                        <div className="relative">
-                            <input
-                                {...register("time")}
-                                id="time"
-                                type="time"
-                                name="time"
-                                placeholder="Enter time"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                aria-describedby="time-error"
-                                disabled={isFormSubmitted && !!success}
-                            />
-                        </div>
+                        <select
+                            id="time"
+                            className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                            {...register("time")} // Uncomment this if using with form libraries like react-hook-form
+                            required
+                        >
+                            <option value="" disabled selected>Select time</option> {/* Placeholder option */}
+                            {timeOptions().map((time, index) => (
+                                <option key={index} value={time}>{time}</option>
+                            ))}
+                        </select>
+                        {errors.time && (
+                            <p className="text-red-500">{errors.time.message}</p>
+                        )}
                     </div>
-
+                </div>
+                {/* <div className="mb-4">
+                    <label htmlFor="time" className="mb-2 block text-sm font-medium">
+                        Event time
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <input
+                            {...register("time")}
+                            id="time"
+                            type="time"
+                            name="time"
+                            placeholder="Enter time"
+                            className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                            aria-describedby="time-error"
+                            disabled={isFormSubmitted && !!success}
+                            step="1800" // Add step attribute for 30-minute intervals
+                        />
+                    </div>
 
                     {errors.time && (
                         <p className="text-red-500">{errors.time.message}</p>
                     )}
-                </div>
+                </div> */}
+
 
 
                 {/* City Select Section */}
@@ -218,6 +301,8 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                         <select
                             {...register("cityId")} // Use the name that matches your schema if different
                             className="select-none peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                            defaultValue={""}
+                            required
                         >
                             <option value="" disabled>
                                 Select a city
@@ -255,6 +340,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="location-error"
                                 disabled={isFormSubmitted && !!success}
+                                required
                             />
                         </div>
                     </div>
@@ -270,7 +356,6 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
             <FormError message={error} />
             <FormSuccess message={success} />
             <div className="mt-6 flex justify-end gap-4">
-                {/* todo: fix this "cancel" btn */}
                 <Link href={`/s/${url}`} className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">Cancel</Link>
                 <Button type="submit" disabled={isFormSubmitted && !!success}  >Submit Order</Button>
             </div>

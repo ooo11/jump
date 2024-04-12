@@ -145,3 +145,10 @@ model Urls {
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
 }
+
+model OrderVerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+}

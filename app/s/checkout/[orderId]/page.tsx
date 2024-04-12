@@ -66,7 +66,7 @@ export default function Page({ params }: { params: { orderId: string } }) {
     }, [params.orderId]);
 
     if (error) {
-        return <div className="error-message flex justify-center items-center h-screen">{error}</div>;
+        return <div className="error-message flex justify-center items-center h-screen"> 🤷🏻 {error}</div>;
     }
 
 

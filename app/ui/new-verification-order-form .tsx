@@ -10,7 +10,7 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { newOrderVerification } from '@/actions/new-order-verification';
 
-const domain = process.env.NEXT_PUBLIC_APP_URL;
+const domain = process.env.NEXT_PUBLIC_APP_URL_SHOP;
 
 export default function NewOrderVerificationForm() {
 

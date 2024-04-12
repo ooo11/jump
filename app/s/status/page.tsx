@@ -92,13 +92,13 @@ export default function Page() {
     );
 
     if (error) {
-        return <div className="error-message">{error}</div>;
+        return <div className="error-message flex justify-center items-center h-screen">🤷🏻 {error}</div>;
     }
 
 
     if (!data) {
         // Placeholder while loading or if product is not found
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
 
 

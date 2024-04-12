@@ -2,7 +2,7 @@
 import * as z from 'zod';
 import { db } from '@/app/lib/db';
 import { OrderSchema } from '@/schemas/index';
-import { generateVerificationToken } from '@/app/lib/tokens';
+import { generateOrderVerificationToken, generateVerificationToken } from '@/app/lib/tokens';
 import { sendOrderVerificationEmail } from '@/app/lib/mail';
 
 
@@ -34,7 +34,7 @@ export const newOrders = async (values: z.infer<typeof OrderSchema>) => {
 
 
 
-    const verificationToken = await generateVerificationToken(email);
+    const verificationToken = await generateOrderVerificationToken(email);
     await sendOrderVerificationEmail(verificationToken.email, verificationToken.token, order.id)
 
     return {

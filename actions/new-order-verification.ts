@@ -1,10 +1,10 @@
 "use server"
 
 import { db } from "@/app/lib/db";
-import { getVerificationTokenByToken } from "@/data/verification-token";
+import { getOrderVerificationTokenByToken } from "@/data/verification-token";
 
 export const newOrderVerification = async (token: string, orderId: string) => {
-    const existingToken = await getVerificationTokenByToken(token);
+    const existingToken = await getOrderVerificationTokenByToken(token);
     if (!existingToken) {
         return { error: "Token does not exist!" }
     };
@@ -12,7 +12,7 @@ export const newOrderVerification = async (token: string, orderId: string) => {
     const hasExpired = new Date(existingToken.expires) < new Date();
 
     if (hasExpired) {
-        return { error: "Token has expired! " }
+        return { error: "Token has expired! Please place new order." }
     }
 
     await db.order.update({
@@ -26,7 +26,7 @@ export const newOrderVerification = async (token: string, orderId: string) => {
         }
     });
 
-    await db.verificationToken.delete({
+    await db.orderVerificationToken.delete({
         where: { id: existingToken.id }
     });
 

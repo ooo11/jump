@@ -32,7 +32,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
     if (!data) {
         // Placeholder while loading or if product is not found
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
 
     return (

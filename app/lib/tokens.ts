@@ -74,3 +74,18 @@ export const generateVerificationToken = async (email: string) => {
     })
     return verificationToken;
 };
+
+export const generateOrderVerificationToken = async (email: string) => {
+    const token = uuidv4();
+    const expires = new Date(new Date().getTime() + 3600 * 1000 * 24);
+
+    const verificationToken = await db.orderVerificationToken.create({
+        data: {
+            email,
+            token,
+            expires,
+        }
+    })
+    return verificationToken;
+};
+
