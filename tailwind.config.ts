@@ -17,6 +17,10 @@ const config: Config = {
           500: '#0070F3',
           600: '#2F6FEB',
         },
+        'link-blue': '#0085FF',
+        'button-theme': '#4F24FF',
+        'button-theme-active': '#7451FF',
+        'nav-theme': '#0D1217'
       },
     },
     keyframes: {

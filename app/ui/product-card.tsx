@@ -5,6 +5,7 @@ import Link from "next/link";
 import * as z from "zod";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { formatCurrency } from "@/app/lib/utils";
+import { Button } from "./button";
 
 type ProductCardValues = z.infer<typeof ProductsSchema>;
 interface ProductCardProps extends ProductCardValues {
@@ -45,7 +46,7 @@ export default function ProductCard({ id, name, detail, image, price, onDelete }
                         <div className="flex">
                             <p className="!mb-0 text-sm font-bold text-blue-500">{formatCurrency(Number(price) / 100)}</p>
                         </div>
-                        <Link href={`/neworder/${id}`} className="linear rounded-[20px] bg-blue-900 px-4 py-2 text-base font-medium transition duration-200 text-white hover:bg-blue-800 active:bg-blue-700">Order Now</Link>
+                        <Button disabled className="linear rounded-[20px] px-4 py-2 text-base font-medium">Order Now</Button>
                     </div>
                 </div>
             </div>

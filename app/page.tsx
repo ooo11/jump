@@ -11,14 +11,14 @@ export default function Page() {
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
         <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
 
-          <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
+          <p className={`text-xl text-gray-800 md:text-3xl md:leading-normal`}>
             <strong>Welcome to Jumpsay</strong>
           </p>
           <Link
             href="/auth/login"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+            className="flex items-center gap-5 self-start rounded-lg bg-button-theme px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-button-theme-active md:text-base"
           >
-            <span>Login</span> <ArrowRightIcon className="w-5 md:w-6" />
+            <span>Login</span>
           </Link>
 
         </div>

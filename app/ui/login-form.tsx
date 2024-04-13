@@ -71,9 +71,9 @@ export default function LoginForm() {
   };
 
   return (
-    <div>
+    <div className="flex-1 rounded-lg bg-gray-50 md:px-20 px-8 pb-4 pt-8">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
+        <div >
           {showTwoFactor && (
             // <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
             <div>
@@ -99,51 +99,50 @@ export default function LoginForm() {
             <>
               {/* <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8"> */}
               <div>
-                <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-                  Please log in to continue.
+                <h1 className={`mb-3 text-2xl text-center font-semibold`}>
+                  Welcome back!
                 </h1>
+                <h4 className={`text-sm text-center font-medium`}>
+                  Jumpsay is thrilled to have your return!
+                </h4>
                 <div className="w-full">
                   <div>
                     <label
-                      className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                      className="mb-2 mt-5 block text-xs font-medium text-gray-900"
                       htmlFor="email"
                     >
                       Email
                     </label>
                     <div className="relative">
                       <input
-                        className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                        className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-2 text-sm outline-2 placeholder:text-gray-500"
                         id="email"
                         type="email"
-                        placeholder="Enter your email address"
                         disabled={isPending}
                         autoComplete='email'
                         {...register('email')}
                       />
-                      <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                     </div>
 
                     {errors.email && <p>{errors.email.message}</p>}
                   </div>
                   <div className="mt-4">
                     <label
-                      className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                      className="mb-2 mt-5 block text-xs font-medium text-gray-900"
                       htmlFor="password"
                     >
                       Password
                     </label>
                     <div className="relative">
                       <input
-                        className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                        className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-2 text-sm outline-2 placeholder:text-gray-500"
                         id="password"
                         type="password"
-                        placeholder="Enter password"
                         disabled={isPending}
                         {...register('password')}
                       />
-                      <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                     </div>
-                    <button className='hover:underline hover:text-gray-700 underline-offset-4 text-sm text-gray-800'>
+                    <button className='hover:underline hover:text-gray-700 underline-offset-4 mb-5 mt-2 block text-xs font-medium text-link-blue'>
                       <Link href="/auth/reset">Forgot my password</Link>
                     </button>
                     {errors.password && <p>{errors.password.message}</p>}
@@ -157,26 +156,26 @@ export default function LoginForm() {
 
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
-          <Button type="submit" className="mt-4 w-full" disabled={isPending}   >
-            {showTwoFactor ? "Confirm" : "Login"} <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          <Button type="submit" className="mt-3 w-full" disabled={isPending}   >
+            {showTwoFactor ? "Confirm" : "Log In"}
           </Button>
 
-
-          {/* Add form errors here */}
-
           <div
-            className="flex h-8 items-end space-x-1"
+            className="flex items-end space-x-1 mb-5 mt-2"
             aria-live="polite"
             aria-atomic="true"
-          ><Link href="/auth/register" className='hover:underline hover:text-gray-700 underline-offset-4 text-sm text-gray-800'>
-              Don&#39;t have an account? Join the cult now!</Link>
+          ><span className='text-xs font-medium'>New to Jumpsay?</span><Link href="/auth/register" className='hover:underline hover:text-gray-700 underline-offset-4 text-xs font-medium text-link-blue'>
+              Register</Link>
           </div>
 
 
         </div>
 
       </form >
-      <div className='mt-4'>
+      <p className='text-sm text-center font-medium'>
+        OR
+      </p>
+      <div className='mt-5 mb-5'>
         <Social />
       </div>
 
