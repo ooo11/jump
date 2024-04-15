@@ -21,7 +21,7 @@ export default function OrderSummary({ id, productname, location, date, time, cu
 
     return (
         <div>
-            <h1 className="mb-5 font-semibold text-2xl font-sans text-indigo-600">Order Summary</h1>
+            <h1 className="mb-5 font-semibold text-2xl font-sans text-indigo-600">Order Details</h1>
             <ul className=" text-gray-600 font-light list-disc list-inside">
                 <li>Product: {productname}</li>
                 <li>Order Id: {id}</li>

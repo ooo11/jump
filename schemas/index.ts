@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { Acceptance, UserRole } from '@prisma/client';
 import * as z from 'zod';
 
 export const UrlsSchema = z.object({
@@ -115,4 +115,8 @@ export const RegisterSchema = z.object({
     name: z.string().min(1, {
         message: "Name is required!"
     })
-})
+});
+
+export const OrderAcceptanceSchema = z.object({
+    isAccepted: z.enum([Acceptance.ACCEPTED, Acceptance.REJECTED]),
+});

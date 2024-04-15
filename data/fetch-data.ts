@@ -82,3 +82,52 @@ export const fetchOrderById = async (id: string | undefined) => {
         return null
     }
 }
+
+
+export const getAllOrderByUserId = async (userId: string | undefined) => {
+    if (!userId) {
+        console.log("No userId provided");
+        return null;
+    }
+
+    try {
+        // Fetching products related to the user
+        const products = await db.product.findMany({
+            where: { userId }
+        });
+
+        if (products.length === 0) {
+            console.log("No products found for this user.");
+            return null;
+        }
+
+        // Extract product IDs
+        const productIds = products.map(product => product.id);
+
+        // Fetching orders that have a productId in the list of productIds
+        const orders = await db.order.findMany({
+            where: {
+                productId: { in: productIds }
+            }
+        });
+
+        return { products, orders };
+
+    } catch (error) {
+        console.error("Failed to fetch data for userId", userId, error);
+        return null;
+    }
+};
+
+export const fetchLinkById = async (userId: string | undefined) => {
+    try {
+        const order = await db.urls.findUnique({
+            where: {
+                userId,
+            }
+        })
+        return order;
+    } catch {
+        return null
+    }
+}

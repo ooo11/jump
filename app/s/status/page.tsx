@@ -12,17 +12,18 @@ interface Order {
     name: string;
     email: string;
     emailVerified: Date | null;
+    isPaid: Date | null;
+    isSubmitted: Date | null;
+    isAccepted: "ACCEPTED" | "REJECTED" | "PENDING";
+    location: string;
     phone: string;
-    submission: Date;
+    productId: string;
     date: string;
     time: string;
-    location: string;
+    submission: Date;
     cityId: string;
-    productId: string;
-    isSubmitted: boolean;
-    isAccepted: boolean;
-    isPaid: boolean;
 }
+
 
 interface Product {
     id: string;
@@ -78,18 +79,50 @@ export default function Page() {
 
     }, [orderId]);
 
-    const renderStep = (isCompleted: boolean, text: string) => (
-        <div className="flex flex-col items-center p-10">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center gap-10 ${isCompleted ? 'bg-green-500' : 'bg-gray-300'}`}>
-                {isCompleted && (
-                    <svg className="text-white w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                )}
+    const renderStep = (status: "ACCEPTED" | "REJECTED" | "PENDING", text: string) => {
+        // Determine completion status
+        const isCompleted = status === "ACCEPTED";
+        const isRejected = status === "REJECTED";
+
+        if (isRejected) {
+            text = "Order Rejected"
+        }
+
+        return (
+            <div className="flex flex-row lg:flex-col items-center lg:p-10 p-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isCompleted ? 'bg-green-500' : isRejected ? 'bg-red-500' : 'bg-gray-300'}`}>
+                    {isCompleted && (
+                        <svg className="text-white  w-8 lg:w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                    )}
+                    {isRejected && (
+                        <svg className="text-white  w-8 lg:w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    )}
+                </div>
+                <p className="text-sm lg:mt-2 mt-1 ml-2">{text}</p>
             </div>
-            <p className="text-sm mt-1">{text}</p>
-        </div>
-    );
+        );
+    };
+
+    const renderDateStep = (status: Date | null, text: string) => {
+        // Determine completion status
+        const isCompleted = status !== null;
+        return (
+            <div className="flex flex-row lg:flex-col items-center lg:p-10 p-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isCompleted ? 'bg-green-500' : 'bg-gray-300'}`}>
+                    {isCompleted && (
+                        <svg className="text-white w-8 lg:w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                    )}
+                </div>
+                <p className="text-sm lg:mt-2 mt-1 ml-2">{text}</p> {/* Added sm:mt-0 and sm:ml-2 for spacing on small screens */}
+            </div>
+        );
+    };
 
     if (error) {
         return <div className="error-message flex justify-center items-center h-screen">🤷🏻 {error}</div>;
@@ -104,28 +137,43 @@ export default function Page() {
 
     return (
         <main className='flex justify-center items-center h-screen'>
-            <div className="w-full max-w-2xl mx-auto p-6 md:p-10">
-                <div className="flex justify-between items-center">
-                    {renderStep(data.isSubmitted, 'Order Submitted')}
-                    <div className="flex-grow border-t border-gray-300 mx-2"></div>
-                    {renderStep(data.isAccepted, 'Order Accepted')}
-                    <div className="flex-grow border-t border-gray-300 mx-2"></div>
-                    {renderStep(data.isPaid, 'Payment')}
+            <div className="w-full max-w-2xl mx-auto p-6 md:p-10 rounded-lg bg-gray-50">
+                <h1 className={`mb-3 text-2xl text-center font-semibold`}>
+                    Status
+                </h1>
+                <div className="flex  lg:flex-row flex-col  lg:justify-between lg:items-center ">
+
+                    <div className="relative flex lg:items-center">
+                        {renderDateStep(data.isSubmitted, 'Order Submitted')}
+                    </div>
+                    <div className={`lg:flex-grow lg:border-t-8 rounded-lg ${data.isSubmitted ? 'border-green-500' : 'border-gray-300'}`}></div>
+
+                    <div className="relative flex lg:items-center">
+
+                        {renderStep(data.isAccepted, 'Order Accepted')}
+                    </div>
+                    <div className={`lg:flex-grow lg:border-t-8 rounded-lg ${data.isAccepted ? 'border-green-500' : 'border-gray-300'}`}></div>
+
+
+                    <div className="relative flex lg:items-center">
+                        {renderDateStep(data.isPaid, 'Paid')}
+                    </div>
                 </div>
+
                 {data.isSubmitted ? (
-                    <div>
+                    <div className="md:mt-1 mt-4">
                         <OrderSummary id={data.id} productname={product?.name} location={data.location}
                             date={data.date} time={data.time} customername={data.name} price={product?.price} />
                     </div>
                 ) : null}
-                {data.isAccepted && !data.isPaid ? (
-                    <div
-                        className='mt-5 mb-8 flex item-center w-full justify-center'
-                    >
+
+                {data.isAccepted === "ACCEPTED" && !data.isPaid ? (
+                    <div className='mt-5 mb-8 flex item-center w-full justify-center'>
                         <Link href={`/s/checkout/${orderId}`} className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>Pay now</Link>
                     </div>
                 ) : null}
             </div>
         </main>
+
     );
 }

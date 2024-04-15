@@ -121,7 +121,7 @@ model Product {
 }
 
 model Order {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String
   email         String
   emailVerified DateTime?
@@ -130,13 +130,13 @@ model Order {
   date          String
   time          String
   location      String
-  city          City      @relation(fields: [cityId], references: [id])
+  city          City       @relation(fields: [cityId], references: [id])
   cityId        String
-  product       Product   @relation(fields: [productId], references: [id])
+  product       Product    @relation(fields: [productId], references: [id])
   productId     String
-  isSubmitted   Boolean   @default(false)
-  isAccepted    Boolean   @default(false)
-  isPaid        Boolean   @default(false)
+  isSubmitted   DateTime?
+  isAccepted    Acceptance @default(PENDING)
+  isPaid        DateTime?
 }
 
 model Urls {
@@ -151,4 +151,10 @@ model OrderVerificationToken {
   email   String
   token   String   @unique
   expires DateTime
+}
+
+enum Acceptance {
+  ACCEPTED
+  REJECTED
+  PENDING
 }

@@ -22,7 +22,7 @@ export const newOrderVerification = async (token: string, orderId: string) => {
         data: {
             emailVerified: new Date(),
             email: existingToken.email,
-            isSubmitted: true,
+            isSubmitted: new Date(),
         }
     });
 

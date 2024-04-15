@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react';
 // Make sure to import the necessary hooks from React
 import { UserInfo } from '@/app/(protected)/_components/user-info';
-import { fetchCategoryById, fetchCityById } from '@/data/fetch-data';
+import { fetchCategoryById, fetchCityById, fetchLinkById } from '@/data/fetch-data';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { Category, City } from '@prisma/client';
 import ProductCard from "@/app/ui/product-card";
 import { getAllProductByUserId } from "@/data/fetch-data";
+import Link from 'next/link';
 
 
 interface Product {
@@ -18,6 +19,12 @@ interface Product {
     userId: string;
 }
 
+interface Links {
+    id: string;
+    link: string;
+    userId: string;
+}
+
 
 
 export default function DashboardPage() {
@@ -26,6 +33,7 @@ export default function DashboardPage() {
     const [category, setCategory] = useState<Category | null>(null); // State to store the city data
     const [isLoading, setIsLoading] = useState(true);
     const [products, setProducts] = useState<Product[] | null>([]);
+    const [links, setLink] = useState<Links | null>(null);
 
     useEffect(() => {
 
@@ -50,6 +58,19 @@ export default function DashboardPage() {
                 console.error('Failed to fetch category data', error);
             });
         }
+
+        if (user) {
+
+            fetchLinkById(user.id).then(link => {
+                if (link) {
+                    setLink(link);
+                }
+            }).catch(error => {
+                console.error('Failed to fetch link url', error);
+            });
+        }
+
+
     }, [user]);
 
     useEffect(() => {
@@ -96,8 +117,16 @@ export default function DashboardPage() {
 
     return (
         <main>
-            <div className="flex items-center justify-center py-10">
+            <div className="flex items-center justify-center lg:pt-8 lg:pb-4">
                 <UserInfo user={user} city={city} category={category} />
+            </div>
+            <div className="flex items-center justify-center mt-4 lg:mb-4">
+            <a 
+            href={`/s/${links?.link}`} 
+            className='w-full w-full md:w-1/3 p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'
+            target="_blank"
+            rel="noopener noreferrer"
+            >Shop Page</a>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                 {isLoading ? (

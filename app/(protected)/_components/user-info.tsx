@@ -5,6 +5,7 @@ import { MapPinIcon, TagIcon } from "@heroicons/react/24/outline";
 import { Category } from "@prisma/client";
 import Image from "next/image";
 import { fill } from "lodash";
+import Link from "next/link";
 
 interface UserInfoProps {
     user?: ExtendedUser;
@@ -16,6 +17,8 @@ type City = {
     id: string;
     name: string;
 };
+
+
 
 export const UserInfo = ({
     user,
@@ -29,8 +32,9 @@ export const UserInfo = ({
     return (
 
         <div
-            className="bg-gray-100 relative overflow-hidden group rounded-xl p-3 md:p-5 w-full md:w-1/2"
+            className="bg-gray-100 relative overflow-hidden group rounded-xl p-3 md:p-5 w-full md:w-1/3"
         >
+
             <div className="flex items-center gap-4">
                 {user?.image && isCloudinaryImage(user.image) ? (
                     <CldImage
