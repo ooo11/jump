@@ -6,7 +6,8 @@ import { db } from '@/app/lib/db';
 import { getUserById } from "@/data/user";
 import { UserRole } from "@prisma/client";
 import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
-import { getAccountByUserId } from "./data/account";
+import { getAccountByUserId } from "@/data/account";
+import { getLinkById } from "@/data/seed-data";
 
 
 
@@ -76,7 +77,7 @@ export const {
                     about: token.about as string | null,
                     categoryId: token.categoryId as string | null | undefined,
                     cityId: token.cityId as string | null | undefined,
-
+                    link: token.link as string | null | undefined,
                 }
             }
             return session;
@@ -85,6 +86,7 @@ export const {
             if (!token.sub) return token;
 
             const existingUser = await getUserById(token.sub);
+            const existingUserLink = await getLinkById(token.sub)
 
             if (!existingUser) return token;
 
@@ -101,6 +103,7 @@ export const {
             token.about = existingUser.about;
             token.categoryId = existingUser.categoryId;
             token.cityId = existingUser.cityId;
+            token.link = existingUserLink?.link;
 
             return token;
         }

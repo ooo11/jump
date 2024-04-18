@@ -8,8 +8,9 @@ import { useSearchParams } from 'next/navigation';
 import { newVerification } from '@/actions/new-verification';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import { emailUpdateVerification } from '@/actions/email-update-verification';
 
-export default function NewVerificationForm() {
+export default function EmailUpdateVerificationForm() {
 
     const [error, setError] = useState<string | undefined>();
     const [success, setSuccess] = useState<string | undefined>();
@@ -17,6 +18,7 @@ export default function NewVerificationForm() {
     const searchParams = useSearchParams();
 
     const token = searchParams.get("token");
+    const userid = searchParams.get("userid")
 
     const onSubmit = useCallback(() => {
         if (success || error) return;
@@ -26,7 +28,7 @@ export default function NewVerificationForm() {
             return
         }
 
-        newVerification(token).then((data) => {
+        emailUpdateVerification(token).then((data) => {
             setSuccess(data?.success);
             setError(data?.error);
         }).catch(() => {
@@ -59,8 +61,8 @@ export default function NewVerificationForm() {
 
                 <div
                    className='mt-5 mb-8 flex item-center w-full justify-center'
-                ><Link href="/auth/login"  className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>
-                        Back to login</Link>
+                ><Link href="/dashboard"  className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>
+                        Back</Link>
                 </div>
 
 

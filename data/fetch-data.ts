@@ -61,6 +61,38 @@ export const fetchProductById = async (id: string | undefined) => {
     }
 }
 
+export const fetchProductAndWorkingHoursById = async (productId: string | undefined) => {
+    if (!productId) return null;
+
+    try {
+        const [product, workingHours] = await Promise.all([
+            db.product.findUnique({
+                where: { id: productId }
+            }),
+            db.workingHours.findUnique({
+                where: { productId }
+            })
+        ]);
+
+        if (!product || !workingHours) return null;
+
+        return {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            detail: product.detail,
+            image: product.image,
+            initialOpeningHour: workingHours.initialOpeningHour,
+            initialOpeningMinutes: workingHours.initialOpeningMinutes,
+            initialClosingHour: workingHours.initialClosingHour,
+            initialClosingMinutes: workingHours.initialClosingMinutes
+        };
+    } catch (error) {
+        console.error('Error fetching product and working hours:', error);
+        return null;
+    }
+};
+
 export const fetchAllCity = async () => {
     try {
         const cities = await db.city.findMany();

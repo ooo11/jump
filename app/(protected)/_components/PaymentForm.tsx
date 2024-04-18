@@ -1,5 +1,6 @@
 "use client";
 
+import { orderPaymentUpdate } from "@/actions/order-payment-update";
 import { Button } from "@/app/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
@@ -7,7 +8,16 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import axios from "axios";
 import React, { useState } from "react";
 
-export default function PaymentForm() {
+type OrderValues = {
+    orderId: string,
+    price: string | undefined,
+ }
+
+export default function PaymentForm({orderId, price}: OrderValues) {
+
+    console.log({price});
+    
+   
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
 
@@ -22,7 +32,7 @@ export default function PaymentForm() {
                 fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
                 fontSmoothing: "antialiased",
                 fontSize: "18px",
-                backgroundColor: "##C8CEDA",
+                backgroundColor: "#C8CEDA",
                 "::placeholder": {
                     color: "#aab7c4",
                 }
@@ -35,36 +45,36 @@ export default function PaymentForm() {
     };
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setError("");
         setSuccess("");
-        e.preventDefault();
-        const cardElement = elements?.getElement("card");
+
+        const cardElement = elements?.getElement(CardElement);
+
+        if (!stripe || !cardElement) {
+            setError("Please try again in a few moments.");
+            return;
+        }
 
         try {
-            if (!stripe || !cardElement) {
-                setError("Please try again in a few moments.");
-                return;
-            }
-            const { data } = await axios.post("/api/create-payment-intent", {
-                data: { amount: 1000 },
+            const { data: clientSecret } = await axios.post("/api/create-payment-intent", {
+                data: { amount: Number(price)/100 },
             });
-            const clientSecret = data;
 
-            const paymentResult = await stripe?.confirmCardPayment(clientSecret, {
+            const paymentResult = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: { card: cardElement },
             });
-            console.log(paymentResult.paymentIntent?.id);
+
             if (paymentResult.error) {
                 setError(paymentResult.error.message);
-                return;
-            } else if (paymentResult.paymentIntent.status === 'succeeded') {
+            } else if (paymentResult.paymentIntent?.status === 'succeeded') {
+                console.log(orderId);
+                console.log(paymentResult.paymentIntent.id);
+                await orderPaymentUpdate(orderId, { paymentId: paymentResult.paymentIntent.id });
                 setSuccess("Payment succeeded!");
-                return paymentResult;
             }
-            // return paymentResult
-        } catch (error) {
-            setError("An error occurred. Please try again.");
-            return;
+        } catch (err) {
+            setError(`An error occurred.`);
         }
     };
 
@@ -74,7 +84,7 @@ export default function PaymentForm() {
             <CardElement options={CARD_ELEMENT_OPTIONS} />
             <FormError message={error} />
             <FormSuccess message={success} />
-            <Button className="mt-10" type="submit">Submit</Button>
+            <Button className="mt-10" type="submit" disabled={!stripe || !elements}>Submit</Button>
         </form>
     );
 }

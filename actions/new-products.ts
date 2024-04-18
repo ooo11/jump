@@ -14,7 +14,11 @@ export const newProducts = async (values: z.infer<typeof ProductsFormSchema>) =>
         }
     }
 
-    const { name, detail, price, image } = validatedFields.data;
+    const { name, detail, price, image, 
+        initialOpeningHour,
+        initialOpeningMinutes,
+        initialClosingHour,
+        initialClosingMinutes, } = validatedFields.data;
 
     const user = await currentUser();
 
@@ -27,7 +31,7 @@ export const newProducts = async (values: z.infer<typeof ProductsFormSchema>) =>
         return { error: "Unauthorized!" }
     }
 
-    await db.product.create({
+    const newProduct = await db.product.create({
         data: {
             name,
             detail,
@@ -36,6 +40,16 @@ export const newProducts = async (values: z.infer<typeof ProductsFormSchema>) =>
             userId: dbUser.id
         }
     });
+
+    await db.workingHours.create({
+        data:{
+            productId: newProduct.id,
+            initialOpeningHour,
+            initialOpeningMinutes,
+            initialClosingHour,
+            initialClosingMinutes,
+        }
+    })
 
 
     return {

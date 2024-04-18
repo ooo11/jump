@@ -23,14 +23,9 @@ interface City {
     name: string;
 }
 
-const settings = {
-    initialOpeningHour: 7,
-    initialClosingHour: 22,
-    initialClosingMinutes: 30
-};
 
-
-export default function NewOrderForm({ productId, url }: { productId: string, url: string }) {
+export default function NewOrderForm({ productId, url,openHour,openMinute,closeHour,closeMinute }: 
+    { productId: string; url: string; openHour: string; openMinute: string; closeHour: string; closeMinute: string;  }) {
 
 
     const [error, setAsError] = useState<string | undefined>();
@@ -39,13 +34,15 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
     const [cities, setCities] = useState<City[]>([]);
 
     const settings = {
-        initialOpeningHour: 9,
-        initialOpeningMinutes: 0,
-        initialClosingHour: 21,
-        initialClosingMinutes: 0
+        initialOpeningHour: Number(openHour),
+        initialOpeningMinutes: Number(openMinute),
+        initialClosingHour: Number(closeHour),
+        initialClosingMinutes: Number(closeMinute)
     };
 
     const { initialOpeningHour, initialOpeningMinutes, initialClosingHour, initialClosingMinutes } = settings;
+
+    
 
     // State to store opening and closing times
     const [openingHour, setOpeningHour] = useState<number>(initialOpeningHour);
@@ -107,8 +104,6 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
 
         const formData = { ...data, productId };
 
-        console.log({ formData });
-
         // Assuming newProducts is an API call to submit the form data, including the image URL.
         try {
             const result = await newOrders(formData);
@@ -134,7 +129,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="rounded-md p-4 md:p-6">
+            <div className="rounded-md p-4 md:p-6 max-w-md">
                 {/* Client Name */}
                 <div className="mb-4">
                     <label htmlFor="name" className="mb-2 block text-sm font-medium">
@@ -149,7 +144,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                                 name="name"
                                 maxLength={100}
                                 placeholder="Enter name"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                className="peer block w-full rounded-md border border-gray-200 py-2  text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="name-error"
                                 disabled={isFormSubmitted && !!success}
                                 autoComplete="off"
@@ -178,7 +173,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                                 type="email"
                                 name="email"
                                 placeholder="Enter email address"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                className="peer block w-full rounded-md border border-gray-200 py-2  text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="email-error"
                                 disabled={isFormSubmitted && !!success}
                                 required
@@ -205,7 +200,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                                 type="text"
                                 name="phone"
                                 placeholder="Enter phone number"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                className="peer block w-full rounded-md border border-gray-200 py-2  text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="phone-error"
                                 disabled={isFormSubmitted && !!success}
                                 required
@@ -231,7 +226,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                             type="date"
                             name="date"
                             placeholder="Enter date"
-                            className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                            className="peer block w-full rounded-md border border-gray-200 py-2  text-sm outline-2 placeholder:text-gray-500"
                             aria-describedby="date-error"
                             disabled={isFormSubmitted && !!success}
                             min={minDate} // Set minimum date to tomorrow
@@ -253,7 +248,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                     <div className="relative mt-2 rounded-md">
                         <select
                             id="time"
-                            className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                            className="peer block w-full rounded-md border border-gray-200 py-2  text-sm outline-2 placeholder:text-gray-500"
                             {...register("time")} // Uncomment this if using with form libraries like react-hook-form
                             required
                         >
@@ -278,7 +273,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                             type="time"
                             name="time"
                             placeholder="Enter time"
-                            className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                            className="peer block w-full rounded-md border border-gray-200 py-2  text-sm outline-2 placeholder:text-gray-500"
                             aria-describedby="time-error"
                             disabled={isFormSubmitted && !!success}
                             step="1800" // Add step attribute for 30-minute intervals
@@ -337,7 +332,7 @@ export default function NewOrderForm({ productId, url }: { productId: string, ur
                                 type="text"
                                 name="location"
                                 placeholder="Enter location address"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                className="peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="location-error"
                                 disabled={isFormSubmitted && !!success}
                                 required

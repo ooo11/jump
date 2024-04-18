@@ -4,6 +4,7 @@ import { getVendorById, getVendorIdByLink } from '@/data/user';
 import PublicProductCard from '@/app/ui/s/public-product-card';
 import { VendorInfo } from '@/app/ui/s/vendor-info';
 import { Metadata } from 'next'
+import style from '@/public/styles/grid.module.css'
 
 export const metadata: Metadata = {
     title: 'Shop',
@@ -40,7 +41,7 @@ export default async function ShopPage({ params }: { params: { url: string } }) 
             <div className="flex items-center justify-center py-10">
                 <VendorInfo user={user} city={city} category={category} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 md:p-10">
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 md:p-10 ${style.grid}`}>
                 {products.map((product) => (
                     <PublicProductCard
                         key={product.id}

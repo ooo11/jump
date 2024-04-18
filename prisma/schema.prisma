@@ -18,7 +18,7 @@ datasource db {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            String 
   type              String
   provider          String
   providerAccountId String
@@ -58,6 +58,8 @@ model User {
   twoFactorConfirmation TwoFactorConfirmation?
   Product               Product[]
   Urls                  Urls?
+  emailUpdateToken EmailUpdateVerificationToken?
+
 }
 
 model City {
@@ -115,9 +117,10 @@ model Product {
   image  String?
   price  String
   detail String
-  user   User    @relation(fields: [userId], references: [id])
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   orders Order[]
+  workingHours WorkingHours?
 }
 
 model Order {
@@ -132,17 +135,18 @@ model Order {
   location      String
   city          City       @relation(fields: [cityId], references: [id])
   cityId        String
-  product       Product    @relation(fields: [productId], references: [id])
+  product       Product    @relation(fields: [productId], references: [id] ,  onDelete: Cascade)
   productId     String
   isSubmitted   DateTime?
   isAccepted    Acceptance @default(PENDING)
   isPaid        DateTime?
+  paymentId     String?
 }
 
 model Urls {
   id     String @id @default(cuid())
   link   String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id],  onDelete: Cascade)
   userId String @unique
 }
 
@@ -157,4 +161,25 @@ enum Acceptance {
   ACCEPTED
   REJECTED
   PENDING
+}
+
+model EmailUpdateVerificationToken {
+  id      String   @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id],  onDelete: Cascade)
+  userId String @unique
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model WorkingHours {
+  id      String   @id @default(cuid())
+  initialOpeningHour String
+  initialOpeningMinutes String
+  initialClosingHour String
+  initialClosingMinutes String
+  product   Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String @unique
 }

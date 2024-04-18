@@ -152,7 +152,10 @@ export default function Page() {
 
                         {renderStep(data.isAccepted, 'Order Accepted')}
                     </div>
-                    <div className={`lg:flex-grow lg:border-t-8 rounded-lg ${data.isAccepted ? 'border-green-500' : 'border-gray-300'}`}></div>
+                    <div className={`lg:flex-grow lg:border-t-8 rounded-lg 
+                                    ${data.isAccepted==="ACCEPTED" ? 'border-green-500' : 'border-gray-300'}
+                                    ${data.isAccepted==="REJECTED" ? 'border-red-500' : 'border-gray-300'}
+                                    `}></div>
 
 
                     <div className="relative flex lg:items-center">

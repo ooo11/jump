@@ -9,7 +9,7 @@ import {
 import { Button } from '@/app/ui/button';
 
 import { useFormState } from 'react-dom';
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { CldImage } from 'next-cloudinary';
 import { CldUploadButton } from "next-cloudinary";
 import crypto from "crypto";
@@ -33,15 +33,17 @@ export default function CreateProductForm() {
     const [publicId, setPublicId] = useState<string | undefined>();
     const [detailLength, setDetailLength] = useState(0);
 
+ 
     const handleDetailChange = useCallback((event: { target: { value: string | any[]; }; }) => {
         const inputLength = event.target.value.length;
         setDetailLength(inputLength); // Update the state with the current input length
     }, []);
 
-    const { register, handleSubmit, setError, formState: { errors } } = useForm<ProductsFormValues>({
+    const { register, handleSubmit, setError, formState: { errors }, clearErrors ,watch } = useForm<ProductsFormValues>({
         resolver: zodResolver(ProductsFormSchema)
     });
 
+  
 
     const handleUpload = useCallback((results: any) => {
         if (results.event === "success") {
@@ -120,8 +122,9 @@ export default function CreateProductForm() {
 
 
     return (
+        <div className="rounded-md bg-gray-50 p-4 md:p-6 max-w-md">
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="rounded-md bg-gray-50 p-4 md:p-6">
+            <div >
                 {/* Product Name */}
                 <div className="mb-4">
                     <label htmlFor="name" className="mb-2 block text-sm font-medium">
@@ -136,7 +139,7 @@ export default function CreateProductForm() {
                                 name="name"
                                 maxLength={100}
                                 placeholder="Enter Product name"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                className="peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="name-error"
                                 disabled={isFormSubmitted && !!success}
                             />
@@ -159,15 +162,14 @@ export default function CreateProductForm() {
                     </label>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
-                            <input
+                            <textarea
                                 {...register("detail")}
                                 id="detail"
-                                type="text"
                                 name="detail"
                                 maxLength={140}
                                 onChange={handleDetailChange} // Add this line
                                 placeholder="Describe the product detail"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                className="resize-none peer block w-full lg:h-20 h-24 rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="detail-error"
                                 disabled={isFormSubmitted && !!success}
                             />
@@ -266,8 +268,47 @@ export default function CreateProductForm() {
                     )}
 
                 </div>
+ {/* Opening Hours */}
+ <div className="mb-4 grid grid-cols-2 gap-4">
+    <div>
+        <label htmlFor="initialOpeningHour" className="block text-sm font-medium">Opening Hour</label>
+        <select {...register("initialOpeningHour")} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            {Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')).map(hour => (
+                <option key={hour} value={hour}>{hour}</option>
+            ))}
+        </select>
+    </div>
+    <div>
+        <label htmlFor="initialOpeningMinutes" className="block text-sm font-medium">Opening Minutes</label>
+        <select {...register("initialOpeningMinutes")} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <option value="00">00</option>
+            <option value="30">30</option>
+        </select>
+    </div>
+</div>
 
+{/* Closing Hours */}
+<div className="mb-4 grid grid-cols-2 gap-4">
+    <div>
+        <label htmlFor="initialClosingHour" className="block text-sm font-medium">Closing Hour</label>
+        <select {...register("initialClosingHour")} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            {Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')).map(hour => (
+                <option key={hour} value={hour}>{hour}</option>
+            ))}
+        </select>
+    </div>
+    <div>
+        <label htmlFor="initialClosingMinutes" className="block text-sm font-medium">Closing Minutes</label>
+        <select {...register("initialClosingMinutes")} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <option value="00">00</option>
+            <option value="30">30</option>
+        </select>
+    </div>
 
+  
+
+</div>
+{errors.initialClosingHour && (<p className="text-red-500">{errors.initialClosingHour.message}</p>)}
 
             </div>
             <FormError message={error} />
@@ -277,5 +318,6 @@ export default function CreateProductForm() {
                 <Button type="submit" disabled={isFormSubmitted && !!success}  >Create Product</Button>
             </div>
         </form>
+        </div>
     );
 }

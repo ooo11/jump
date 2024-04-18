@@ -1,7 +1,7 @@
 "use server"
 import * as z from 'zod';
 import { db } from '@/app/lib/db';
-import { ProductsSchema } from '@/schemas/index';
+import { ProductsSchema, WorkingHoursFormSchema } from '@/schemas/index';
 import { currentUser } from '@/app/lib/auth';
 import { getUserById } from '@/data/user';
 
@@ -11,11 +11,18 @@ interface ProductsFormValues {
     price: string;
     detail: string;
     image?: string | null; // Allow null here
+    workingHours?: {
+        initialOpeningHour: string;
+        initialOpeningMinutes: string;
+        initialClosingHour: string;
+        initialClosingMinutes: string;
+    };
 }
-
 export const updateProduct = async (productId: string, values: ProductsFormValues) => {
-    const validatedFields = ProductsSchema.partial().safeParse(values);
-    if (!validatedFields.success) {
+    const validatedProductFields = ProductsSchema.partial().safeParse(values);
+    const validatedWorkingHoursFields = values.workingHours ? WorkingHoursFormSchema.partial().safeParse(values.workingHours) : null;
+
+    if (!validatedProductFields.success || (validatedWorkingHoursFields && !validatedWorkingHoursFields.success)) {
         return {
             error: "Invalid fields!"
         };
@@ -47,8 +54,17 @@ export const updateProduct = async (productId: string, values: ProductsFormValue
         where: {
             id: productId,
         },
-        data: validatedFields.data,
+        data: validatedProductFields.data,
     });
+
+    if (validatedWorkingHoursFields && validatedWorkingHoursFields.success) {
+        await db.workingHours.update({
+            where: {
+                productId: productId,
+            },
+            data: validatedWorkingHoursFields.data,
+        });
+    }
 
     return {
         success: "Product updated successfully!"

@@ -2,8 +2,9 @@
 
 import NewOrderForm from "@/app/ui/orders/create-form";
 import ProductCartCard from "@/app/ui/product-cart-card";
-import { fetchProductById } from "@/data/fetch-data";
+import { fetchProductAndWorkingHoursById, fetchProductById } from "@/data/fetch-data";
 import { useEffect, useState } from 'react';
+
 
 interface Product {
     id: string;
@@ -11,7 +12,10 @@ interface Product {
     image: string | null;
     price: string;
     detail: string;
-    userId: string;
+    initialOpeningHour: string;
+    initialOpeningMinutes: string;
+    initialClosingHour: string;
+    initialClosingMinutes: string;
 }
 
 export default function Page({ params }: { params: { id: string, url: string } }) {
@@ -20,7 +24,7 @@ export default function Page({ params }: { params: { id: string, url: string } }
     const [data, setData] = useState<Product | null>(null);
 
     useEffect(() => {
-        fetchProductById(params.id).then(product => {
+        fetchProductAndWorkingHoursById(params.id).then(product => {
             if (!product) {
 
                 return { error: "Product Not Found" }
@@ -51,7 +55,12 @@ export default function Page({ params }: { params: { id: string, url: string } }
                     />
                 </div>
                 <div className="md:basis-1/2  rounded-lg basis-full bg-blue-100 p-10">
-                    <NewOrderForm productId={data.id} url={params.url} />
+                    <NewOrderForm productId={data.id} url={params.url} 
+                    openHour={data.initialOpeningHour} 
+                    openMinute={data.initialOpeningMinutes}
+                    closeHour={data.initialClosingHour}
+                    closeMinute = {data.initialClosingMinutes}
+                    />
                 </div>
             </div>
         </main>

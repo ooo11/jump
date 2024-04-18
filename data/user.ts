@@ -26,6 +26,19 @@ export const getUserById = async (id: string | undefined) => {
     }
 }
 
+export const getUserAccountByUserId = async (userId: string | undefined) => {
+    try {
+        const user = await db.account.findFirst({
+            where: {
+                userId,
+            }
+        })
+        return user;
+    } catch {
+        return null;
+    }
+}
+
 //this is public data
 export const getVendorById = async (id: string | undefined) => {
     try {
@@ -64,4 +77,6 @@ export const getVendorIdByLink = async (link: string) => {
         return null;
     }
 }
+
+
 

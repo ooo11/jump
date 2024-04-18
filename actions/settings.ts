@@ -4,10 +4,10 @@ import * as Z from "zod";
 import bcrypt from "bcryptjs";
 import { db } from "@/app/lib/db";
 import { SettingsSchema } from "@/schemas";
-import { getUserByEmail, getUserById } from "@/data/user";
+import { getUserAccountByUserId, getUserByEmail, getUserById } from "@/data/user";
 import { currentUser } from "@/app/lib/auth";
-import { generateVerificationToken } from "@/app/lib/tokens";
-import { sendVerificationEmail } from "@/app/lib/mail";
+import { generateEmailUpdateVerificationToken, generateVerificationToken } from "@/app/lib/tokens";
+import { sendEmailUpdateVerificationEmail, sendVerificationEmail } from "@/app/lib/mail";
 import { unstable_update } from "@/auth";
 
 
@@ -20,6 +20,13 @@ export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
     const dbUser = await getUserById(user.id);
     if (!dbUser) {
         return { error: "Unauthorized!" }
+    }
+
+    if (user.isOAuth) {
+        values.email = undefined;
+        values.password = undefined;
+        values.newPassword = undefined;
+        values.isTwoFactorEnabled = undefined;
     }
 
     // Check if link exists and belongs to another user
@@ -39,20 +46,26 @@ export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
     if (values.email && values.email !== user.email) {
         const existingUser = await getUserByEmail(values.email);
 
-        if (existingUser && existingUser.id !== user.id) {
+        if (existingUser && existingUser.email !== user.email) {
             return { error: "Email already in use!" }
         }
 
-        const verificationToken = await generateVerificationToken(
-            values.email
-        );
-        await sendVerificationEmail(
-            verificationToken.email,
-            verificationToken.token,
-        );
+        if (user.id) {
+            const verificationToken = await generateEmailUpdateVerificationToken(
+                values.email,
+                user.id
+            );
+            await sendEmailUpdateVerificationEmail(
+                verificationToken.email,
+                verificationToken.token,
 
-        return { success: "Verification email sent!" };
+            );
+
+            return { success: "Verification email sent!" };
+        }
+
     }
+
 
     if (values.password && values.newPassword && dbUser.password) {
         const passwordsMatch = await bcrypt.compare(
@@ -104,6 +117,7 @@ export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
 
     }
 
+
     unstable_update({
         user: {
             name: updatedUser.name,
@@ -113,6 +127,7 @@ export const settings = async (values: Z.infer<typeof SettingsSchema>) => {
             cityId: updatedUser.cityId,
             categoryId: updatedUser.categoryId,
             role: updatedUser.role,
+            link: values.link
         }
     });
 

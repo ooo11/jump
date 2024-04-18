@@ -7,7 +7,7 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 import { Category, City } from '@prisma/client';
 import ProductCard from "@/app/ui/product-card";
 import { getAllProductByUserId } from "@/data/fetch-data";
-import Link from 'next/link';
+import style from '@/public/styles/grid.module.css'
 
 
 interface Product {
@@ -33,43 +33,20 @@ export default function DashboardPage() {
     const [category, setCategory] = useState<Category | null>(null); // State to store the city data
     const [isLoading, setIsLoading] = useState(true);
     const [products, setProducts] = useState<Product[] | null>([]);
-    const [links, setLink] = useState<Links | null>(null);
+
 
     useEffect(() => {
-
-        if (user && user.cityId) {
-
-            fetchCityById(user.cityId).then(fetchedCity => {
-                if (fetchedCity) {
-                    setCity(fetchedCity);
-                }
-            }).catch(error => {
-                console.error('Failed to fetch city data', error);
-            });
+        if (user?.cityId) {
+            fetchCityById(user.cityId)
+                .then(setCity)
+                .catch(error => console.error('Failed to fetch city data', error));
         }
 
-        if (user && user.categoryId) {
-
-            fetchCategoryById(user.categoryId).then(category => {
-                if (category) {
-                    setCategory(category);
-                }
-            }).catch(error => {
-                console.error('Failed to fetch category data', error);
-            });
+        if (user?.categoryId) {
+            fetchCategoryById(user.categoryId)
+                .then(setCategory)
+                .catch(error => console.error('Failed to fetch category data', error));
         }
-
-        if (user) {
-
-            fetchLinkById(user.id).then(link => {
-                if (link) {
-                    setLink(link);
-                }
-            }).catch(error => {
-                console.error('Failed to fetch link url', error);
-            });
-        }
-
 
     }, [user]);
 
@@ -82,12 +59,12 @@ export default function DashboardPage() {
                     setProducts(fetchedProducts);
                 } catch (error) {
                     console.error("Failed to fetch products:", error);
-                    setProducts([]); // Optional: Decide how you want to handle this case
+                    setProducts([]);
                 } finally {
-                    setIsLoading(false); // End loading
+                    setIsLoading(false);
                 }
             } else {
-                setIsLoading(false); // Ensure loading is false if there's no user
+                setIsLoading(false);
             }
         }
 
@@ -121,14 +98,11 @@ export default function DashboardPage() {
                 <UserInfo user={user} city={city} category={category} />
             </div>
             <div className="flex items-center justify-center mt-4 lg:mb-4">
-            <a 
-            href={`/s/${links?.link}`} 
-            className='w-full w-full md:w-1/3 p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'
-            target="_blank"
-            rel="noopener noreferrer"
-            >Shop Page</a>
+                <a href={user?.link ? `/s/${user?.link}` : '/settings'} className='w-full md:w-1/3 p-2 bg-button-theme text-white rounded-md text-center hover:bg-button-theme-active cursor-pointer' target="_blank" rel="noopener noreferrer">
+                    {user?.link ? 'Shop Page' : 'Click to create link for your shop'}
+                </a>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ${style.grid}`}>
                 {isLoading ? (
                     <p className='flex justify-center items-center h-screen'>Loading products...</p> // Placeholder loading message; consider replacing with a spinner or similar
                 ) : (

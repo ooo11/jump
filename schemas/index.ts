@@ -39,12 +39,60 @@ export const ProductsSchema = z.object({
     detail: z.string(),
 })
 
+const WorkingHoursSchema = z.object({
+    initialOpeningHour: z.string().refine(val => parseInt(val) >= 0 && parseInt(val) <= 23, {
+        message: "Hour must be between 00 and 23",
+    }),
+    initialOpeningMinutes: z.string().refine(val => val === "00" || val === "30", {
+        message: "Minutes must be either '00' or '30'",
+    }),
+    initialClosingHour: z.string().refine(val => parseInt(val) >= 0 && parseInt(val) <= 23, {
+        message: "Hour must be between 00 and 23",
+    }),
+    initialClosingMinutes: z.string().refine(val => val === "00" || val === "30", {
+        message: "Minutes must be either '00' or '30'",
+    }),
+});
+
+const timeToInt = (hour: string, minute: string) => parseInt(hour) * 60 + parseInt(minute);
+
+
 export const ProductsFormSchema = z.object({
     name: z.string(),
     image: z.string().optional(),
     price: z.string(),
     detail: z.string(),
-})
+    initialOpeningHour: WorkingHoursSchema.shape.initialOpeningHour,
+    initialOpeningMinutes: WorkingHoursSchema.shape.initialOpeningMinutes,
+    initialClosingHour: WorkingHoursSchema.shape.initialClosingHour,
+    initialClosingMinutes: WorkingHoursSchema.shape.initialClosingMinutes,
+}).refine(data => {
+    const openingTime = timeToInt(data.initialOpeningHour, data.initialOpeningMinutes);
+    const closingTime = timeToInt(data.initialClosingHour, data.initialClosingMinutes);
+    return closingTime > openingTime;
+}, {
+    message: "Closing time must be later than opening time",
+    path: ["initialClosingHour"], // This indicates where the error should be displayed
+});
+
+export const ProductsEditFormSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    price: z.string(),
+    detail: z.string(),
+    image: z.string().optional().nullable(),
+    initialOpeningHour: z.string(),
+    initialOpeningMinutes: z.string(),
+    initialClosingHour: z.string(),
+    initialClosingMinutes: z.string(),
+}).refine(data => {
+    const openingTime = timeToInt(data.initialOpeningHour, data.initialOpeningMinutes);
+    const closingTime = timeToInt(data.initialClosingHour, data.initialClosingMinutes);
+    return closingTime > openingTime;
+}, {
+    message: "Closing time must be later than opening time",
+    path: ["initialClosingHour"], // This indicates where the error should be displayed
+});
 
 const reservedNames = ["jump", "test", "admin", "root", "auth", "says"];
 
@@ -56,10 +104,14 @@ export const SettingsSchema = z.object({
     about: z.string().optional(),
     cityId: z.string().optional().nullable(),
     categoryId: z.string().optional().nullable(),
+    isTwoFactorEnabled: z.optional(z.boolean()),
 
     link: z.string()
         .min(4, "Must be 4 or more characters long")
         .optional()
+        .refine((value) => typeof value === 'undefined' || !value.includes(' '), { message: 'No space allowed' })
+        .refine((value) => /^[a-zA-Z0-9-]+$/.test(value ?? ""), 'No special characters allowed')
+        .refine((value) => /^[a-z0-9-]+$/.test(value ?? ""), 'No uppercase letter allowed')
         .refine((value) => {
             return typeof value === 'undefined' || !reservedNames.some(reserved => value.startsWith(reserved));
         }, {
@@ -120,3 +172,15 @@ export const RegisterSchema = z.object({
 export const OrderAcceptanceSchema = z.object({
     isAccepted: z.enum([Acceptance.ACCEPTED, Acceptance.REJECTED]),
 });
+
+export const OrderPaymentSchema = z.object({
+    paymentId: z.string(),
+});
+
+export const WorkingHoursFormSchema = z.object({
+    initialOpeningHour: z.string(),
+    initialOpeningMinutes: z.string(),
+    initialClosingHour: z.string(),
+    initialClosingMinutes: z.string(),
+});
+

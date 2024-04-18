@@ -5,6 +5,7 @@ export type ExtendedUser = DefaultSession["user"] & {
     role: UserRole;
     about: string | null;
     cityId: string | null | undefined;
+    link: string | null | undefined;
     categoryId: string | null | undefined;
     isTwoFactorEnabled: boolean;
     isOAuth: boolean;

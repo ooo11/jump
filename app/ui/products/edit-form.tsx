@@ -4,6 +4,8 @@ import {
     CurrencyDollarIcon,
 
 } from '@heroicons/react/24/outline';
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { useCallback, useState } from "react";
@@ -11,22 +13,17 @@ import { CldImage } from 'next-cloudinary';
 import { CldUploadButton } from "next-cloudinary";
 import crypto from "crypto";
 import axios from 'axios';
-import { ProductsSchema } from '@/schemas';
+import { ProductsEditFormSchema, ProductsSchema } from '@/schemas';
 import { updateProduct } from '@/actions/edit-products';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { formatCurrency } from '@/app/lib/utils';
 
-interface ProductsFormValues {
-    id: string;
-    name: string;
-    price: string;
-    detail: string;
-    image?: string | null; // Allow null here
-}
+
+  
+type ProductsFormValues = z.infer<typeof ProductsEditFormSchema>;
+
 
 export default function EditPackageForm({
     pack
@@ -51,14 +48,17 @@ export default function EditPackageForm({
     const priceMYR = (Number(pack.price) / 100).toFixed(2).toString();
 
     const { register, handleSubmit, formState: { errors } } = useForm<ProductsFormValues>({
-        resolver: zodResolver(ProductsSchema),
+        resolver: zodResolver(ProductsEditFormSchema),
         defaultValues: {
             id: pack.id,
             name: pack.name,
             detail: pack.detail,
             price: priceMYR,
-            image: pack?.image || null,
-
+            image: pack.image || null,
+            initialOpeningHour: pack.initialOpeningHour,
+            initialOpeningMinutes: pack.initialOpeningMinutes,
+            initialClosingHour: pack.initialClosingHour,
+            initialClosingMinutes: pack.initialClosingMinutes
         }
     });
 
@@ -121,7 +121,16 @@ export default function EditPackageForm({
 
         const priceInCent = (parseFloat(data.price) * 100)
         // Update data object with the image URL.
-        const formData = { ...data, image: uploadURL, price: priceInCent.toString() };
+        const formData = { 
+            ...data, 
+            image: uploadURL, 
+            price: priceInCent.toString(), 
+            initialOpeningHour: data.initialOpeningHour,
+            initialOpeningMinutes: data.initialOpeningMinutes,
+            initialClosingHour: data.initialClosingHour,
+            initialClosingMinutes: data.initialClosingMinutes
+        };
+    
 
         // Assuming newProducts is an API call to submit the form data, including the image URL.
         try {
@@ -142,7 +151,7 @@ export default function EditPackageForm({
 
     return (
         <main>
-
+ <div className="rounded-md bg-gray-50 p-4 md:p-6 max-w-md">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <input type="hidden" name="id" value={pack.id} />
                 <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -179,15 +188,14 @@ export default function EditPackageForm({
                         </label>
                         <div className="relative mt-2 rounded-md">
                             <div className="relative">
-                                <input
+                                <textarea
                                     {...register("detail")}
                                     id="detail"
-                                    type="text"
                                     name="detail"
                                     maxLength={140}
                                     onChange={handleDetailChange} // Add this line
                                     placeholder="Describe the product detail"
-                                    className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                    className="resize-none peer block w-full lg:h-20 h-24 rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                                     aria-describedby="detail-error"
                                 />
                                 {/* Display the character count */}
@@ -283,6 +291,46 @@ export default function EditPackageForm({
 
                     </div>
 
+                    {/* Opening Hours */}
+<div className="mb-4 grid grid-cols-2 gap-4">
+    <div>
+        <label htmlFor="initialOpeningHour" className="block text-sm font-medium">Opening Hour</label>
+        <select {...register("initialOpeningHour")} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            {Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')).map(hour => (
+                <option key={hour} value={hour}>{hour}</option>
+            ))}
+        </select>
+    </div>
+    <div>
+        <label htmlFor="initialOpeningMinutes" className="block text-sm font-medium">Opening Minutes</label>
+        <select {...register("initialOpeningMinutes")} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <option value="00">00</option>
+            <option value="30">30</option>
+        </select>
+    </div>
+</div>
+
+{/* Closing Hours */}
+<div className="mb-4 grid grid-cols-2 gap-4">
+    <div>
+        <label htmlFor="initialClosingHour" className="block text-sm font-medium">Closing Hour</label>
+        <select {...register("initialClosingHour")} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            {Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')).map(hour => (
+                <option key={hour} value={hour}>{hour}</option>
+            ))}
+        </select>
+    </div>
+    <div>
+        <label htmlFor="initialClosingMinutes" className="block text-sm font-medium">Closing Minutes</label>
+        <select {...register("initialClosingMinutes")} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <option value="00">00</option>
+            <option value="30">30</option>
+        </select>
+    </div>
+</div>
+
+{errors.initialClosingHour && (<p className="text-red-500">{errors.initialClosingHour.message}</p>)}
+
 
                 </div>
                 <FormError message={error} />
@@ -295,7 +343,7 @@ export default function EditPackageForm({
 
                 </div>
             </form>
-
+            </div>
         </main>
     );
 }

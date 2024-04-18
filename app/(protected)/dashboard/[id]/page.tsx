@@ -1,43 +1,57 @@
 "use client"
-import EditPackageForm from "@/app/ui/products/edit-form";
-import { fetchProductById } from "@/data/fetch-data";
 import { useEffect, useState } from 'react';
+import EditPackageForm from "@/app/ui/products/edit-form";
+import { fetchProductAndWorkingHoursById } from "@/data/fetch-data";
 
-
-interface Product {
+interface ProductDetailsAndWorkingHours {
     id: string;
     name: string;
-    image: string | null;
     price: string;
     detail: string;
-    userId: string;
+    image?: string | null;
+    initialOpeningHour: string;
+    initialOpeningMinutes: string;
+    initialClosingHour: string;
+    initialClosingMinutes: string;
 }
 
 export default function Page({ params }: { params: { id: string } }) {
-
-    const [data, setData] = useState<Product | null>(null);
+    const [data, setData] = useState<ProductDetailsAndWorkingHours | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchProductById(params.id).then(product => {
-            if (!product) {
-
-                return { error: "Product Not Found" }
+        const fetchData = async () => {
+            const result = await fetchProductAndWorkingHoursById(params.id);
+            console.log(result);
+            
+            if (!result) {
+                setError("Product or Working Hours not found");
+                setIsLoading(false);
             } else {
-
-                setData(product);
-                return
+                setData(result);
+                setIsLoading(false);
             }
-        });
+        };
+
+        fetchData();
     }, [params.id]);
 
-    if (!data) {
-        // Placeholder while loading or if product is not found
+    if (isLoading) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
 
-    return (
-        <div>
-            <EditPackageForm pack={data} />
-        </div>
-    );
+    if (error) {
+        return <div className="flex justify-center items-center h-screen">{error}</div>;
+    }
+
+    if (data) {
+        return (
+            <div>
+                <EditPackageForm pack={data} />
+            </div>
+        );
+    }
+
+    return <div className="flex justify-center items-center h-screen">Unexpected error occurred</div>;
 }
