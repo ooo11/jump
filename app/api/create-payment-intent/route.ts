@@ -10,9 +10,11 @@ export async function POST(req: NextRequest) {
     const { amount } = data;
     try {
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: Number(amount) * 100,
+            amount: (Number(amount)),
             currency: "MYR",
         });
+
+        console.log({ paymentIntent });
 
         return new NextResponse(paymentIntent.client_secret, { status: 200 });
     } catch (error: any) {

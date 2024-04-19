@@ -43,7 +43,7 @@ export default function Page({ params }: { params: { id: string, url: string } }
     }
 
     return (
-        <main className='flex-grow p-6 md:overflow-y-auto md:p-20'>
+        <main className='flex-grow p-6 md:overflow-y-auto md:p-20 max-w-7xl'>
             <div className="flex flex-col md:flex-row content-center">
                 <div className="bg-gray-200 md:basis-1/2 rounded-lg basis-full p-10">
                     <ProductCartCard
@@ -55,11 +55,11 @@ export default function Page({ params }: { params: { id: string, url: string } }
                     />
                 </div>
                 <div className="md:basis-1/2  rounded-lg basis-full bg-blue-100 p-10">
-                    <NewOrderForm productId={data.id} url={params.url} 
-                    openHour={data.initialOpeningHour} 
-                    openMinute={data.initialOpeningMinutes}
-                    closeHour={data.initialClosingHour}
-                    closeMinute = {data.initialClosingMinutes}
+                    <NewOrderForm productId={data.id} url={params.url}
+                        openHour={data.initialOpeningHour}
+                        openMinute={data.initialOpeningMinutes}
+                        closeHour={data.initialClosingHour}
+                        closeMinute={data.initialClosingMinutes}
                     />
                 </div>
             </div>

@@ -7,7 +7,7 @@ import {
     MapPinIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { OrderFormSchema, OrderSchema } from '@/schemas';
 import { useForm } from "react-hook-form";
 import { FormError } from "@/components/form-error";
@@ -24,14 +24,20 @@ interface City {
 }
 
 
-export default function NewOrderForm({ productId, url,openHour,openMinute,closeHour,closeMinute }: 
-    { productId: string; url: string; openHour: string; openMinute: string; closeHour: string; closeMinute: string;  }) {
+export default function NewOrderForm({ productId, url, openHour, openMinute, closeHour, closeMinute }:
+    { productId: string; url: string; openHour: string; openMinute: string; closeHour: string; closeMinute: string; }) {
 
 
     const [error, setAsError] = useState<string | undefined>();
     const [success, setSuccess] = useState<string | undefined>();
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [cities, setCities] = useState<City[]>([]);
+
+    const [cityId, setCityId] = useState(''); // Initializes the state for selected city
+
+    const handleCityChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+        setCityId(event.target.value); // Updates state when user selects a city
+    };
 
     const settings = {
         initialOpeningHour: Number(openHour),
@@ -42,7 +48,7 @@ export default function NewOrderForm({ productId, url,openHour,openMinute,closeH
 
     const { initialOpeningHour, initialOpeningMinutes, initialClosingHour, initialClosingMinutes } = settings;
 
-    
+
 
     // State to store opening and closing times
     const [openingHour, setOpeningHour] = useState<number>(initialOpeningHour);
@@ -262,29 +268,6 @@ export default function NewOrderForm({ productId, url,openHour,openMinute,closeH
                         )}
                     </div>
                 </div>
-                {/* <div className="mb-4">
-                    <label htmlFor="time" className="mb-2 block text-sm font-medium">
-                        Event time
-                    </label>
-                    <div className="relative mt-2 rounded-md">
-                        <input
-                            {...register("time")}
-                            id="time"
-                            type="time"
-                            name="time"
-                            placeholder="Enter time"
-                            className="peer block w-full rounded-md border border-gray-200 py-2  text-sm outline-2 placeholder:text-gray-500"
-                            aria-describedby="time-error"
-                            disabled={isFormSubmitted && !!success}
-                            step="1800" // Add step attribute for 30-minute intervals
-                        />
-                    </div>
-
-                    {errors.time && (
-                        <p className="text-red-500">{errors.time.message}</p>
-                    )}
-                </div> */}
-
 
 
                 {/* City Select Section */}

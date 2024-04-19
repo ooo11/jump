@@ -1,7 +1,10 @@
 "use client"
 import { orderAcceptanceUpdate } from "@/actions/order-acceptance-update";
-import { getAllOrderByUserId, getAllProductByUserId } from "@/data/fetch-data";
+import { formatCurrency } from "@/app/lib/utils";
+import { fetchCityById, fetchProductById, getAllOrderByUserId, getAllProductByUserId } from "@/data/fetch-data";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { City } from "@prisma/client";
+import React from "react";
 import { useEffect, useState } from "react";
 
 interface Product {
@@ -28,6 +31,8 @@ interface Order {
     time: string;
     submission: Date;
     cityId: string;
+    cityName: string | undefined;
+    price: string | undefined;
 }
 
 interface UserData {
@@ -54,6 +59,7 @@ export default function Page() {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [sortAscending, setSortAscending] = useState(true);
     const [filter, setFilter] = useState("");
+    const [cityNames, setCityNames] = useState<{ [key: string]: string }>({});
 
 
     useEffect(() => {
@@ -63,11 +69,26 @@ export default function Page() {
                 try {
                     const data = await getAllOrderByUserId(user.id);
                     if (data) {
-                        const sortedOrders = data.orders.sort((a, b) => {
+                        // Fetch city names for each order and add to the orders array
+                        const ordersWithCities = await Promise.all(data.orders.map(async (order) => {
+                            try {
+                                const city = await fetchCityById(order.cityId);
+                                const product = await fetchProductById(order.productId);
+
+                                return { ...order, cityName: city ? city.name : 'Unknown', price: product?.price };
+                            } catch (error) {
+                                console.error(`Failed to fetch city for order ${order.id}:`, error);
+                                return { ...order, cityName: 'Unknown', price: 'Unknown' }; // default if city fetch fails
+                            }
+                        }));
+
+                        // Sort orders with cities now included
+                        const sortedOrders = ordersWithCities.sort((a, b) => {
                             const dateA = new Date(a.date).getTime();
                             const dateB = new Date(b.date).getTime();
                             return sortAscending ? dateA - dateB : dateB - dateA;
                         });
+
                         setUserData({ ...data, orders: sortedOrders });
                     }
                 } catch (error) {
@@ -81,6 +102,8 @@ export default function Page() {
         fetchOrders();
     }, [user?.id, sortAscending]);
 
+
+
     const toggleDateSort = () => {
         setSortAscending(!sortAscending);
     };
@@ -91,6 +114,9 @@ export default function Page() {
             filter === "" ? true : order.isAccepted === filter
         ) : [];
     };
+
+    console.log(userData);
+
 
     // Function to handle status change
     const handleStatusChange = async (orderId: string, newStatus: "ACCEPTED" | "REJECTED", email: string) => {
@@ -133,6 +159,10 @@ export default function Page() {
         }));
     };
 
+    const rowClassName = (orderId: string) => {
+        return expandedRows[orderId] ? "bg-gray-50 cursor-pointer border-b border-gray-50 hover:bg-gray-200" : "hover:bg-gray-200 border-b border-gray-200 cursor-pointer";
+    };
+
 
     return (
 
@@ -163,16 +193,16 @@ export default function Page() {
                                 Name
                             </th>
                             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Email
+                                Contact
                             </th>
                             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Location
+                                City
                             </th>
                             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Date
+                                Date & Time
                             </th>
                             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Time
+                                Price
                             </th>
                             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Status
@@ -192,24 +222,29 @@ export default function Page() {
                         (userData && filteredOrders().length > 0) ? (
                             <tbody>
                                 {filteredOrders().map((order, index) => (
-                                    <>
-                                        <tr key={order.id} onClick={() => toggleRowExpansion(order.id)} className="hover:bg-gray-50 active:bg-gray-100 cursor-pointer">
-                                            <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                    <React.Fragment key={order.id} >
+                                        <tr onClick={() => toggleRowExpansion(order.id)} className={rowClassName(order.id)}>
+                                            <td className="px-5 py-5 text-sm">
                                                 {order.name}
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <td className="px-5 py-5 text-sm">
+                                                {order.phone}<br />
                                                 {order.email}
+
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                                {order.location}
+                                            <td className="px-5 py-5 text-sm">
+                                                {order.cityName}
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                                {formatDate(order.date)}
+                                            <td className="px-5 py-5 text-sm">
+                                                Date: {formatDate(order.date)} <br />
+                                                Time: {order.time}
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                                {order.time}
+                                            <td className="px-5 py-5 text-sm">
+                                                {order.isPaid ?
+                                                    (<p className="font-bold text-green-500">{formatCurrency(Number(order.price) / 100)}</p>) :
+                                                    (<p className="font-regular text-gray-500">{formatCurrency(Number(order.price) / 100)}</p>)}
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <td className="px-5 py-5 text-sm">
                                                 <select
                                                     value={order.isAccepted}
                                                     onChange={(e: any) => handleStatusChange(order.id, e.target.value, order.email)}
@@ -217,25 +252,25 @@ export default function Page() {
                                                     className="text-gray-900 rounded cursor-pointer ease-linear transition-all duration-150"
                                                 >
                                                     {order.isAccepted === "PENDING" && <option value="PENDING">Pending</option>}
-                                                    <option value="ACCEPTED">Accepted</option>
-                                                    <option value="REJECTED">Rejected</option>
+                                                    <option value="ACCEPTED">Accept</option>
+                                                    <option value="REJECTED">Reject</option>
                                                 </select>
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <td className="px-5 py-5 text-sm">
                                                 {order.isAccepted === "ACCEPTED" ? (order.isPaid ? (<p>Paid</p>) : (<p>Pending payment</p>)) : null}
                                             </td>
                                         </tr>
                                         {expandedRows[order.id] && (
                                             <tr>
-                                                <td colSpan={7} className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <td colSpan={7} className="px-5 py-5 border-b border-gray-200 bg-gray-50 text-sm">
                                                     <div><strong>Phone:</strong> {order.phone}</div>
                                                     <div><strong>Order ID:</strong> {order.id}</div>
-                                                    <div><strong>City:</strong> {order.cityId}</div>
+                                                    <div><strong>Address:</strong>  {order.location}</div>
                                                     {/* Add more details as needed */}
                                                 </td>
                                             </tr>
                                         )}
-                                    </>
+                                    </React.Fragment>
                                 ))}
                             </tbody>
 

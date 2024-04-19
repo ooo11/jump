@@ -37,8 +37,8 @@ export const sendOrderVerificationEmail = async (email: string, token: string, i
     await resend.emails.send({
         from: "donotreply@jumpsay.com",
         to: email,
-        subject: "[Email Confirmation] Email Confirmation and Status",
-        html: `<p>Step 1: <a href="${confirmLink}">Click here to confirm your email.</a></p>
+        subject: "[Order Email Confirmation] Proceed to confirm your email to submit order",
+        html: `<p>Step 1: <a href="${confirmLink}">Click here to confirm your order email.</a></p>
         <p>Step 2: <a href="${statusLink}">See your order status here.</a></p>
         <p>Please do not reply to this email. Emails sent to this address will not be answered.</p>`
     });

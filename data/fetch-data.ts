@@ -125,7 +125,7 @@ export const getAllOrderByUserId = async (userId: string | undefined) => {
     try {
         // Fetching products related to the user
         const products = await db.product.findMany({
-            where: { userId }
+            where: { userId },
         });
 
         if (products.length === 0) {
@@ -139,9 +139,13 @@ export const getAllOrderByUserId = async (userId: string | undefined) => {
         // Fetching orders that have a productId in the list of productIds
         const orders = await db.order.findMany({
             where: {
-                productId: { in: productIds }
+                productId: { in: productIds },
+                emailVerified: {
+                    not: null  // This ensures that only order with a non-null emailVerified are included
+                }
             }
         });
+
 
         return { products, orders };
 
