@@ -25,23 +25,8 @@ export default function PaymentForm({ orderId, price }: OrderValues) {
     const elements = useElements();
     const CARD_ELEMENT_OPTIONS = {
         hidePostalCode: true,
-        style: {
-            base: {
-                color: "#32325d",
-                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                fontSmoothing: "antialiased",
-                fontSize: "18px",
-                backgroundColor: "##C8CEDA",
-                "::placeholder": {
-                    color: "#aab7c4",
-                }
-            },
-            invalid: {
-                color: "#fa755a",
-                iconColor: "#fa755a",
-            },
-        },
     };
+
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
         setError("");
@@ -59,7 +44,7 @@ export default function PaymentForm({ orderId, price }: OrderValues) {
             const { data } = await axios.post("/api/create-payment-intent", {
                 data: { amount: price },
             });
-            const clientSecret = data;
+            const clientSecret = data.toString();
 
             const paymentResult = await stripe?.confirmCardPayment(clientSecret, {
                 payment_method: { card: cardElement },
