@@ -66,8 +66,8 @@ export default function NewOrderVerificationForm() {
 
                 <div
                     className='mt-5 mb-8 flex item-center w-full justify-center'
-                ><Link href={`${domain}/status?orderid=${orderId}`} className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>
-                        See Order Status</Link>
+                ><a href={`${domain}/status?orderid=${orderId}`} className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>
+                        See Order Status</a>
                 </div>
 
 

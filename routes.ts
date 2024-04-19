@@ -8,7 +8,9 @@ export const publicRoutes = [
     "/auth/new-verification",
     "/s/new-order-verification",
     "/s/status",
+    "/s/checkout",
     "/api/auth/providers",
+    "/api/create-payment-intent",
 ];
 
 // "/s/:path" is open link for public path

@@ -37,8 +37,11 @@ export const sendOrderVerificationEmail = async (email: string, token: string, i
     await resend.emails.send({
         from: "donotreply@jumpsay.com",
         to: email,
-        subject: "[Order Email Confirmation] Proceed to confirm your email to submit order",
-        html: `<p>Step 1: <a href="${confirmLink}">Click here to confirm your order email.</a></p>
+        subject: `[Order Email Confirmation: ] Proceed to confirm your email to submit order`,
+        html: `
+        <h2>Your Order Id: ${id}</h2>
+        <p>Please confirm your email to complete your order submission. The link will expire in 1 hour. If it expires, you will need to place a new order.</p>
+        <p>Step 1: <a href="${confirmLink}">Click here to confirm your order email.</a></p>
         <p>Step 2: <a href="${statusLink}">See your order status here.</a></p>
         <p>Please do not reply to this email. Emails sent to this address will not be answered.</p>`
     });
@@ -60,11 +63,13 @@ export const sendTwoFactorTokenEmail = async (
 
 
 export const sendOrderAcceptanceEmail = async (email: string, id: string, status: "ACCEPTED" | "REJECTED") => {
-    const paymentLink = `${domainShop}/checkout/${id}`;
+    const paymentLink = `${domainShop}/checkout?orderid=${id}`;
     const statusLink = `${domainShop}/status?orderid=${id}`;
 
     let emailSubject = `[ACCEPTED] YOUR ORDER HAS BEEN ACCEPTED `;
-    let emailHtml = `<p>Your order has been accepted! </p>
+    let emailHtml = `
+                    <h2>Your Order Id: ${id}</h2>
+                    <p>Your order has been accepted! </p>
                     <p><a href="${paymentLink}">Proceed with payment</a></p>
                     <p><a href="${statusLink}">See your order status here</a></p>
                     <p>Feel free to contact us if you require any assistance.</p>
@@ -72,7 +77,9 @@ export const sendOrderAcceptanceEmail = async (email: string, id: string, status
 
     if (status === "REJECTED") {
         emailSubject = `[DECLINED] YOUR ORDER HAS BEEN DECLINED`;
-        emailHtml = `<p>We regret to inform you that we are unable to fulfill your order. Please contact us if you require any assistance.</p>
+        emailHtml = `
+        <h2>Your Order Id: ${id}</h2>
+        <p>We regret to inform you that we are unable to fulfill your order. Please contact us if you require any assistance.</p>
         <p><a href="${statusLink}">Click here for more details</a></p>
         <p>Please do not reply to this email. Emails sent to this address will not be answered.</p>`;
     }

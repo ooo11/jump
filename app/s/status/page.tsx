@@ -1,11 +1,11 @@
 "use client"
-import Payment from "@/app/(protected)/_components/payment";
-import { formatCurrency } from "@/app/lib/utils";
+
 import OrderSummary from "@/app/ui/s/order-summary";
 import { fetchOrderById, fetchProductById } from "@/data/fetch-data";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
+const domainShop = process.env.NEXT_PUBLIC_APP_URL_SHOP;
 
 interface Order {
     id: string;
@@ -153,8 +153,8 @@ export default function Page() {
                         {renderStep(data.isAccepted, 'Order Accepted')}
                     </div>
                     <div className={`lg:flex-grow lg:border-t-8 rounded-lg 
-                                    ${data.isAccepted==="ACCEPTED" ? 'border-green-500' : 'border-gray-300'}
-                                    ${data.isAccepted==="REJECTED" ? 'border-red-500' : 'border-gray-300'}
+                                    ${data.isAccepted === "ACCEPTED" ? 'border-green-500' : 'border-gray-300'}
+                                    ${data.isAccepted === "REJECTED" ? 'border-red-500' : 'border-gray-300'}
                                     `}></div>
 
 
@@ -172,7 +172,7 @@ export default function Page() {
 
                 {data.isAccepted === "ACCEPTED" && !data.isPaid ? (
                     <div className='mt-5 mb-8 flex item-center w-full justify-center'>
-                        <Link href={`/s/checkout/${orderId}`} className='w-full p-2 bg-black text-white rounded-md text-center hover:bg-slate-900 cursor-pointer'>Pay now</Link>
+                        <a href={`${domainShop}/checkout?orderid=${orderId}`} className='w-full p-2 bg-button-theme text-white rounded-md text-center hover:bg-button-theme-active cursor-pointer'>Pay now</a>
                     </div>
                 ) : null}
             </div>

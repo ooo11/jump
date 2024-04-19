@@ -118,7 +118,7 @@ export default function NewOrderForm({ productId, url, openHour, openMinute, clo
                 setIsFormSubmitted(false); // Ensure the form can be resubmitted if there was an error
             } else {
                 if (result.success) {
-                    setSuccess("Please check your email for updates on your order status.");
+                    setSuccess("Check your email to verify your email address to proceed order. Link expired in 1 hour");
                     setIsFormSubmitted(true); // Disable the button because the form was successfully submitted
                 } else {
                     setAsError("An error occurred."); // Handle this case as you see fit
