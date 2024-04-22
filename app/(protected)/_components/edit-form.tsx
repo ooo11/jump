@@ -210,7 +210,7 @@ export default function EditVendorForm(
                                     className="peer block w-full rounded-md border border-2 border-button-theme py-[9px] pl-[130px] text-sm outline-2 placeholder:text-gray-500"
                                     id="link"
                                     type="string"
-                                    placeholder="yourshophere"
+                                    placeholder="yourshop"
                                     disabled={isPending}
                                     maxLength={100}
                                 />

@@ -1,16 +1,7 @@
 'use client';
 
 import * as z from 'zod';
-import { lusitana } from '@/app/ui/fonts';
-import {
-  AtSymbolIcon,
-  KeyIcon,
-  ExclamationCircleIcon,
-  UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
-import { useFormState, useFormStatus } from 'react-dom';
 import { useState, useTransition } from 'react';
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -20,10 +11,14 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import Link from 'next/link';
 import { Social } from '@/app/ui/social';
+import { useSearchParams } from 'next/navigation';
 
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
 
 export default function RegisterForm() {
+  const searchParams = useSearchParams();
+  const linkQueryParam = searchParams.get("link");
+
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -34,6 +29,7 @@ export default function RegisterForm() {
     formState: { errors },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(RegisterSchema),
+    defaultValues: { link: linkQueryParam || undefined }
   });
 
   // This function will be called on form submit if inputs are valid
@@ -56,16 +52,19 @@ export default function RegisterForm() {
     <div className="flex-1 rounded-lg bg-gray-50 md:px-20 px-8  pb-4 pt-8">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <div>
-          <h1 className={`mb-3 text-2xl text-center font-semibold`}>
-            Create an account
+          <h1 className={`mb-3 text-2xl text-center font-bold`}>
+            Join Jumpsay
           </h1>
+          <h4 className={`text-sm text-center font-medium`}>
+            Sign up for free!
+          </h4>
           <div className="w-full">
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="name"
               >
-                Name
+                Shop Name
               </label>
               <div className="relative">
                 <input
@@ -96,6 +95,27 @@ export default function RegisterForm() {
                 />
               </div>
               {errors.email && <p>{errors.email.message}</p>}
+            </div>
+            <div className="mt-4">
+              <label
+                className="mb-3 mt-5 block text-sm font-medium text-gray-900"
+                htmlFor="link"
+              >
+                Shop Link
+              </label>
+              <div className="relative">
+                <input
+                  {...register("link")}
+                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-[130px] text-sm outline-2 placeholder:text-gray-500"
+                  id="link"
+                  type="string"
+                  placeholder="yourshop"
+                  disabled={isPending}
+                  maxLength={100}
+                />
+                <p className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" >jumpsay.com/s/</p>
+              </div>
+              {errors.link && <p className="text-red-500 text-sm">{errors.link.message}</p>}
             </div>
             <div className="mt-4">
               <label
@@ -137,7 +157,7 @@ export default function RegisterForm() {
       <p className='mt-2 text-sm text-center font-medium'>
         OR
       </p>
-      <div className='mt-6'>
+      <div className='mt-6 mb-5'>
         <Social />
       </div>
     </div>

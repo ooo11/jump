@@ -166,7 +166,18 @@ export const RegisterSchema = z.object({
     }),
     name: z.string().min(1, {
         message: "Name is required!"
-    })
+    }),
+    link: z.string()
+        .min(4, "Must be 4 or more characters long")
+        .optional()
+        .refine((value) => typeof value === 'undefined' || !value.includes(' '), { message: 'No space allowed' })
+        .refine((value) => /^[a-zA-Z0-9-]+$/.test(value ?? ""), 'No special characters allowed')
+        .refine((value) => /^[a-z0-9-]+$/.test(value ?? ""), 'No uppercase letter allowed')
+        .refine((value) => {
+            return typeof value === 'undefined' || !reservedNames.some(reserved => value.startsWith(reserved));
+        }, {
+            message: "This link name is reserved and cannot be used.",
+        }),
 });
 
 export const OrderAcceptanceSchema = z.object({
@@ -184,3 +195,17 @@ export const WorkingHoursFormSchema = z.object({
     initialClosingMinutes: z.string(),
 });
 
+
+export const RegisterShopNameFormSchema = z.object({
+    link: z.string()
+        .min(4, "Must be 4 or more characters long")
+        .optional()
+        .refine((value) => typeof value === 'undefined' || !value.includes(' '), { message: 'No space allowed' })
+        .refine((value) => /^[a-zA-Z0-9-]+$/.test(value ?? ""), 'No special characters allowed')
+        .refine((value) => /^[a-z0-9-]+$/.test(value ?? ""), 'No uppercase letter allowed')
+        .refine((value) => {
+            return typeof value === 'undefined' || !reservedNames.some(reserved => value.startsWith(reserved));
+        }, {
+            message: "This link name is reserved and cannot be used.",
+        }),
+})

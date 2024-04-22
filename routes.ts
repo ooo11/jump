@@ -11,6 +11,9 @@ export const publicRoutes = [
     "/s/checkout",
     "/api/auth/providers",
     "/api/create-payment-intent",
+    "/marketplace",
+    "/about",
+    "/pricing"
 ];
 
 // "/s/:path" is open link for public path

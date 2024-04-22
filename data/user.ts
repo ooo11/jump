@@ -80,3 +80,27 @@ export const getVendorIdByLink = async (link: string) => {
 
 
 
+export const linkExistChecker = async (link: string | undefined) => {
+    // Return early if no link is provided
+    if (!link) {
+        return { error: "No link provided. Please provide a valid link." };
+    }
+
+    try {
+        const existingLink = await db.urls.findFirst({
+            where: {
+                link
+            }
+        });
+
+        if (existingLink) {
+            return { error: "Great choice for a link name, but the shop link provided is already in use. Please try another one." };
+        } else {
+            return {}; // Return an empty object if no error (link is available)
+        }
+    } catch (error) {
+        // Handle possible errors during database access
+        console.error("Failed to check link availability:", error);
+        return { error: "Failed to verify link availability due to server error." };
+    }
+};

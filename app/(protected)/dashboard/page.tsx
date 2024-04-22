@@ -99,7 +99,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center justify-center mt-4 lg:mb-4">
                 <a href={user?.link ? `/s/${user?.link}` : '/settings'} className='w-full md:w-1/3 p-2 bg-button-theme text-white rounded-md text-center hover:bg-button-theme-active cursor-pointer' target="_blank" rel="noopener noreferrer">
-                    {user?.link ? 'Shop Page' : 'Click to create link for your shop'}
+                    {user?.link ? 'View shop page' : 'Click to create link for your shop'}
                 </a>
             </div>
             <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ${style.grid}`}>

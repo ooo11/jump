@@ -15,8 +15,7 @@ export const registers = async (values: z.infer<typeof RegisterSchema>) => {
             error: "Invalid fields!"
         }
     }
-
-    const { name, email, password } = validatedFields.data;
+    const { name, email, password, link } = validatedFields.data;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const existingUser = await getUserByEmail(email)
@@ -26,8 +25,21 @@ export const registers = async (values: z.infer<typeof RegisterSchema>) => {
             error: "Email already registered! Login instead!"
         }
     }
+    // Check if link exists and belongs to another user
+    if (link) {
+        const existingLink = await db.urls.findFirst({
+            where: {
+                link
+            }
+        });
 
-    await db.user.create({
+        if (existingLink) {
+            return { error: "Great choice, but the shop link is already taken" };
+        }
+    }
+
+
+    const user = await db.user.create({
         data: {
             name,
             email,
@@ -35,6 +47,15 @@ export const registers = async (values: z.infer<typeof RegisterSchema>) => {
 
         }
     });
+
+    if (link) {
+        await db.urls.create({
+            data: {
+                link: link,
+                userId: user.id,
+            },
+        });
+    }
 
     const verificationToken = await generateVerificationToken(email);
     await sendVerificationEmail(verificationToken.email, verificationToken.token)
