@@ -13,6 +13,12 @@ interface ProductCardProps extends ProductCardValues {
 }
 
 export default function ProductCard({ id, name, detail, image, price, onDelete }: ProductCardProps) {
+    function ProductDetails() {
+        const text = detail;
+        const newText = text.split('\n').map((str, index) => <p className="mt-1 text-sm font-medium md:mt-2" key={index}>{str}</p>);
+
+        return newText;
+    }
 
 
 
@@ -36,7 +42,7 @@ export default function ProductCard({ id, name, detail, image, price, onDelete }
                     <div className="mb-3 flex items-center justify-between px-1 md:items-start">
                         <div className="mb-2">
                             <p className="text-lg font-bold"> {name} </p>
-                            <p className="mt-1 text-sm font-medium md:mt-2">{detail} </p>
+                            <ProductDetails />
                         </div>
                         <div className="flex flex-row-reverse md:mt-2 lg:mt-0">
 

@@ -5,10 +5,15 @@ export const UrlsSchema = z.object({
     link: z.string().optional(),
 })
 
+const phoneRegex = new RegExp(
+    /^(01\d{8}|011\d{8})$/
+);
+
+
 export const OrderSchema = z.object({
     name: z.string(),
     email: z.string().email(),
-    phone: z.string(),
+    phone: z.string().regex(phoneRegex, 'Invalid phone number'),
     date: z.string(),
     time: z.string(),
     location: z.string(),
@@ -19,7 +24,7 @@ export const OrderSchema = z.object({
 export const OrderFormSchema = z.object({
     name: z.string(),
     email: z.string().email(),
-    phone: z.string(),
+    phone: z.string().regex(phoneRegex, 'Invalid phone number'),
     date: z.string(),
     time: z.string(),
     location: z.string(),

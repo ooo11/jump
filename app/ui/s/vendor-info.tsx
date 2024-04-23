@@ -38,7 +38,7 @@ export const VendorInfo = ({
     return (
 
         <div
-            className="bg-gray-100 relative overflow-hidden group rounded-xl p-3 md:p-5 w-full md:w-1/2"
+            className="bg-gray-100 relative overflow-hidden group rounded-xl p-3 md:p-5 w-full md:w-1/3"
         >
             <div className="flex items-center gap-4">
                 {user?.image && isCloudinaryImage(user.image) ? (
