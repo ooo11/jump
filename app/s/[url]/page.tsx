@@ -5,6 +5,7 @@ import PublicProductCard from '@/app/ui/s/public-product-card';
 import { VendorInfo } from '@/app/ui/s/vendor-info';
 import { Metadata } from 'next'
 import style from '@/public/styles/grid.module.css'
+import { ErrorPageNotFound } from '@/components/error-page-not-found';
 
 export const metadata: Metadata = {
     title: 'Shop',
@@ -17,7 +18,7 @@ export default async function ShopPage({ params }: { params: { url: string } }) 
 
     if (!vendorId) {
         // If no vendorId could be resolved, consider this as "Page Not Found"
-        return <div>Page Not Found</div>;
+        return <ErrorPageNotFound />;
     }
 
     const user = await getVendorById(vendorId.userId);
@@ -25,7 +26,7 @@ export default async function ShopPage({ params }: { params: { url: string } }) 
 
     if (!products) {
         // Return a "Page Not Found" message if products is null
-        return <div>Page Not Found</div>;
+        return <ErrorPageNotFound />;
     }
 
     if (user?.cityId) {

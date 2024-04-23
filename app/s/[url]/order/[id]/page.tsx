@@ -2,6 +2,7 @@
 
 import NewOrderForm from "@/app/ui/orders/create-form";
 import ProductCartCard from "@/app/ui/product-cart-card";
+import { ErrorPageNotFound } from "@/components/error-page-not-found";
 import { fetchProductAndWorkingHoursById, fetchProductById } from "@/data/fetch-data";
 import { useEffect, useState } from 'react';
 
@@ -38,8 +39,7 @@ export default function Page({ params }: { params: { id: string, url: string } }
     }, [params.id]);
 
     if (!data) {
-        // Placeholder while loading or if product is not found
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+        return <ErrorPageNotFound />;
     }
 
     return (

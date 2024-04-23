@@ -99,7 +99,7 @@ export const ProductsEditFormSchema = z.object({
     path: ["initialClosingHour"], // This indicates where the error should be displayed
 });
 
-const reservedNames = ["jump", "test", "admin", "root", "auth", "says"];
+const reservedNames = ["jump", "test", "admin", "root", "auth", "says", "status", "order"];
 
 export const SettingsSchema = z.object({
     name: z.string().optional(),
