@@ -8,10 +8,11 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     const resetLink = `${domain}/new-password?token=${token}`;
 
     await resend.emails.send({
-        from: "donotreply@jumpsay.com",
+        from: "jumpsay@jumpsay.com",
         to: email,
         subject: "Reset your password!",
-        html: `<p><a href="${resetLink}">Click the link here</a> to reset your password 🔏</p>
+        html: `<p><a href="${resetLink}">Click the link here</a> to reset your password.</p>
+        <p>If you do not request for this, contact us at 011-16145510</p>
         <p>Please do not reply to this email. Emails sent to this address will not be answered.</p>
         `
     });
@@ -21,9 +22,9 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     const confirmLink = `${domain}/new-verification?token=${token}`;
 
     await resend.emails.send({
-        from: "donotreply@jumpsay.com",
+        from: "jumpsay@jumpsay.com",
         to: email,
-        subject: "You are now official Jumper. Confirm your email.",
+        subject: "You are now official Jumper. Click to confirm your email.",
         html: `<p><a href="${confirmLink}">Click the link here</a> to go in to your jumpsuit 👨🏻‍🚀</p>
         <p>Please do not reply to this email. Emails sent to this address will not be answered.</p>`
     });
@@ -35,9 +36,9 @@ export const sendOrderVerificationEmail = async (email: string, token: string, i
     const statusLink = `${domainShop}/status?orderid=${id}`;
 
     await resend.emails.send({
-        from: "donotreply@jumpsay.com",
+        from: "jumpsay@jumpsay.com",
         to: email,
-        subject: `[Order Email Confirmation: ] Proceed to confirm your email to submit order`,
+        subject: `[Order Email Confirmation ${id}] Proceed to confirm your email to submit order`,
         html: `
         <h2>Your Order Id: ${id}</h2>
         <p>Please confirm your email to complete your order submission. The link will expire in 1 hour. If it expires, you will need to place a new order.</p>
@@ -53,10 +54,10 @@ export const sendTwoFactorTokenEmail = async (
     token: string
 ) => {
     await resend.emails.send({
-        from: "donotreply@jumpsay.com",
+        from: "jumpsay@jumpsay.com",
         to: email,
-        subject: "2FA Code",
-        html: `<p>Your 2FA code: ${token}</p>
+        subject: "Two Factor Code PIN",
+        html: `<p>Your PIN: ${token}</p>
         <p>Please do not reply to this email. Emails sent to this address will not be answered.</p>`
     });
 };
@@ -85,7 +86,7 @@ export const sendOrderAcceptanceEmail = async (email: string, id: string, status
     }
 
     await resend.emails.send({
-        from: "donotreply@jumpsay.com",
+        from: "jumpsay@jumpsay.com",
         to: email,
         subject: emailSubject,
         html: emailHtml
@@ -97,7 +98,7 @@ export const sendEmailUpdateVerificationEmail = async (email: string, token: str
     const confirmLink = `${domain}/email-update-verification?token=${token}`;
 
     await resend.emails.send({
-        from: "donotreply@jumpsay.com",
+        from: "jumpsay@jumpsay.com",
         to: email,
         subject: "[Update Email Address] Confirm your updated email.",
         html: `<p><a href="${confirmLink}">Click the link here</a> to confirm your email address.</p>

@@ -25,9 +25,9 @@ export default function ProductCard({ id, name, detail, image, price, onDelete }
     return (
         <div>
 
-            <div className="!z-5 relative flex flex-col rounded-[20px] max-w-[300px] bg-clip-border hover:shadow-3xl m-4 p-4 3xl:p-![18px] bg-gray-100">
+            <div className="!z-5 relative flex flex-col rounded-[20px] max-w-[400px] bg-clip-border hover:shadow-3xl m-4 p-4 3xl:p-![18px] bg-gray-100">
                 <div className="h-full w-full">
-                    <div className="relative w-full">
+                    <div className="relative w-full mb-3">
                         {/* Place the Edit button absolutely within this container */}
                         <Link href={`/dashboard/${id}`} className="absolute z-10 left-2 top-2 linear rounded-[16px] bg-green-900 px-2 py-2 text-base font-medium transition duration-200 text-white hover:bg-green-800 active:bg-green-700">Edit</Link>
                         <button onClick={() => onDelete(id)}
@@ -36,7 +36,14 @@ export default function ProductCard({ id, name, detail, image, price, onDelete }
                             <TrashIcon className="w-6 h-6" />
                         </button>
 
-                        <Image src={image || ''} className="mb-3 h-full w-full rounded-xl 3xl:h-full 3xl:w-full" alt="Product Image" width="100" height="100" priority />
+                        <Image
+                            src={image || ''}
+                            alt="Product Image"
+                            width={300} // fixed width
+                            height={300} // fixed heigh
+                            className="rounded-xl"
+                            priority
+                        />
                     </div>
 
                     <div className="mb-3 flex items-center justify-between px-1 md:items-start">

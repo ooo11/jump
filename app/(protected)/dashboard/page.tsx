@@ -102,7 +102,7 @@ export default function DashboardPage() {
                     {user?.link ? 'View shop page' : 'Click to create link for your shop'}
                 </a>
             </div>
-            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ${style.grid}`}>
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 items-start place-items-center ${style.grid}`}>
                 {isLoading ? (
                     <p className='flex justify-center items-center h-screen'>Loading products...</p> // Placeholder loading message; consider replacing with a spinner or similar
                 ) : (

@@ -49,7 +49,7 @@ export default function PaymentForm({ orderId, price }: OrderValues) {
             const paymentResult = await stripe?.confirmCardPayment(clientSecret, {
                 payment_method: { card: cardElement },
             });
-            console.log(paymentResult.paymentIntent?.id);
+
             if (paymentResult.error) {
                 setError(paymentResult.error.message);
                 setIsLoading(false); // Stop loading

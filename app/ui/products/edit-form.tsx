@@ -8,7 +8,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
-import { useCallback, useState } from "react";
+import { SetStateAction, useCallback, useState } from "react";
 import { CldImage } from 'next-cloudinary';
 import { CldUploadButton } from "next-cloudinary";
 import crypto from "crypto";
@@ -39,6 +39,18 @@ export default function EditPackageForm({
     const [uploadURL, setUploadURL] = useState(pack.image || '');
     const [publicId, setPublicId] = useState('');
     const [detailLength, setDetailLength] = useState(pack.detail.length);
+
+    const [stripPrice, setStripePrice] = useState(pack.price);
+
+    const handlePriceChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+        setStripePrice(event.target.value);
+    };
+
+    const calculateNetAmount = (amount: string) => {
+        if (!amount) return '';
+        const fee = parseFloat(amount) / 100 * 0.04 + 1;
+        return (parseFloat(amount) / 100 - fee).toFixed(2);
+    };
 
     const handleDetailChange = useCallback((event: { target: { value: string | any[]; }; }) => {
         const inputLength = event.target.value.length;
@@ -279,8 +291,12 @@ export default function EditPackageForm({
                                         placeholder="Enter MYR amount"
                                         className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         aria-describedby="amount-error"
+                                        onChange={handlePriceChange}
                                     />
                                     <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                </div>
+                                <div className="mt-2 text-sm">
+                                    You&apos;ll get: MYR {calculateNetAmount(stripPrice)}
                                 </div>
                             </div>
 

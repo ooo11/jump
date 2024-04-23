@@ -9,7 +9,7 @@ import {
 import { Button } from '@/app/ui/button';
 
 import { useFormState } from 'react-dom';
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { SetStateAction, useCallback, useEffect, useState, useTransition } from "react";
 import { CldImage } from 'next-cloudinary';
 import { CldUploadButton } from "next-cloudinary";
 import crypto from "crypto";
@@ -32,6 +32,17 @@ export default function CreateProductForm() {
     const [uploadURL, setUploadURL] = useState<string | undefined>();
     const [publicId, setPublicId] = useState<string | undefined>();
     const [detailLength, setDetailLength] = useState(0);
+    const [stripPrice, setStripePrice] = useState('');
+
+    const handlePriceChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+        setStripePrice(event.target.value);
+    };
+
+    const calculateNetAmount = (amount: string) => {
+        if (!amount) return '';
+        const fee = parseFloat(amount) * 0.04 + 1;
+        return (parseFloat(amount) - fee).toFixed(2);
+    };
 
 
     const handleDetailChange = useCallback((event: { target: { value: string | any[]; }; }) => {
@@ -256,8 +267,12 @@ export default function CreateProductForm() {
                                     className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                     aria-describedby="amount-error"
                                     disabled={isFormSubmitted && !!success}
+                                    onChange={handlePriceChange}
                                 />
                                 <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                            </div>
+                            <div className="mt-2 text-sm">
+                                You&apos;ll get: MYR {calculateNetAmount(stripPrice)}
                             </div>
                         </div>
 

@@ -14,6 +14,7 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { newOrders } from "@/actions/new-orders";
 import { fetchAllCity } from "@/data/fetch-data";
+import { FormEmailVerificationSent } from "@/components/form-order-email-verification";
 
 
 type OrdersFormValues = z.infer<typeof OrderSchema>;
@@ -118,7 +119,7 @@ export default function NewOrderForm({ productId, url, openHour, openMinute, clo
                 setIsFormSubmitted(false); // Ensure the form can be resubmitted if there was an error
             } else {
                 if (result.success) {
-                    setSuccess("Check your email to verify your email address to proceed order. Link expired in 1 hour");
+                    setSuccess(`Email verification sent to ${data.email}. The link expires in 1 hour.`);
                     setIsFormSubmitted(true); // Disable the button because the form was successfully submitted
                 } else {
                     setAsError("An error occurred."); // Handle this case as you see fit
@@ -332,10 +333,10 @@ export default function NewOrderForm({ productId, url, openHour, openMinute, clo
 
             </div>
             <FormError message={error} />
-            <FormSuccess message={success} />
+            <FormEmailVerificationSent message={success} />
             <div className="mt-6 flex justify-end gap-4">
-                <Link href={`/s/${url}`} className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">Cancel</Link>
-                <Button type="submit" disabled={isFormSubmitted && !!success}  >Submit Order</Button>
+                <Link href={`/s/${url}`} className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">{success ? "Back" : "Cancel"}</Link>
+                <Button type="submit" disabled={isFormSubmitted && !!success}  >Send Email Verification</Button>
             </div>
         </form>
     );

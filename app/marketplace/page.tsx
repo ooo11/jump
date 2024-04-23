@@ -18,9 +18,12 @@ export default function Page() {
                         <p className={`text-sm text-gray-800 md:text-md md:leading-normal`}>
                             In the future, your shop link will be displayed here. Check out the example of the shop below.
                         </p>
-                        <Link href="/s/mark"
+                        <a
+                            href="/s/mark"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="w-full md:w-2/6 py-3 md:w-2/5 h-12text-sm font-medium text-white bg-button-theme text-center transition-colors hover:bg-button-theme-active md:text-base rounded-[120px]"
-                        >Sample shop</Link>
+                        >Sample shop</a>
 
                     </div>
                 </div>
