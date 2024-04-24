@@ -9,6 +9,8 @@ interface ProtectedLayoutProps {
 export default async function ProtectedLayout({ children }: ProtectedLayoutProps) {
 
     const session = await auth()
+
+
     return (
         <SessionProvider session={session}>
             <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
@@ -23,3 +25,5 @@ export default async function ProtectedLayout({ children }: ProtectedLayoutProps
         </SessionProvider>
     )
 }
+
+

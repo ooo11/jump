@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import NavLinks from '@/app/(protected)/_components/nav-links';
-import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { logout } from '@/actions/logout';
 import JumpLogo from '@/app/(protected)/_components/jump-logo';
+
 
 export default function SideNav({ id }: { id: string | undefined }) {
   const onClick = () => {
@@ -34,6 +34,7 @@ export default function SideNav({ id }: { id: string | undefined }) {
             <PowerIcon className="w-6" />
             <div className="hidden md:block">Sign Out</div>
           </button>
+
         </form>
       </div>
     </div>
