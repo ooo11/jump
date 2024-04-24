@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from "next/navigation";
 import PublicProductCard from '@/app/ui/s/public-product-card';
 import { VendorInfo } from '@/app/ui/s/vendor-info';
 import style from '@/public/styles/grid.module.css'

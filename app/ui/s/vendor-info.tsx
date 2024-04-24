@@ -1,5 +1,3 @@
-
-
 import { CldImage } from 'next-cloudinary';
 import { MapPinIcon, TagIcon } from "@heroicons/react/24/outline";
 import { Category } from "@prisma/client";
@@ -38,9 +36,9 @@ export const VendorInfo = ({
     return (
 
         <div
-            className="bg-gray-100 relative overflow-hidden group rounded-xl p-3 md:p-5 w-full md:w-1/3"
+            className="overflow-hidden group rounded-xl p-3 md:p-5 w-full md:w-1/3"
         >
-            <div className="flex items-center gap-4">
+            <div className="w-full flex justify-center items-center">
                 {user?.image && isCloudinaryImage(user.image) ? (
                     <CldImage
                         className="w-24 h-24 rounded-full"
@@ -62,27 +60,20 @@ export const VendorInfo = ({
                         priority
                     />
                 )}
-                <div className="w-fit ">
-                    <h1 className="text-gray-900  font-bold">
-                        {user?.name}
-                    </h1>
-                    <p className="text-gray-700">{user?.email}</p>
-                    <a
-                        className="text-xs text-gray-800  ">
-                        <div className="flex items-center space-x-1">
-                            <MapPinIcon className="w-5 h-5" />
-                            <span>{city?.name}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                            <TagIcon className="w-5 h-5" />
-                            <span>{category?.name}</span>
-                        </div>
-                    </a>
 
-                </div>
 
             </div>
-            <div className="flex items-center mt-4">
+            <div className="w-full flex justify-center items-center mt-2">
+                <h1 className="text-gray-900  font-bold">
+                    {user?.name}
+                </h1>
+            </div>
+            <div className="w-full flex justify-center items-center mt-2">
+                <MapPinIcon className="w-3 h-3 mr-1" /><span>{city?.name}</span>
+                <span className="mx-2"></span>
+                <TagIcon className="w-3 h-3 mr-1" /><span>{category?.name}</span>
+            </div>
+            <div className="w-full flex justify-center text-center items-center mt-2">
                 {user?.about}
             </div>
         </div>

@@ -31,28 +31,31 @@ import React from 'react';
 
 export default function VendorInfoSkeleton() {
     return (
-        <div className="animate-pulse p-3 ">
-            <div className="bg-gray-100 group rounded-xl p-2 md:p-5 w-full">
-                <div className="flex items-center gap-4">
-                    <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
-                    <div className="w-fit">
-                        <div className="h-6 bg-gray-300 rounded w-48 mb-2"></div>
-                        <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>
-                        <div className="text-xs text-gray-800">
-                            <div className="flex items-center space-x-1">
-                                <MapPinIcon className="w-5 h-5 text-gray-300" />
-                                <span className="h-4 bg-gray-300 rounded w-24"></span>
-                            </div>
-                            <div className="flex items-center space-x-1 mt-1">
-                                <TagIcon className="w-5 h-5 text-gray-300" />
-                                <span className="h-4 bg-gray-300 rounded w-24"></span>
-                            </div>
-                        </div>
-                    </div>
+        <div className="overflow-hidden group rounded-xl p-3 md:p-5 w-full md:w-1/3 animate-pulse">
+            <div className="w-full flex justify-center items-center">
+                {/* Placeholder for the profile image */}
+                <div className="bg-gray-300 rounded-full w-24 h-24"></div>
+            </div>
+            <div className="w-full flex justify-center items-center mt-2">
+                {/* Placeholder for the name */}
+                <div className="bg-gray-300 h-6 w-1/4 rounded"></div>
+            </div>
+            <div className="w-full flex justify-center items-center mt-2">
+                {/* Placeholders for location and category */}
+                <div className="flex items-center">
+                    <MapPinIcon className="w-3 h-3 text-gray-300 mr-1" />
+                    <div className="bg-gray-300 h-4 w-24 rounded"></div>
                 </div>
-                <div className="flex items-center mt-4">
-                    <span className="h-4 bg-gray-300 rounded w-full"></span>
+                <div className="mx-2"></div>
+                <div className="flex items-center">
+                    <TagIcon className="w-3 h-3 text-gray-300 mr-1" />
+                    <div className="bg-gray-300 h-4 w-24 rounded"></div>
                 </div>
+            </div>
+            <div className="flex flex-col justify-center items-center mt-2 w-full">
+                {/* Placeholder for the about text, now stacked vertically */}
+                <div className="bg-gray-300 h-6 w-3/4 rounded mb-2"></div>
+                <div className="bg-gray-300 h-6 w-2/4 rounded"></div>
             </div>
         </div>
     );
