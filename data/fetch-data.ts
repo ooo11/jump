@@ -167,3 +167,41 @@ export const fetchLinkById = async (userId: string | undefined) => {
         return null
     }
 }
+
+export const fetchVendorIdByLink = async (link: string | undefined) => {
+    try {
+        const data = await db.urls.findUnique({
+            where: {
+                link,
+            }
+        })
+        return data;
+    } catch {
+        return null;
+    }
+}
+
+export const fetchVendorById = async (id: string | undefined) => {
+    try {
+        const user = await db.user.findUnique({
+            where: {
+                id,
+            },
+            // Use `select` to specify the fields you want to include in the result
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+                about: true,
+                cityId: true,
+                categoryId: true,
+                // Explicitly exclude fields you do not want
+                // by not listing them here
+            },
+        })
+        return user;
+    } catch {
+        return null;
+    }
+}
