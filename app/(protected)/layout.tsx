@@ -1,6 +1,9 @@
+
 import SideNav from "@/app/(protected)/_components/sidenav";
 import { SessionProvider } from 'next-auth/react';
+
 import { auth } from "@/auth";
+import { log } from "console";
 
 interface ProtectedLayoutProps {
     children: React.ReactNode
@@ -8,7 +11,8 @@ interface ProtectedLayoutProps {
 
 export default async function ProtectedLayout({ children }: ProtectedLayoutProps) {
 
-    const session = await auth()
+    const session = await auth();
+
 
 
     return (

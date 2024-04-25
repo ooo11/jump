@@ -3,6 +3,7 @@ import { inter } from '@/app/ui/fonts';
 import { SessionProvider } from 'next-auth/react';
 import { auth } from "@/auth";
 import { Metadata } from 'next';
+import { logout } from '@/actions/logout';
 
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default async function RootLayout({
 }) {
 
   const session = await auth()
+
 
 
   return (
